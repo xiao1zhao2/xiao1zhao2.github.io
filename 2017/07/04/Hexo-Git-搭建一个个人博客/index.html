@@ -87,17 +87,17 @@
 
 
 
-<meta name="description" content="使用Github Pages搭建个人网站 Github Pages是GitHub免费提供给开发者的一款托管个人网站的产品，首先需要创建一个GitHub账号 在GitHub创建一个仓库：username/username.github.io，username是你的账户名，这是特殊的命名约定">
+<meta name="description" content="使用Github Pages搭建个人网站 Github Pages是GitHub免费提供给开发者的一款托管个人网站的产品，首先需要创建一个GitHub账号 在GitHub创建一个仓库：username/username.github.io，username是你的账户名，这是特殊的命名约定 在此仓库提交一个index.html文件，网站内容是在master分支下的 访问http://username">
 <meta name="keywords" content="Hexo,GitHub,博客">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hexo+Git 搭建一个个人博客">
 <meta property="og:url" content="http://www.youbo.website/2017/07/04/Hexo-Git-搭建一个个人博客/index.html">
 <meta property="og:site_name" content="YOUBO&#39;S BLOG">
-<meta property="og:description" content="使用Github Pages搭建个人网站 Github Pages是GitHub免费提供给开发者的一款托管个人网站的产品，首先需要创建一个GitHub账号 在GitHub创建一个仓库：username/username.github.io，username是你的账户名，这是特殊的命名约定">
-<meta property="og:updated_time" content="2017-07-12T01:51:22.000Z">
+<meta property="og:description" content="使用Github Pages搭建个人网站 Github Pages是GitHub免费提供给开发者的一款托管个人网站的产品，首先需要创建一个GitHub账号 在GitHub创建一个仓库：username/username.github.io，username是你的账户名，这是特殊的命名约定 在此仓库提交一个index.html文件，网站内容是在master分支下的 访问http://username">
+<meta property="og:updated_time" content="2017-07-14T02:03:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo+Git 搭建一个个人博客">
-<meta name="twitter:description" content="使用Github Pages搭建个人网站 Github Pages是GitHub免费提供给开发者的一款托管个人网站的产品，首先需要创建一个GitHub账号 在GitHub创建一个仓库：username/username.github.io，username是你的账户名，这是特殊的命名约定">
+<meta name="twitter:description" content="使用Github Pages搭建个人网站 Github Pages是GitHub免费提供给开发者的一款托管个人网站的产品，首先需要创建一个GitHub账号 在GitHub创建一个仓库：username/username.github.io，username是你的账户名，这是特殊的命名约定 在此仓库提交一个index.html文件，网站内容是在master分支下的 访问http://username">
 
 
 
@@ -342,9 +342,32 @@
 
           
             
+            <!--noindex-->
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/04/Hexo-Git-搭建一个个人博客/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count hc-comment-count" data-xid="2017/07/04/Hexo-Git-搭建一个个人博客/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+              <!--/noindex-->
+            
           
 
           
+          
+             <span id="/2017/07/04/Hexo-Git-搭建一个个人博客/" class="leancloud_visitors" data-flag-title="Hexo+Git 搭建一个个人博客">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
           
 
           
@@ -366,7 +389,7 @@
       
         <h4 id="使用Github-Pages搭建个人网站"><a href="#使用Github-Pages搭建个人网站" class="headerlink" title="使用Github Pages搭建个人网站"></a>使用Github Pages搭建个人网站</h4><ol>
 <li><a href="https://pages.github.com/" title="Github Pages 官网" target="_blank" rel="external">Github Pages</a>是<a href="https://github.com/" title="GitHub 官网" target="_blank" rel="external">GitHub</a>免费提供给开发者的一款托管个人网站的产品，首先需要创建一个GitHub账号</li>
-<li>在GitHub创建一个仓库：username/username.github.io，username是你的账户名，这是特殊的命名约定<a id="more"></a></li>
+<li>在GitHub创建一个仓库：username/username.github.io，username是你的账户名，这是特殊的命名约定</li>
 <li>在此仓库提交一个index.html文件，网站内容是在master分支下的</li>
 <li>访问<a href="http://username.github.io" target="_blank" rel="external">http://username.github.io</a>，就能看到自己的网站了</li>
 </ol>
@@ -408,8 +431,10 @@ $ npm install
 <li><p>执行部署</p>
 <pre><code>$ hexo deploy # 或者 hexo d
 </code></pre></li>
-<li>使用git部署<br>将我们之前创建的repo克隆到本地，将hexo generate生成public文件夹下的内容copy到本地repo，然后使用git commit命令提交代码到远程repo的master branch上即可</li>
-<li>访问<a href="http://username.github.io" target="_blank" rel="external">http://username.github.io</a>，能看到Hexo内置的blog已经发布到自己的网站了</li>
+<li><p>使用git部署<br>将我们之前创建的repo克隆到本地，将hexo generate生成public文件夹下的内容copy到本地repo，然后使用git commit命令提交代码到远程repo的master branch上即可</p>
+</li>
+<li><p>访问<a href="http://username.github.io" target="_blank" rel="external">http://username.github.io</a>，能看到Hexo内置的blog已经发布到自己的网站了</p>
+</li>
 <li><p>如果使用独立域名访问，需要Hexo也配置域名信息</p>
 <pre><code>$ cd source/
 $ touch CNAME
@@ -417,7 +442,8 @@ $ vim CNAME # 输入你的域名
 </code></pre></li>
 </ol>
 <h4 id="Hexo主题相关"><a href="#Hexo主题相关" class="headerlink" title="Hexo主题相关"></a>Hexo主题相关</h4><ol>
-<li>Hexo使用<a href="http://www.markdown.cn/" title="MarkDown 文档" target="_blank" rel="external">Markdown</a>解析文章，支持更换<a href="https://hexo.io/themes/" title="Hexo 主题" target="_blank" rel="external">多种主题</a>，本站所用主题是：<a href="http://theme-next.iissnan.com/" title="Next 官网" target="_blank" rel="external">Next</a></li>
+<li><p>Hexo使用<a href="http://www.markdown.cn/" title="MarkDown 文档" target="_blank" rel="external">Markdown</a>解析文章，支持更换<a href="https://hexo.io/themes/" title="Hexo 主题" target="_blank" rel="external">多种主题</a>，本站所用主题是：<a href="http://theme-next.iissnan.com/" title="Next 官网" target="_blank" rel="external">Next</a></p>
+</li>
 <li><p>切换Hexo主题：<br>将自己的主题放在themes文件夹内，并修改_config.yml内的theme设定，即可切换主题。</p>
 <pre><code>theme: next # Hexo默认主题是landscape
 </code></pre></li>
@@ -487,6 +513,8 @@ $ vim CNAME # 输入你的域名
 
           
   <div class="comments" id="comments">
+    
+      <div id="hypercomments_widget"></div>
     
   </div>
 
@@ -733,6 +761,35 @@ $ vim CNAME # 输入你的域名
 
 	
 
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+
+		_hcwp.push({widget:"Bloggerstream", widget_id: 93286, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+
+		
+		_hcwp.push({widget:"Stream", widget_id: 93286, xid: "2017/07/04/Hexo-Git-搭建一个个人博客/"});
+		
+
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/93286/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+
+	
+
+
+
+
+
+
+
+
 
 
 
@@ -745,24 +802,112 @@ $ vim CNAME # 输入你的域名
 
   
 
-
-
-
-
   
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8QMQj1UnbwzGuBYQq2wN1HrR-gzGzoHsz", "am1SdGrz3btqx5wyV7DB0qUj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
 
 
-
-
-
-
-  
-
-
-
-
-
-  
 
   
 
