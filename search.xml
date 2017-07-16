@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[Node.js升级]]></title>
+    <url>%2F2017%2F07%2F15%2FNode.js%E5%8D%87%E7%BA%A7%2F</url>
+    <content type="text"><![CDATA[Node.js版本更新很频繁，由0.1x版本跃升至4.x乃至目前最新的8.x版本，升级Node.js很有必要 查看Node版本 1$ node -v 安装n模块 1$ npm install -g n 查看所有node版本 1$ n ls 升级Node 12$ n 4.4.0（版本号） # 升级到指定版本$ n stable # 升级最新的稳定版本]]></content>
+      <categories>
+        <category>日常case</category>
+      </categories>
+      <tags>
+        <tag>node</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Hexo+Git 搭建一个个人博客]]></title>
+    <url>%2F2017%2F07%2F04%2FHexo-Git-%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%2F</url>
+    <content type="text"><![CDATA[使用Github Pages搭建个人网站 Github Pages是GitHub免费提供给开发者的一款托管个人网站的产品，首先需要创建一个GitHub账号 在GitHub创建一个仓库：username/username.github.io，username是你的账户名，这是特殊的命名约定 在此仓库提交一个index.html文件，网站内容是在master分支下的 访问http://username.github.io，就能看到自己的网站了 绑定独立域名 如果你有自己的域名的话，在之前的仓库点开设置(Settings)，找到GitHub Pages，在Custom domain添加自己的域名，保存(Save)即可 在你的域名注册提供商那里配置DNS解析，获取GitHub的IP地址，添加A记录即可 使用Hexo搭建博客 前提已安装Node.js和Git 安装Hexo 1$ npm install -g hexo-cli 建站 123$ hexo init &lt;folder&gt;$ cd &lt;folder&gt;$ npm install 安装 hexo-server 1$ npm install hexo-server --save 生成静态文件 1$ hexo generate # 或者 hexo g 启动本地服务 1$ hexo server # 或者 hexo s 查看结果访问http://localhost:4000/，已经可以看到一篇内置的blog了，Hexo使用Markdown解析文章 部署Hexo到Github Pages 安装hexo-deployer-git 1$ npm install hexo-deployer-git --save 修改配置文件_config.xml注：配置文件中，冒号后面一定要加空格 1234deploy: type: git repo: git@github.com:username/username.github.io.git branch: master 执行部署 1$ hexo deploy # 或者 hexo d 使用git部署将我们之前创建的repo克隆到本地，将hexo generate生成public文件夹下的内容copy到本地repo，然后使用git commit命令提交代码到远程repo的master branch上即可 查看结果访问http://username.github.io，能看到Hexo内置的blog已经发布到自己的网站了 使用独立域名 123$ cd source/$ touch CNAME$ vim CNAME # 输入你的域名 Hexo主题Next及常用第三方服务 Next主题Hexo支持更换多种主题，本站所用主题是：Next，将喜欢的主题放在themes文件夹内，并修改_config.yml内的theme设定，即可切换主题 1theme: next # Hexo默认主题是landscape 标签与分类确认站点配置文件以及主题配置文件里开启响应设置，新建标签和分类页面内容，在新发布的blog首部设置自定义标签和分类即可 1234567891011121314151617181920212223# 站点配置文件tag_dir: tagscategory_dir: categories # 主题配置文件tags: /tagscategories: /categories # 新建source/tags/index.mdtitle: tagsdate: 2015-10-20 06:49:50type: &quot;tags&quot;comments: false # 新建source/categories/index.mdtitle: categoriesdate: 2015-10-20 06:49:50type: &quot;categories&quot;comments: false # 新发布的blog首部设置categories: 类别tags: [标签1,标签2,标签3] 网站统计百度统计登录百度统计，定位到站点的代码获取页面，复制 hm.js? 后面那串统计脚本 id，修改主题配置文件内的字段 baidu_analytics，值设置成你的百度统计脚本id 12# Baidu Analytics IDbaidu_analytics: **** 阅读次数统计LeanCloud注册LeanCloud帐号，创建一个应用，在应用的配置界面创建Class（名字必须为Counter），由于LeanCloud升级了默认的ACL权限，如果你想避免后续因为权限的问题导致次数统计显示不正常，建议在此处选择无限制。在应用Key界面拿到AppID以及AppKey这两个参数，修改主题配置文件内对应的的字段即可。另外，建议开启Web安全选项，在安全中心的Web安全域名中填入我们自己的博客域名，来确保数据调用的安全 1234# leancloud_visitors:enable: trueapp_id: ****app_key: **** 评论系统HyperComments首先需要在文章首部开启评论，Next官网提供的DISQUS、多说、网易云跟帖等都已经停止服务了，只好使用HyperComments，创建一个免费应用即可，拿到WIDGET-CODE，修改主题配置文件内对应的的字段即可 123456# 文章首部设置comments: true # 主题配置文件# Hypercommentshypercomments_id: **** 分享系统jiathis注册jiathis账号，获取uid后更改配置文件内对应的的字段即可 123jiathis: enable: false id: 2139015 搜索服务LocalSearch安装 hexo-generator-searchdb，编辑站点配置文件和主题配置文件 12345678910111213# 安装 hexo-generator-searchdb$ npm install hexo-generator-searchdb --save # 站点配置search: path: search.xml field: post format: html limit: 10000 # 主题配置local_search: enable: true 打赏服务编辑主题配置文件，添加comment和支付二维码即可 1234# 打赏配置 可自己添加reward_comment: 您的支持将鼓励我继续创作！wechatpay: # 微信收款二维码alipay: # 支付宝收款二维码 腾讯公益404页面寻找丢失儿童，让大家一起关注此项公益事业！新建404.html页面，放到主题的source目录下，内容如下 12345678910111213141516&lt;!DOCTYPE HTML&gt;&lt;html&gt;&lt;head&gt; &lt;meta http-equiv="content-type" content="text/html;charset=utf-8;"/&gt; &lt;meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/&gt; &lt;meta name="robots" content="all"/&gt; &lt;meta name="robots" content="index,follow"/&gt; &lt;link rel="stylesheet" type="text/css" href="https://qzone.qq.com/gy/404/style/404style.css"&gt;&lt;/head&gt;&lt;body&gt; &lt;script type="text/plain" src="http://www.qq.com/404/search_children.js" charset="utf-8" homePageUrl="/" homePageName="回到我的主页"&gt; &lt;/script&gt; &lt;script src="https://qzone.qq.com/gy/404/data.js" charset="utf-8"&gt;&lt;/script&gt; &lt;script src="https://qzone.qq.com/gy/404/page.js" charset="utf-8"&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;]]></content>
+      <categories>
+        <category>开源工具</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>GitHub</tag>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+</search>
