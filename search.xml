@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[嵌入式Linux学习路线]]></title>
+    <url>%2F2017%2F09%2F10%2F%E5%B5%8C%E5%85%A5%E5%BC%8FLinux%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF%2F</url>
+    <content type="text"><![CDATA[概述本篇文章简要说明嵌入式Linux的学习路线，后续系列文章将按照本篇所述内容进行展开。 嵌入式Linux开发基础- Linux操作系统使用 - C语言高级编程 - 数据结构 嵌入式Linux应用层开发- 文件I/O与系统I/O - 进程和线程 - 网络编程 嵌入式Linux底层开发- ARM处理器编程 - ARM硬件接口编程 - 系统移植 - 设备驱动 - Android底层驱动 嵌入式系统项目实战- 电子词典 - 仓储物联系统]]></content>
+      <categories>
+        <category>嵌入式</category>
+      </categories>
+      <tags>
+        <tag>嵌入式</tag>
+        <tag>学习笔记</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Node.js升级]]></title>
     <url>%2F2017%2F07%2F15%2FNode.js%E5%8D%87%E7%BA%A7%2F</url>
     <content type="text"><![CDATA[Node.js版本更新很频繁，由0.1x版本跃升至4.x乃至目前最新的8.x版本，升级Node.js很有必要 查看Node版本 1$ node -v 安装n模块 1$ npm install -g n 查看所有node版本 1$ n ls 升级Node 12$ n 4.4.0（版本号） # 升级到指定版本$ n stable # 升级最新的稳定版本]]></content>
