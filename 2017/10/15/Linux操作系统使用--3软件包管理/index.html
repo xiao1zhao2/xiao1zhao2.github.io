@@ -94,7 +94,7 @@
 <meta property="og:url" content="http://www.youbo.website/2017/10/15/Linux操作系统使用--3软件包管理/index.html">
 <meta property="og:site_name" content="YOUBO&#39;S BLOG">
 <meta property="og:description" content="本篇文章围绕Linux平台下软件包管理问题，首先介绍deb软件包和rpm软件包两种常用的软件包管理机制，重点介绍deb软件包的dpkg命令和apt原理，简述rpm软件包的rpm命令和yum工具。然后归纳在实践中使用的除上述两种软件包管理之外的方法，并结合所使用的硬件平台给出一些具体的软件包安装实例说明。">
-<meta property="og:updated_time" content="2017-10-15T09:46:23.000Z">
+<meta property="og:updated_time" content="2017-10-15T10:19:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux操作系统使用--3软件包管理">
 <meta name="twitter:description" content="本篇文章围绕Linux平台下软件包管理问题，首先介绍deb软件包和rpm软件包两种常用的软件包管理机制，重点介绍deb软件包的dpkg命令和apt原理，简述rpm软件包的rpm命令和yum工具。然后归纳在实践中使用的除上述两种软件包管理之外的方法，并结合所使用的硬件平台给出一些具体的软件包安装实例说明。">
@@ -457,28 +457,28 @@
 <li>需要使用Internet网络获取软件包</li>
 </ol>
 <p>apt-get常用命令如下：</p>
-<pre><code>- apt-get update                    下载更新软件包列表信息
-- apt-get upgrade                    软件包升级为最新版本 
+<pre><code>- apt-get update    下载更新软件包列表信息
+- apt-get upgrade    软件包升级为最新版本 
 
-- apt-get install xxx                安装软件  
+- apt-get install xxx    安装软件  
 - apt-get --reinstall install xxx    重新安装软件  
 
-- apt-get check                        检查是否有损坏的依赖 
-- apt-get -f install                修复软件包依赖问题 
+- apt-get check    检查是否有损坏的依赖 
+- apt-get -f install    修复软件包依赖问题 
 
-- apt-get remove xxx                卸载软件    
-- apt-get --purge remove xxx        完全卸载软件   
-- apt-get autoremove                将不满足依赖关系的软件包自动卸载
+- apt-get remove xxx    卸载软件    
+- apt-get --purge remove xxx    完全卸载软件   
+- apt-get autoremove    将不满足依赖关系的软件包自动卸载
 
-- apt-get clean                        删除缓存区所有已下载的包文件    
-- apt-get autoclean                    删除缓存区老版本已下载的包文件
+- apt-get clean    删除缓存区所有已下载的包文件    
+- apt-get autoclean    删除缓存区老版本已下载的包文件
 </code></pre><p><em>注：apt-get autoclean在释放磁盘时会用到</em>    </p>
 <p>apt-cache常用命令如下：</p>
-<pre><code>- apt-cache show xxx                获取二进制软件包详细描述信息 
-- apt-cache search xxx                根据正则表达式检索软件包  
-- apt-cache depends xxx                查询该软件包的依赖信息  
-- apt-cache rdepends xxx            查询所有依赖该软件包的软件包  
-- apt-cache policy xxx                查询软件包安装状态  
+<pre><code>- apt-cache show xxx    获取二进制软件包详细描述信息 
+- apt-cache search xxx    根据正则表达式检索软件包  
+- apt-cache depends xxx    查询该软件包的依赖信息  
+- apt-cache rdepends xxx    查询所有依赖该软件包的软件包  
+- apt-cache policy xxx    查询软件包安装状态  
 </code></pre><h1 id="rpm软件包"><a href="#rpm软件包" class="headerlink" title="rpm软件包"></a>rpm软件包</h1><p>rpm软件包管理是另外一种软件包管理机制，和deb功能十分相似。在此不再赘述，有需要时请查阅参考资料。</p>
 <h2 id="rpm本地安装"><a href="#rpm本地安装" class="headerlink" title="rpm本地安装"></a>rpm本地安装</h2><p>rpm的功能类似于dpkg  </p>
 <h2 id="yum在线安装"><a href="#yum在线安装" class="headerlink" title="yum在线安装"></a>yum在线安装</h2><p>yum功能类似于apt，也有相应的配置文件/etc/yum.conf，/etc/yum.repos.d/目录，数据库目录/var/lib/rpm/等。</p>
