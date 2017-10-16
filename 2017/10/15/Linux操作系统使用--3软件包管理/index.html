@@ -94,7 +94,7 @@
 <meta property="og:url" content="http://www.youbo.website/2017/10/15/Linux操作系统使用--3软件包管理/index.html">
 <meta property="og:site_name" content="YOUBO&#39;S BLOG">
 <meta property="og:description" content="本篇文章围绕Linux平台下软件包管理问题，首先介绍deb软件包和rpm软件包两种常用的软件包管理机制，重点介绍deb软件包的dpkg命令和apt原理，简述rpm软件包的rpm命令和yum工具。然后归纳在实践中使用的除上述两种软件包管理之外的方法，并结合所使用的硬件平台给出一些具体的软件包安装实例说明。">
-<meta property="og:updated_time" content="2017-10-15T10:19:37.000Z">
+<meta property="og:updated_time" content="2017-10-16T03:24:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux操作系统使用--3软件包管理">
 <meta name="twitter:description" content="本篇文章围绕Linux平台下软件包管理问题，首先介绍deb软件包和rpm软件包两种常用的软件包管理机制，重点介绍deb软件包的dpkg命令和apt原理，简述rpm软件包的rpm命令和yum工具。然后归纳在实践中使用的除上述两种软件包管理之外的方法，并结合所使用的硬件平台给出一些具体的软件包安装实例说明。">
@@ -490,13 +490,13 @@
 </li>
 <li><p>使用apt、yum等上层工具安装<br>联网安装，自动检查依赖关系。  </p>
 </li>
-<li><p>源代码编译安装<br>第三方开源软件通用的安装方法，通常经历：下载–解压–./configure–make–make install等步骤。不同的软件以及不同的安装平台具体细节有差别，该方法可做专题研究，尤其是在嵌入式Linux平台移植，可做总结。  </p>
+<li><p>源代码编译安装<br>第三方开源软件通用的安装方法，通常经历：下载--解压--./configure--make--make install等步骤。不同的软件以及不同的安装平台具体细节有差别，该方法可做专题研究，尤其是在嵌入式Linux平台移植，可做总结。  </p>
 </li>
 <li><p>其他<br>除了以上安装方法，有的软件提供安装脚本，直接运行即可。还有其他方法参考以下文档。 </p>
 </li>
 </ol>
 <p><em>参考文档：<a href="http://www.360doc.com/content/16/1006/11/29770038_596138348.shtml" target="_blank" rel="external">汇总linux下安装软件的几种方式</a></em></p>
-<h2 id="实践中各平台的操作系统"><a href="#实践中各平台的操作系统" class="headerlink" title="实践中各平台的操作系统"></a>实践中各平台的操作系统</h2><p>在实践中我使用了四个硬件平台，关于其详细介绍参考<a href="http://www.youbo.website/2017/09/08/%E5%B5%8C%E5%85%A5%E5%BC%8FLinux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0--%E5%89%8D%E8%A8%80/">嵌入式学习笔记–前言</a>，在此不再赘述。<br>使用<a href="http://www.cnblogs.com/lanxuezaipiao/archive/2012/10/22/2732857.html" target="_blank" rel="external">cat /proc/version命令或者cat /etc/issue命令</a>查看各平台的操作系统详细信息。总结如下：</p>
+<h2 id="实践中各平台的操作系统"><a href="#实践中各平台的操作系统" class="headerlink" title="实践中各平台的操作系统"></a>实践中各平台的操作系统</h2><p>在实践中我使用了四个硬件平台，关于其详细介绍参考<a href="http://www.youbo.website/2017/09/08/%E5%B5%8C%E5%85%A5%E5%BC%8FLinux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0--%E5%89%8D%E8%A8%80/">嵌入式学习笔记--前言</a>，在此不再赘述。<br>使用<a href="http://www.cnblogs.com/lanxuezaipiao/archive/2012/10/22/2732857.html" target="_blank" rel="external">cat /proc/version命令或者cat /etc/issue命令</a>查看各平台的操作系统详细信息。总结如下：</p>
 <pre><code>- 树莓派3 B：Raspbian GNU/Linux 8
 
 - JS991开发板：openwrt
@@ -538,8 +538,8 @@
 <h3 id="Intel-NUC-DE3815TYKHE"><a href="#Intel-NUC-DE3815TYKHE" class="headerlink" title="Intel NUC DE3815TYKHE"></a>Intel NUC DE3815TYKHE</h3><p><strong>说明</strong>  </p>
 <ol>
 <li>wind river Linux系统作为Intel IoT Gateway Software Suite的一部分提供，此处使用的是免费版本Wind River Linux 7.0.0.13。  </li>
-<li><a href="https://knowledge.windriver.com/en-us/000_Products/000/010/000" target="_blank" rel="external">Wind River Linux 7.0.0.13</a>系统下的软件包后缀为rpm，软件包管理工具为smart update、smart install、smart channel –add等。可能类似rpm软件包管理，具体需深入学习该系统。  </li>
-<li>若提供软件源，需要使用rpm –import命令导入GPG密钥，然后使用smart channel –add添加软件源，再使用smart update和smart install。  </li>
+<li><a href="https://knowledge.windriver.com/en-us/000_Products/000/010/000" target="_blank" rel="external">Wind River Linux 7.0.0.13</a>系统下的软件包后缀为rpm，软件包管理工具为smart update、smart install、smart channel --add等。可能类似rpm软件包管理，具体需深入学习该系统。  </li>
+<li>若提供软件源，需要使用rpm --import命令导入GPG密钥，然后使用smart channel --add添加软件源，再使用smart update和smart install。  </li>
 <li>添加软件源镜像所能访问的文件夹需要和操作系统版本保持一致。  </li>
 <li>支持页面添加源和软件安装。  </li>
 </ol>
