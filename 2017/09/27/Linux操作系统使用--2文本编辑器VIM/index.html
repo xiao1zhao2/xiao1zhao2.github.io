@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="嵌入式,学习笔记," />
+  <meta name="keywords" content="嵌入式,学习笔记,VIM," />
 
 
 
@@ -88,14 +88,14 @@
 
 
 <meta name="description" content="本篇文章简要叙述文本编辑器VIM的使用，包括VIM的3种模式，常用的功能键，常用的插件配置。同时给出可供参考的IDE，以作扩展学习。">
-<meta name="keywords" content="嵌入式,学习笔记">
+<meta name="keywords" content="嵌入式,学习笔记,VIM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux操作系统使用--2文本编辑器VIM">
 <meta property="og:url" content="http://www.youbo.website/2017/09/27/Linux操作系统使用--2文本编辑器VIM/index.html">
 <meta property="og:site_name" content="YOUBO&#39;S BLOG">
 <meta property="og:description" content="本篇文章简要叙述文本编辑器VIM的使用，包括VIM的3种模式，常用的功能键，常用的插件配置。同时给出可供参考的IDE，以作扩展学习。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-05T03:02:06.676Z">
+<meta property="og:updated_time" content="2017-11-05T06:41:34.014Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux操作系统使用--2文本编辑器VIM">
 <meta name="twitter:description" content="本篇文章简要叙述文本编辑器VIM的使用，包括VIM的3种模式，常用的功能键，常用的插件配置。同时给出可供参考的IDE，以作扩展学习。">
@@ -425,7 +425,7 @@
         <blockquote>
 <p>本篇文章简要叙述文本编辑器VIM的使用，包括VIM的3种模式，常用的功能键，常用的插件配置。同时给出可供参考的IDE，以作扩展学习。<a id="more"></a></p>
 </blockquote>
-<h2 id="vim编辑器"><a href="#vim编辑器" class="headerlink" title="vim编辑器"></a>vim编辑器</h2><h3 id="3种模式"><a href="#3种模式" class="headerlink" title="3种模式"></a>3种模式</h3><ul>
+<h1 id="vim编辑器"><a href="#vim编辑器" class="headerlink" title="vim编辑器"></a>vim编辑器</h1><h2 id="3种模式"><a href="#3种模式" class="headerlink" title="3种模式"></a>3种模式</h2><ul>
 <li><p>命令模式：主要是光标跳转、复制、粘贴、删除。</p>
 </li>
 <li><p>编辑模式：主要是文字编辑。</p>
@@ -434,7 +434,7 @@
 </li>
 </ul>
 <p><em>注：三种模式叫法可能存在差异，理解每个模式下的功能即可</em></p>
-<h3 id="常用功能键与快捷键"><a href="#常用功能键与快捷键" class="headerlink" title="常用功能键与快捷键"></a>常用功能键与快捷键</h3><p>这里只列举常用的一些功能键和快捷键。</p>
+<h2 id="常用功能键与快捷键"><a href="#常用功能键与快捷键" class="headerlink" title="常用功能键与快捷键"></a>常用功能键与快捷键</h2><p>这里只列举常用的一些功能键和快捷键。</p>
 <ul>
 <li><p>多窗口与多标签</p>
 <ul>
@@ -442,7 +442,7 @@
 <li>新标签 Ctrl+shift+t</li>
 </ul>
 </li>
-<li><p>跳转         </p>
+<li><p>跳转 </p>
 <ul>
 <li>跳转到第n行 ngg </li>
 </ul>
@@ -490,27 +490,27 @@
 </ul>
 </li>
 </ul>
-<p><em>参考文档：<a href="http://www.jianshu.com/p/bcbe916f97e1" target="_blank" rel="external">Vim入门基础</a></em>  </p>
-<h3 id="配置文件与插件"><a href="#配置文件与插件" class="headerlink" title="配置文件与插件"></a>配置文件与插件</h3><p>网上有许多关于VIM配置的说明，我认为最重要的是知道自己要做什么，而不是盲目的使用教程做复杂的配置。 </p>
+<p><em>参考文档：<a href="http://www.jianshu.com/p/bcbe916f97e1" target="_blank" rel="external">Vim入门基础</a></em> </p>
+<h2 id="配置文件与插件"><a href="#配置文件与插件" class="headerlink" title="配置文件与插件"></a>配置文件与插件</h2><p>网上有许多关于VIM配置的说明，我认为最重要的是知道自己要做什么，而不是盲目的使用教程做复杂的配置。 </p>
 <p>作为新手，我主要用vim进行C语言开发，我常用以下功能。</p>
-<pre><code>- 查看定义(宏、变量、函数名等)  
+<pre><code>- 查看定义(宏、变量、函数名等) 
 
 - 符号一览(宏、变量、函数名等) 
 
-- 查看文件目录  
+- 查看文件目录 
 
 - 代码补全
 </code></pre><p>因此需要下载相关插件，并编辑配置文件，以期实现以上功能。其中插件下载后存放于~/.vim文件夹，配置文件为~/.vimrc，当前用户有效。</p>
-<h4 id="ctags插件实现查看定义"><a href="#ctags插件实现查看定义" class="headerlink" title="ctags插件实现查看定义"></a>ctags插件实现查看定义</h4><p>使用步骤  </p>
-<pre><code>1. 在源码目录下执行ctags -R，生成tags文件  
+<h3 id="ctags插件实现查看定义"><a href="#ctags插件实现查看定义" class="headerlink" title="ctags插件实现查看定义"></a>ctags插件实现查看定义</h3><p>使用步骤 </p>
+<pre><code>1. 在源码目录下执行ctags -R，生成tags文件 
 
 2. 在.vimrc文件中添加:set tags +=源码路径/tags 
 
-3. 跳转定义使用Ctrl+]  
+3. 跳转定义使用Ctrl+] 
 
-4. 返回使用Ctrl+t  
+4. 返回使用Ctrl+t 
 </code></pre><p><strong>注：程序修改后，需重新运行ctags -R</strong></p>
-<h4 id="taglist插件实现符号一览"><a href="#taglist插件实现符号一览" class="headerlink" title="taglist插件实现符号一览"></a>taglist插件实现符号一览</h4><p>使用步骤  </p>
+<h3 id="taglist插件实现符号一览"><a href="#taglist插件实现符号一览" class="headerlink" title="taglist插件实现符号一览"></a>taglist插件实现符号一览</h3><p>使用步骤 </p>
 <pre><code>1. 前提：ctags已经打好标签 
 
 2. 打开taglist窗口使用:Tlist 
@@ -518,7 +518,7 @@
 3. 光标选择符号，按enter键跳转到定义
 
 4. 光标选择符号，按空格键，在底行显示tag的完整表达
-</code></pre><h4 id="netrw、WinManager插件实现查看文件目录"><a href="#netrw、WinManager插件实现查看文件目录" class="headerlink" title="netrw、WinManager插件实现查看文件目录"></a>netrw、WinManager插件实现查看文件目录</h4><p>使用步骤</p>
+</code></pre><h3 id="netrw、WinManager插件实现查看文件目录"><a href="#netrw、WinManager插件实现查看文件目录" class="headerlink" title="netrw、WinManager插件实现查看文件目录"></a>netrw、WinManager插件实现查看文件目录</h3><p>使用步骤</p>
 <pre><code>1. 注：netrw已随vim安装，无需下载 
 
 2. WinManager的作用是组合netrw窗口和taglist窗口
@@ -527,18 +527,18 @@
 
 4. 光标选择文件或文件夹，按enter键进入 
 
-5. 返回上级目录使用-键  
-</code></pre><h4 id="new-omni-completion、SuperTab插件实现自动补全"><a href="#new-omni-completion、SuperTab插件实现自动补全" class="headerlink" title="new-omni-completion、SuperTab插件实现自动补全"></a>new-omni-completion、SuperTab插件实现自动补全</h4><p>使用步骤 </p>
+5. 返回上级目录使用-键 
+</code></pre><h3 id="new-omni-completion、SuperTab插件实现自动补全"><a href="#new-omni-completion、SuperTab插件实现自动补全" class="headerlink" title="new-omni-completion、SuperTab插件实现自动补全"></a>new-omni-completion、SuperTab插件实现自动补全</h3><p>使用步骤 </p>
 <pre><code>1. 输入几个单词后，按下Tab键进行选择
-</code></pre><p> <strong>注：程序修改后，需重新运行ctags -R</strong>  </p>
+</code></pre><p> <strong>注：程序修改后，需重新运行ctags -R</strong> </p>
 <p><em>参考文档：<a href="http://blog.csdn.net/wooin/article/details/1858917" target="_blank" rel="external">手把手教你把Vim改装成一个IDE编程环境(图文)</a></em></p>
-<h2 id="IDE编程环境"><a href="#IDE编程环境" class="headerlink" title="IDE编程环境"></a>IDE编程环境</h2><p>除了VIM编辑器，还有许多集成开发环境可供选择。比如以下两种。  </p>
+<h1 id="IDE编程环境"><a href="#IDE编程环境" class="headerlink" title="IDE编程环境"></a>IDE编程环境</h1><p>除了VIM编辑器，还有许多集成开发环境可供选择。比如以下两种。 </p>
 <ul>
-<li>eclipse CDT  </li>
+<li>eclipse CDT </li>
 <li>QT creator</li>
 </ul>
 <p>在实践中，我在Ubuntu16.04上安装过<a href="https://software.intel.com/en-us/iot/tools-ide/ide/iss-iot-edition" target="_blank" rel="external">Intel® System Studio IoT Edition(linux版)</a>开发Intel NUC DE3815网关的C语言程序，该IDE是基于eclipse的。同时，也使用过<a href="http://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/keplersr2" target="_blank" rel="external">eclipse for ARM(windows 32版)</a>开发FS4412裸板的汇编语言程序，并未做深入研究。</p>
-<h2 id="个人观点"><a href="#个人观点" class="headerlink" title="个人观点"></a>个人观点</h2><p>我认为，IDE的使用原理和<strong>vim + Makefile + gcc</strong>的方式一致，只是在交叉编译环境配置和可视化编程等方面有所不同。</p>
+<h1 id="个人观点"><a href="#个人观点" class="headerlink" title="个人观点"></a>个人观点</h1><p>我认为，IDE的使用原理和<strong>vim + Makefile + gcc</strong>的方式一致，只是在交叉编译环境配置和可视化编程等方面有所不同。</p>
 <p>关于vim的高级配置以及IDE的使用，待基础技能熟悉后，视情况再做深入讨论。</p>
 
       
@@ -593,6 +593,8 @@
             <a href="/tags/嵌入式/" rel="tag"># 嵌入式</a>
           
             <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
+          
+            <a href="/tags/VIM/" rel="tag"># VIM</a>
           
         </div>
       
@@ -714,7 +716,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -736,7 +738,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -771,7 +773,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#vim编辑器"><span class="nav-number">1.</span> <span class="nav-text">vim编辑器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3种模式"><span class="nav-number">1.1.</span> <span class="nav-text">3种模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用功能键与快捷键"><span class="nav-number">1.2.</span> <span class="nav-text">常用功能键与快捷键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件与插件"><span class="nav-number">1.3.</span> <span class="nav-text">配置文件与插件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ctags插件实现查看定义"><span class="nav-number">1.3.1.</span> <span class="nav-text">ctags插件实现查看定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#taglist插件实现符号一览"><span class="nav-number">1.3.2.</span> <span class="nav-text">taglist插件实现符号一览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#netrw、WinManager插件实现查看文件目录"><span class="nav-number">1.3.3.</span> <span class="nav-text">netrw、WinManager插件实现查看文件目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#new-omni-completion、SuperTab插件实现自动补全"><span class="nav-number">1.3.4.</span> <span class="nav-text">new-omni-completion、SuperTab插件实现自动补全</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IDE编程环境"><span class="nav-number">2.</span> <span class="nav-text">IDE编程环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#个人观点"><span class="nav-number">3.</span> <span class="nav-text">个人观点</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#vim编辑器"><span class="nav-number">1.</span> <span class="nav-text">vim编辑器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3种模式"><span class="nav-number">1.1.</span> <span class="nav-text">3种模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用功能键与快捷键"><span class="nav-number">1.2.</span> <span class="nav-text">常用功能键与快捷键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置文件与插件"><span class="nav-number">1.3.</span> <span class="nav-text">配置文件与插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ctags插件实现查看定义"><span class="nav-number">1.3.1.</span> <span class="nav-text">ctags插件实现查看定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#taglist插件实现符号一览"><span class="nav-number">1.3.2.</span> <span class="nav-text">taglist插件实现符号一览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#netrw、WinManager插件实现查看文件目录"><span class="nav-number">1.3.3.</span> <span class="nav-text">netrw、WinManager插件实现查看文件目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#new-omni-completion、SuperTab插件实现自动补全"><span class="nav-number">1.3.4.</span> <span class="nav-text">new-omni-completion、SuperTab插件实现自动补全</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IDE编程环境"><span class="nav-number">2.</span> <span class="nav-text">IDE编程环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#个人观点"><span class="nav-number">3.</span> <span class="nav-text">个人观点</span></a></li></ol></div>
             
 
           </div>

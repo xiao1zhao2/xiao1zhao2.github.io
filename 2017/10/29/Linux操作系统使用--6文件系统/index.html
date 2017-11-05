@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="嵌入式,学习笔记,软件包管理," />
+  <meta name="keywords" content="嵌入式,学习笔记,文件系统,根文件系统,虚拟文件系统," />
 
 
 
@@ -87,18 +87,21 @@
 
 
 
-<meta name="description" content="本篇文章围绕Linux平台下软件包管理问题，首先介绍deb软件包和rpm软件包两种常用的软件包管理机制，重点介绍deb软件包的dpkg命令和apt原理，简述rpm软件包的rpm命令和yum工具。然后归纳在实践中使用的除上述两种软件包管理之外的方法，并结合所使用的硬件平台给出一些具体的软件包安装实例说明。">
-<meta name="keywords" content="嵌入式,学习笔记,软件包管理">
+<meta name="description" content="本篇文章主要围绕linux文件系统总结相关知识点，包括文件系统类型、分区与挂载等基本概念以及文件系统重要目录分析。最后简要叙述文件系统体系结构中起重要作用的虚拟文件系统概念，以作后期扩展学习。">
+<meta name="keywords" content="嵌入式,学习笔记,文件系统,根文件系统,虚拟文件系统">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux操作系统使用--3软件包管理">
-<meta property="og:url" content="http://www.youbo.website/2017/10/15/Linux操作系统使用--3软件包管理/index.html">
+<meta property="og:title" content="Linux操作系统使用--6文件系统">
+<meta property="og:url" content="http://www.youbo.website/2017/10/29/Linux操作系统使用--6文件系统/index.html">
 <meta property="og:site_name" content="YOUBO&#39;S BLOG">
-<meta property="og:description" content="本篇文章围绕Linux平台下软件包管理问题，首先介绍deb软件包和rpm软件包两种常用的软件包管理机制，重点介绍deb软件包的dpkg命令和apt原理，简述rpm软件包的rpm命令和yum工具。然后归纳在实践中使用的除上述两种软件包管理之外的方法，并结合所使用的硬件平台给出一些具体的软件包安装实例说明。">
+<meta property="og:description" content="本篇文章主要围绕linux文件系统总结相关知识点，包括文件系统类型、分区与挂载等基本概念以及文件系统重要目录分析。最后简要叙述文件系统体系结构中起重要作用的虚拟文件系统概念，以作后期扩展学习。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-05T06:45:19.372Z">
+<meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/linux%E5%92%8Cwindows%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%AF%94%E8%BE%83.jpg">
+<meta property="og:image" content="https://www.ibm.com/developerworks/cn/linux/l-linux-filesystem/figure1.gif">
+<meta property="og:updated_time" content="2017-11-05T08:04:30.993Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux操作系统使用--3软件包管理">
-<meta name="twitter:description" content="本篇文章围绕Linux平台下软件包管理问题，首先介绍deb软件包和rpm软件包两种常用的软件包管理机制，重点介绍deb软件包的dpkg命令和apt原理，简述rpm软件包的rpm命令和yum工具。然后归纳在实践中使用的除上述两种软件包管理之外的方法，并结合所使用的硬件平台给出一些具体的软件包安装实例说明。">
+<meta name="twitter:title" content="Linux操作系统使用--6文件系统">
+<meta name="twitter:description" content="本篇文章主要围绕linux文件系统总结相关知识点，包括文件系统类型、分区与挂载等基本概念以及文件系统重要目录分析。最后简要叙述文件系统体系结构中起重要作用的虚拟文件系统概念，以作后期扩展学习。">
+<meta name="twitter:image" content="http://osjn6k0nm.bkt.clouddn.com/linux%E5%92%8Cwindows%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%AF%94%E8%BE%83.jpg">
 
 
 
@@ -126,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="http://www.youbo.website/2017/10/15/Linux操作系统使用--3软件包管理/"/>
+  <link rel="canonical" href="http://www.youbo.website/2017/10/29/Linux操作系统使用--6文件系统/"/>
 
 
 
 
 
-  <title> Linux操作系统使用--3软件包管理 | YOUBO'S BLOG </title>
+  <title> Linux操作系统使用--6文件系统 | YOUBO'S BLOG </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -305,7 +308,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://www.youbo.website/2017/10/15/Linux操作系统使用--3软件包管理/">
+    <link itemprop="mainEntityOfPage" href="http://www.youbo.website/2017/10/29/Linux操作系统使用--6文件系统/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Bo">
@@ -326,7 +329,7 @@
             
             
               
-                Linux操作系统使用--3软件包管理
+                Linux操作系统使用--6文件系统
               
             
           </h1>
@@ -341,8 +344,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-15T09:21:15+08:00">
-                2017-10-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-29T09:21:15+08:00">
+                2017-10-29
               </time>
             
 
@@ -383,8 +386,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/10/15/Linux操作系统使用--3软件包管理/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count hc-comment-count" data-xid="2017/10/15/Linux操作系统使用--3软件包管理/" itemprop="commentsCount"></span>
+                <a href="/2017/10/29/Linux操作系统使用--6文件系统/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count hc-comment-count" data-xid="2017/10/29/Linux操作系统使用--6文件系统/" itemprop="commentsCount"></span>
                 </a>
               </span>
               <!--/noindex-->
@@ -393,7 +396,7 @@
 
           
           
-             <span id="/2017/10/15/Linux操作系统使用--3软件包管理/" class="leancloud_visitors" data-flag-title="Linux操作系统使用--3软件包管理">
+             <span id="/2017/10/29/Linux操作系统使用--6文件系统/" class="leancloud_visitors" data-flag-title="Linux操作系统使用--6文件系统">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -423,136 +426,88 @@
 
       
         <blockquote>
-<p>本篇文章围绕Linux平台下软件包管理问题，首先介绍deb软件包和rpm软件包两种常用的软件包管理机制，重点介绍deb软件包的dpkg命令和apt原理，简述rpm软件包的rpm命令和yum工具。然后归纳在实践中使用的除上述两种软件包管理之外的方法，并结合所使用的硬件平台给出一些具体的软件包安装实例说明。 <a id="more"></a></p>
+<p>本篇文章主要围绕linux文件系统总结相关知识点，包括文件系统类型、分区与挂载等基本概念以及文件系统重要目录分析。最后简要叙述文件系统体系结构中起重要作用的虚拟文件系统概念，以作后期扩展学习。<a id="more"></a></p>
 </blockquote>
-<h1 id="软件包管理机制"><a href="#软件包管理机制" class="headerlink" title="软件包管理机制"></a>软件包管理机制</h1><p><strong>定义</strong><br>把应用程序的二进制文件、配置文档、man/info帮助页面等文件合并打包在一个文件中，使用软件包管理器操作软件包，完成获取、安装、卸载、查询等操作。</p>
-<p><strong>主要功能</strong><br>安装、卸载、查询、升级、校验等。</p>
-<p>软件包管理是在工作中必做的一项任务，但Linux系统下的软件管理和Windows下软件管理截然不同，因此需要了解Linux系统软件管理的原理、方法并熟练使用。通常有两类软件包管理机制：Debian系统的deb软件包(.deb)管理和Redhat系统的rpm软件包(.rpm)管理。</p>
-<p>关于两种软件包管理机制的<strong>重要说明</strong>：</p>
-<ol>
-<li>原理十分类似，命令有所区别，掌握其中一种，其余的有需要时再查询资料。 </li>
-<li>由Debian或者Redhat衍生出来的Linux系统必然使用与之相关的软件包管理机制。 </li>
-</ol>
-<h1 id="deb软件包"><a href="#deb软件包" class="headerlink" title="deb软件包"></a>deb软件包</h1><p>deb软件包管理有两种方式：dpkg本地安装和apt在线安装。dpkg安装方式适用于deb软件包已经下载到本地时进行。而APT工具适合联网时安装使用。</p>
-<h2 id="dpkg本地安装"><a href="#dpkg本地安装" class="headerlink" title="dpkg本地安装"></a>dpkg本地安装</h2><p>常用的命令有以下几个： </p>
-<pre><code>- dpkg -i xxx.deb    安装软件 
-- dpkg -r xxx        移除软件 
-- dpkg -P xxx        移除软件和配置文件 
-- dpkg -l            列出已安装软件清单 
-- dpkg -s xxx        显示某个软件安装情况 
-</code></pre><h2 id="apt在线安装"><a href="#apt在线安装" class="headerlink" title="apt在线安装"></a>apt在线安装</h2><p><strong>定义</strong><br>APT是Ubuntu Linux中功能最强大的命令行软件包管理工具，用于获取、安装、编译、卸载、查询deb软件包和检查软件包依赖关系。它是一组命令，包括apt-get、apt-cache、apt-proxy、apt-show-versions、apt-config、apt-cdrom等。其中最常用的<strong>apt-get</strong>。 </p>
-<p><strong>原理</strong><br>1.配置软件源<br>各种软件包存放在软件仓库中，软件仓库置于镜像服务器中，在<strong>/etc/apt/sources.list</strong>软件源配置文件中列出最合适访问的镜像站点。该文件可以直接编辑修改。</p>
-<p>在更新源或者添加源时，修改sources.list文件，需要了解其配置项的书写格式，可参考以下文档。另外，直接访问镜像站点查看各个文件夹也有助于进一步了解APT安装软件的原理。<br><em>参考文档：<br><a href="http://www.ryjiaoyu.com/book/details/4461" target="_blank" rel="external">《嵌入式操作系统Linux篇》3.2.1节</a><br><a href="http://blog.csdn.net/nodeathphoenix/article/details/17958379" target="_blank" rel="external">debian软件源source.list文件格式说明</a><br><a href="http://blog.sina.com.cn/s/blog_406127500101dfv1.html" target="_blank" rel="external">apt系统中sources.list文件的解析</a></em></p>
-<p>2.刷新软件源<br>使用apt-get update命令，从/etc/apt/sources.list文件中的每一个配置项下载软件包列表，即建立索引文件，存放在<strong>/var/lib/apt/lists</strong>目录下。</p>
-<p>3.安装软件包<br>使用apt-get install xxx命令，会执行以下几个步骤：</p>
-<ul>
-<li>本地扫描软件包列表(/var/lib/apt/lists目录)找到软件包。 </li>
-<li>检查依赖关系，找到支持软件运行的所有软件包。 </li>
-<li>从软件源指向的镜像站点下载软件包，存放于<strong>var/cache/apt/archives</strong>目录。 </li>
-<li>解压软件包，自动完成应用程序的安装配置。</li>
+<h1 id="文件系统简介"><a href="#文件系统简介" class="headerlink" title="文件系统简介"></a>文件系统简介</h1><h2 id="文件系统概念"><a href="#文件系统概念" class="headerlink" title="文件系统概念"></a>文件系统概念</h2><ul>
+<li>文件系统是一种管理和访问磁盘的软件机制。用于组织和管理计算机存储设备上的大量文件，并提供用户交互接口。</li>
+<li>文件系统是linux操作系统的重要组成部分。在linux操作系统中，“一切皆文件”。因此硬件设备也是一种特殊的文件，它挂载在某一目录下被使用。我们需掌握体会linux文件系统与windows文件系统的不同之处。</li>
 </ul>
-<p><em>注：</em><br><em>1. apt-get install执行时的打印信息就是其步骤过程</em><br><em>2. apt的cron脚本会限制var/cache/apt/archives目录的存储空间和其中文件的存放时间</em></p>
-<p><strong>特点</strong><br>相比于dpkg，APT软件包管理的两个特点是： </p>
+<h2 id="文件系统类型"><a href="#文件系统类型" class="headerlink" title="文件系统类型"></a>文件系统类型</h2><p>常见的linux文件系统有以下几种：</p>
 <ol>
-<li>检查和修复软件包的依赖关系 </li>
-<li>需要使用Internet网络获取软件包</li>
+<li>磁盘文件类型<br>本地主机可以访问的文件系统，包括硬盘、CD-ROM、DVD、USB、磁盘阵列等。文件系统格式有：Ext3、Ext4、vfat、FAT32、FAT16、NTFS等。</li>
+<li>网络文件系统<br>远程可访问的文件系统，在服务器端仍然是本地的磁盘文件系统。文件格式有：NFS、Samba、AFP、WebDAV等。</li>
+<li>专有/虚拟文件系统<br>不驻留磁盘的文件系统，即为操作系统加载才产生。文件格式有：TMPFS（临时文件系统）、PROCFS（进程文件系统）、LOOPBACKFS（回送文件系统）。 </li>
 </ol>
-<p>apt-get常用命令如下：</p>
-<pre><code>- apt-get update    下载更新软件包列表信息
-- apt-get upgrade    软件包升级为最新版本 
-
-- apt-get install xxx    安装软件 
-- apt-get --reinstall install xxx    重新安装软件 
-
-- apt-get check    检查是否有损坏的依赖 
-- apt-get -f install    修复软件包依赖问题 
-
-- apt-get remove xxx    卸载软件 
-- apt-get --purge remove xxx    完全卸载软件 
-- apt-get autoremove    将不满足依赖关系的软件包自动卸载
-
-- apt-get clean    删除缓存区所有已下载的包文件 
-- apt-get autoclean    删除缓存区老版本已下载的包文件
-</code></pre><p><em>注：apt-get autoclean在释放磁盘时会用到</em> </p>
-<p>apt-cache常用命令如下：</p>
-<pre><code>- apt-cache show xxx    获取二进制软件包详细描述信息 
-- apt-cache search xxx    根据正则表达式检索软件包 
-- apt-cache depends xxx    查询该软件包的依赖信息 
-- apt-cache rdepends xxx    查询所有依赖该软件包的软件包 
-- apt-cache policy xxx    查询软件包安装状态 
-</code></pre><h1 id="rpm软件包"><a href="#rpm软件包" class="headerlink" title="rpm软件包"></a>rpm软件包</h1><p>rpm软件包管理是另外一种软件包管理机制，和deb功能十分相似。在此不再赘述，有需要时请查阅参考资料。</p>
-<h2 id="rpm本地安装"><a href="#rpm本地安装" class="headerlink" title="rpm本地安装"></a>rpm本地安装</h2><p>rpm的功能类似于dpkg</p>
-<h2 id="yum在线安装"><a href="#yum在线安装" class="headerlink" title="yum在线安装"></a>yum在线安装</h2><p>yum功能类似于apt，也有相应的配置文件/etc/yum.conf，/etc/yum.repos.d/目录，数据库目录/var/lib/rpm/等。</p>
-<p><em>rpm和yum使用详情，参考<a href="http://fanqie.blog.51cto.com/9382669/1728040" target="_blank" rel="external">linux软件包管理之一（rpm包管理）</a></em><br><em>deb和rpm软件包管理命令对比，参考<a href="http://www.linuxidc.com/Linux/2015-12/126456.htm" target="_blank" rel="external">Linux软件包管理</a></em></p>
-<h1 id="应用实例"><a href="#应用实例" class="headerlink" title="应用实例"></a>应用实例</h1><p>值得注意的是，上述两种软件包管理机制适用的Linux平台为Debian和Redhat系统及它们衍生的Linux系统，而对于<strong>嵌入式Linux</strong>安装软件又有其各自的特殊之处。另外，基于Linux开源的思想，还有一种特别的软件安装方法，即源码安装。 </p>
-<p>因此，在实践中，有两个方面需要考虑。第一，Linux平台有哪几种软件安装方法可供选择。第二，具体在哪种Linux平台上安装软件，需要注意什么问题。</p>
-<h2 id="Linux平台下安装软件的几种方式"><a href="#Linux平台下安装软件的几种方式" class="headerlink" title="Linux平台下安装软件的几种方式"></a>Linux平台下安装软件的几种方式</h2><ol>
-<li><p>使用dpkg、rpm等底层工具安装<br>需要将软件包下载到本地后，再使用命令安装。 </p>
-</li>
-<li><p>使用apt、yum等上层工具安装<br>联网安装，自动检查依赖关系。 </p>
-</li>
-<li><p>源代码编译安装<br>第三方开源软件通用的安装方法，通常经历：下载--解压--./configure--make--make install等步骤。不同的软件以及不同的安装平台具体细节有差别，该方法可做专题研究，尤其是在嵌入式Linux平台移植，可做总结。 </p>
-</li>
-<li><p>其他<br>除了以上安装方法，有的软件提供安装脚本，直接运行即可。还有其他方法参考以下文档。 </p>
-</li>
-</ol>
-<p><em>参考文档：<a href="http://www.360doc.com/content/16/1006/11/29770038_596138348.shtml" target="_blank" rel="external">汇总linux下安装软件的几种方式</a></em></p>
-<h2 id="实践中各平台的操作系统"><a href="#实践中各平台的操作系统" class="headerlink" title="实践中各平台的操作系统"></a>实践中各平台的操作系统</h2><p>在实践中我使用了四个硬件平台，关于其详细介绍参考<a href="http://www.youbo.website/2017/09/08/%E5%B5%8C%E5%85%A5%E5%BC%8FLinux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0--%E5%89%8D%E8%A8%80/">嵌入式学习笔记--前言</a>，在此不再赘述。<br>使用<a href="http://www.cnblogs.com/lanxuezaipiao/archive/2012/10/22/2732857.html" target="_blank" rel="external">cat /proc/version命令或者cat /etc/issue命令</a>查看各平台的操作系统详细信息。总结如下：</p>
-<pre><code>- 树莓派3 B：Raspbian GNU/Linux 8
-
-- JS991开发板：openwrt
-
-- Intel NUC DE3815TYKHE：Wind River Linux 7.0.0.13 
-
-- IOT4412/FS4412开发板：Linux version 3.0.15
-</code></pre><h2 id="实例注意事项总结"><a href="#实例注意事项总结" class="headerlink" title="实例注意事项总结"></a>实例注意事项总结</h2><h3 id="树莓派-Ubuntu"><a href="#树莓派-Ubuntu" class="headerlink" title="树莓派/Ubuntu"></a>树莓派/Ubuntu</h3><p><strong>说明</strong> </p>
-<ol>
-<li>树莓派和Ubuntu都基于Debian系统，因此安装软件首选apt工具。 </li>
-<li>首先尝试apt-cache search xxx 和 apt-get install xxx。 </li>
-<li>若提供该软件的软件源，则需要使用apt-key命令导入GPG密钥；配置软件源文件，下载至/etc/apt/sources.list.d/或手动创建编辑；再apt-get update和 apt-get install xxx。 </li>
-<li>对于ppa个人软件包，使用add-apt-repository命令添加软件源，再apt-get update和 apt-get install xxx。 </li>
-<li>使用git clone、wget等方法下载安装包，使用提供的脚本安装或者编译源码安装。</li>
-</ol>
-<p><strong>实践example</strong> </p>
+<p><em>注：</em><br><em>1. 使用du -aTh命令可以看到各文件系统的使用情况和类型。</em><br><em>2. 对比Windows系统，文件系统格式主要为NTFS、FAT16、FAT32。</em></p>
+<h2 id="分区与挂载"><a href="#分区与挂载" class="headerlink" title="分区与挂载"></a>分区与挂载</h2><p><strong>分区</strong></p>
 <ul>
-<li>Ubuntu下安装mosquitto服务器进行mqtt通信实验 </li>
-<li>Ubuntu下安装Tomcat web应用服务器进行Java后台开发实验 </li>
-<li>Ubuntu下安装docker，<a href="https://software.intel.com/en-us/intel-system-studio-iot-edition-guide-for-c-installing-on-linux" target="_blank" rel="external">Intel® System Studio IoT Edition</a>进行Intel网关开发 </li>
-<li>Ubuntu下安装gsoap进行onvif协议开发</li>
-<li>树莓派下安装FFmpeg进行视频推流实验 </li>
-<li>树莓派下安装node、npm，利用<a href="https://www.npmjs.com/package/aws-iot-device-sdk" target="_blank" rel="external">AWS IOT JavaScript SDK</a>进行树莓派连接AWS云实验 </li>
-<li>树莓派下安装<a href="https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-raspberry-pi-kit-c-get-started" target="_blank" rel="external">Azure IOT</a>开发包进行树莓派连接Azure云实验 </li>
+<li>硬盘分区是针对硬件进行操作，分为主分区、扩展分区、逻辑分区。</li>
+<li>交换分区：将内存中的内容写入磁盘或者从磁盘中读出，称为内存交换。交换分区的大小最小为计算机内存。需要把交换分区放在硬盘驱动器的起始位置。</li>
 </ul>
-<p><em>注：有的软件安装涉及环境变量配置，和Windows下类似</em></p>
-<h3 id="JS991开发板"><a href="#JS991开发板" class="headerlink" title="JS991开发板"></a>JS991开发板</h3><p><strong>说明</strong> </p>
-<ol>
-<li>openwrt系统下软件包管理工具为<a href="https://wiki.openwrt.org/zh-cn/doc/techref/opkg" target="_blank" rel="external">opkg</a>,通常使用opkg install xxx.ipk。 </li>
-<li>如果安装失败，提示缺少依赖的库，可以先使用opkg install安装该库或者找到openwrt系统中该动态链接库，将其复制到开发板的/usr/lib下，再安装相关软件。 </li>
-<li>ipk软件包可以来源于openwrt下载官网，也可以自己制作并在内核中编译生成，具体制作方法另起专题研究。</li>
-<li>支持LuCi进行页面可视化安装软件。</li>
-</ol>
-<p><em>参考文档：<a href="http://www.openwrtdl.com/wordpress/openwrt-install-software" target="_blank" rel="external">openwrt安装软件的两个方法</a></em> </p>
-<p><strong>实践example</strong></p>
+<p><strong>挂载</strong></p>
 <ul>
-<li>openwrt下移植opencv，进行视频图像处理实验。 </li>
+<li>挂载是指将分区和目录对应的过程。将一个文件系统和一个存储设备关联起来。挂载点是指文件树中的挂载目录。</li>
 </ul>
-<h3 id="Intel-NUC-DE3815TYKHE"><a href="#Intel-NUC-DE3815TYKHE" class="headerlink" title="Intel NUC DE3815TYKHE"></a>Intel NUC DE3815TYKHE</h3><p><strong>说明</strong> </p>
-<ol>
-<li>wind river Linux系统作为Intel IoT Gateway Software Suite的一部分提供，此处使用的是免费版本Wind River Linux 7.0.0.13。 </li>
-<li><a href="https://knowledge.windriver.com/en-us/000_Products/000/010/000" target="_blank" rel="external">Wind River Linux 7.0.0.13</a>系统下的软件包后缀为rpm，软件包管理工具为smart update、smart install、smart channel --add等。可能类似rpm软件包管理，具体需深入学习该系统。 </li>
-<li>若提供软件源，需要使用rpm --import命令导入GPG密钥，然后使用smart channel --add添加软件源，再使用smart update和smart install。 </li>
-<li>添加软件源镜像所能访问的文件夹需要和操作系统版本保持一致。 </li>
-<li>支持页面添加源和软件安装。 </li>
-</ol>
-<p><strong>实践example</strong></p>
+<p><strong>linux下分区与目录的关系</strong></p>
 <ul>
-<li>wind river Linux下安装AWS IOT SDK,进行<a href="https://software.intel.com/en-us/gateway-getting-started-software-suite-connecting-to-amazon-web-services" target="_blank" rel="external">Intel nuc3815连接AWS云实验</a></li>
-<li>wind river Linux下安装paho.mqtt.c,进行mqtt客户端通信实验。</li>
-<li>wind river Linux下安装OpenSSL，用于mqtt安全通信。</li>
+<li>Linux每一个分区都和某一个目录对应，对目录的操作就是对分区的操作，从而实现了硬件管理手段和软件目录管理手段的统一。</li>
+<li>在Linux下，查找某个文件，不需要知道其物理存储位置，只需要知道属于哪一个目录即可。</li>
+<li>在Windows下，目录属于分区，而在Linux下，分区属于目录。</li>
+<li>Linux文件系统和Windows文件系统区别如下图所示。</li>
 </ul>
-<blockquote>
-<p>声明：文章中涉及的参考文献并不是随意引用，均是经过笔者阅读大量资料筛选后所得，和本文有密切关系，可放心阅读。</p>
-</blockquote>
+<p><img src="http://osjn6k0nm.bkt.clouddn.com/linux%E5%92%8Cwindows%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%AF%94%E8%BE%83.jpg" alt=" " title="Linux文件系统和Windows文件系统区别"></p>
+<p><em>注:</em><br><em>1. 分区的概念可以结合安装linux操作系统的操作进一步加深理解。</em><br><em>2. 参考文档：<a href="http://www.ryjiaoyu.com/book/details/4461" target="_blank" rel="external">《嵌入式操作系统(Linux篇)》1.5.1</a></em></p>
+<h1 id="根文件系统目录结构"><a href="#根文件系统目录结构" class="headerlink" title="根文件系统目录结构"></a>根文件系统目录结构</h1><h2 id="根文件系统"><a href="#根文件系统" class="headerlink" title="根文件系统"></a>根文件系统</h2><p>定义：存放运行、维护系统所必须的各种工具软件、库文件、脚本、配置文件和其他特殊文件的地方，也可以安装各种软件包，其实就是目录和文件。</p>
+<h2 id="文件类型"><a href="#文件类型" class="headerlink" title="文件类型"></a>文件类型</h2><p>linux系统下文件不是以后缀名不同来区分不同的文件。linux操作系统下有7种文件类型。</p>
+<ul>
+<li>b 块设备文件</li>
+<li>c 字符设备文件</li>
+<li>d 目录文件</li>
+<li>- 普通文件</li>
+<li>l 链接文件</li>
+<li>s 套结字文件</li>
+<li>p 管道文件</li>
+</ul>
+<p><strong>说明</strong></p>
+<ol>
+<li>用ls -l命令可以看到前10个字符表示文件类型和访问权限。访问权限包括读r、写w、执行x。访问权限又分为3个不同用户级别：文件所有者、文件从属组、其他用户。</li>
+<li>使用chmod可使用符号标记或者八进制数两种方式改变文件访问权限。如chmod u+r xxx或者chmod 777 xxx。使用符号标记方式改变，可指定多个用户级别，用逗号隔开。</li>
+</ol>
+<h2 id="目录分析"><a href="#目录分析" class="headerlink" title="目录分析"></a>目录分析</h2><p>Linux文件系统就是一个树形的分层组织结构，类似于一棵倒置的树。将根（/）作为文件系统的唯一起点，其他文件和外部设备都以文件的形式挂载在这个文件树上。每一个linux操作系统的文件系统不完全一样，这里以Ubuntu为例，只介绍重要的几个目录。</p>
+<ul>
+<li>/bin 普通用户可以使用的命令存放地，类似的有/usr/bin、/usr/local/bin。</li>
+<li>/sbin 超级用户可以使用的命令存放地，类似的有/usr/sbin、/usr/local/sbin。</li>
+<li>/dev 存放所有设备文件，包括硬盘、键盘、鼠标、网卡、终端等。</li>
+<li>/etc 存放系统配置文件。</li>
+<li>/home 普通用户家目录。</li>
+<li>/root 超级用户家目录。</li>
+<li>/lib 存放共享库文件，包括被/bin、/sbin程序使用的库文件，类似的有/usr/lib、/usr/local/lib。</li>
+<li>/media Ubuntu系统自动挂载CD-ROM、USB等，存放临时读入的文件。</li>
+<li>/mnt 作为临时被挂载文件系统的挂载点。</li>
+<li>/opt 作为可选文件和程序的存放目录，通常第三方软件和通过源码安装的软件，可安装于该目录。</li>
+<li>/proc 存放所有标志为文件的进程，每一个进程在proc下有一个名为其进程号的目录。</li>
+<li>/tmp 存放临时文件。</li>
+<li>/lost+found 恢复文件存放位置，系统崩溃时，可在该目录下找到恢复文件，通常为空。</li>
+<li>/usr/include c/c++等开发环境的标准include文件。</li>
+<li>/usr/local 安装本地程序的一般默认路径。</li>
+<li>/var/cache 应用程序缓存目录。</li>
+</ul>
+<p><strong>说明</strong></p>
+<ol>
+<li>使用tree命令可以查看系统的文件树形目录结构。</li>
+<li>用于intel NUC3815的开发IDE Intel® System Studio IoT Edition和openwrt的交叉编译环境都安装在opt下。</li>
+<li>/tmp文件夹是tmpfs类型的文件系统挂载于此，而tmpfs文件系统由内核支持，存在于<strong>内存</strong>中，由于内存的数据掉电丢失，因此系统重启后，该目录下的文件被清空。openwrt系统下安装软件，通常将软件包放于此目录。</li>
+<li>制作根文件系统的方法详见系统移植部分。</li>
+</ol>
+<p><em>参考文档：<a href="http://blog.csdn.net/guodongsoft/article/details/52523979" target="_blank" rel="external">Linux文件系统以及目录结构简介</a></em></p>
+<h1 id="文件系统体系结构"><a href="#文件系统体系结构" class="headerlink" title="文件系统体系结构"></a>文件系统体系结构</h1><p><a href="https://www.ibm.com/developerworks/cn/linux/l-linux-filesystem/" target="_blank" rel="external">linux文件系统组件的体系结构</a>如下图所示，该图显示了用户空间和内核空间中与文件系统相关的主要组件之间的关系。</p>
+<p><img src="https://www.ibm.com/developerworks/cn/linux/l-linux-filesystem/figure1.gif" alt=" " title="linux文件系统组件的体系结构"></p>
+<p>文件系统包括三个部分：虚拟文件系统、cache、真正的文件系统(vfat、Ext3等)。其中有重要作用的是<strong>虚拟文件系统(VFS)</strong>。它是一种转换机制，仅存在于内存中，不存在外存空间。它的作用如下：</p>
+<ol>
+<li>给用户空间的程序提供文件系统接口，通过一套统一的文件IO系统调用，对任意文件操作。</li>
+<li>提供抽象功能，通过一些数据结构及其方法向实际的文件系统提供接口，实现不同文件系统在Linux中共存。</li>
+</ol>
+<p><em>注：</em><br><em>1. 从调用open、read等函数到设备文件正确返回数据的过程加深理解文件系统体系结构。</em><br><em>2. 后期可深入内核中文件系统源代码加深理解文件系统的工作机制。</em><br><em>3. 参考文档：<a href="https://www.ibm.com/developerworks/cn/linux/l-linux-filesystem/" target="_blank" rel="external">Linux 文件系统剖析</a></em></p>
 
       
     </div>
@@ -607,7 +562,11 @@
           
             <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
           
-            <a href="/tags/软件包管理/" rel="tag"># 软件包管理</a>
+            <a href="/tags/文件系统/" rel="tag"># 文件系统</a>
+          
+            <a href="/tags/根文件系统/" rel="tag"># 根文件系统</a>
+          
+            <a href="/tags/虚拟文件系统/" rel="tag"># 虚拟文件系统</a>
           
         </div>
       
@@ -620,8 +579,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/27/Linux操作系统使用--2文本编辑器VIM/" rel="next" title="Linux操作系统使用--2文本编辑器VIM">
-                <i class="fa fa-chevron-left"></i> Linux操作系统使用--2文本编辑器VIM
+              <a href="/2017/10/23/Linux操作系统使用--5shell脚本/" rel="next" title="Linux操作系统使用--5shell脚本">
+                <i class="fa fa-chevron-left"></i> Linux操作系统使用--5shell脚本
               </a>
             
           </div>
@@ -629,10 +588,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/10/18/Linux操作系统使用--4常用shell命令汇总/" rel="prev" title="Linux操作系统使用--4常用shell命令汇总">
-                Linux操作系统使用--4常用shell命令汇总 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -786,7 +741,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#软件包管理机制"><span class="nav-number">1.</span> <span class="nav-text">软件包管理机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#deb软件包"><span class="nav-number">2.</span> <span class="nav-text">deb软件包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dpkg本地安装"><span class="nav-number">2.1.</span> <span class="nav-text">dpkg本地安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#apt在线安装"><span class="nav-number">2.2.</span> <span class="nav-text">apt在线安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rpm软件包"><span class="nav-number">3.</span> <span class="nav-text">rpm软件包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rpm本地安装"><span class="nav-number">3.1.</span> <span class="nav-text">rpm本地安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yum在线安装"><span class="nav-number">3.2.</span> <span class="nav-text">yum在线安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用实例"><span class="nav-number">4.</span> <span class="nav-text">应用实例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux平台下安装软件的几种方式"><span class="nav-number">4.1.</span> <span class="nav-text">Linux平台下安装软件的几种方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实践中各平台的操作系统"><span class="nav-number">4.2.</span> <span class="nav-text">实践中各平台的操作系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例注意事项总结"><span class="nav-number">4.3.</span> <span class="nav-text">实例注意事项总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#树莓派-Ubuntu"><span class="nav-number">4.3.1.</span> <span class="nav-text">树莓派/Ubuntu</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JS991开发板"><span class="nav-number">4.3.2.</span> <span class="nav-text">JS991开发板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Intel-NUC-DE3815TYKHE"><span class="nav-number">4.3.3.</span> <span class="nav-text">Intel NUC DE3815TYKHE</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#文件系统简介"><span class="nav-number">1.</span> <span class="nav-text">文件系统简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文件系统概念"><span class="nav-number">1.1.</span> <span class="nav-text">文件系统概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件系统类型"><span class="nav-number">1.2.</span> <span class="nav-text">文件系统类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分区与挂载"><span class="nav-number">1.3.</span> <span class="nav-text">分区与挂载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#根文件系统目录结构"><span class="nav-number">2.</span> <span class="nav-text">根文件系统目录结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#根文件系统"><span class="nav-number">2.1.</span> <span class="nav-text">根文件系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件类型"><span class="nav-number">2.2.</span> <span class="nav-text">文件类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录分析"><span class="nav-number">2.3.</span> <span class="nav-text">目录分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件系统体系结构"><span class="nav-number">3.</span> <span class="nav-text">文件系统体系结构</span></a></li></ol></div>
             
 
           </div>
@@ -934,7 +889,7 @@
 		_hcwp.push({widget:"Bloggerstream", widget_id: 93304, selector:".hc-comment-count", label: "{\%COUNT%\}" });
 
 		
-		_hcwp.push({widget:"Stream", widget_id: 93304, xid: "2017/10/15/Linux操作系统使用--3软件包管理/"});
+		_hcwp.push({widget:"Stream", widget_id: 93304, xid: "2017/10/29/Linux操作系统使用--6文件系统/"});
 		
 
 		(function() {

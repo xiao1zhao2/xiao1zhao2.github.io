@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="嵌入式,学习笔记," />
+  <meta name="keywords" content="嵌入式,学习笔记,unix家庭树," />
 
 
 
@@ -88,7 +88,7 @@
 
 
 <meta name="description" content="本篇文章简要叙述嵌入式Linux中的基本概念：嵌入式系统的定义、Linux的发展、Linux操作系统的组成以及Linux作为嵌入式操作系统的优缺点，以期对嵌入式Linux有一个大致的了解。">
-<meta name="keywords" content="嵌入式,学习笔记">
+<meta name="keywords" content="嵌入式,学习笔记,unix家庭树">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux操作系统使用--1基本概念">
 <meta property="og:url" content="http://www.youbo.website/2017/09/26/Linux操作系统使用--1基本概念/index.html">
@@ -96,7 +96,7 @@
 <meta property="og:description" content="本篇文章简要叙述嵌入式Linux中的基本概念：嵌入式系统的定义、Linux的发展、Linux操作系统的组成以及Linux作为嵌入式操作系统的优缺点，以期对嵌入式Linux有一个大致的了解。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.imgur.com/fzKN4on.jpg">
-<meta property="og:updated_time" content="2017-11-05T03:02:06.676Z">
+<meta property="og:updated_time" content="2017-11-05T06:39:05.016Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux操作系统使用--1基本概念">
 <meta name="twitter:description" content="本篇文章简要叙述嵌入式Linux中的基本概念：嵌入式系统的定义、Linux的发展、Linux操作系统的组成以及Linux作为嵌入式操作系统的优缺点，以期对嵌入式Linux有一个大致的了解。">
@@ -427,32 +427,32 @@
         <blockquote>
 <p>本篇文章简要叙述嵌入式Linux中的基本概念：嵌入式系统的定义、Linux的发展、Linux操作系统的组成以及Linux作为嵌入式操作系统的优缺点，以期对嵌入式Linux有一个大致的了解。<a id="more"></a></p>
 </blockquote>
-<h2 id="嵌入式系统定义"><a href="#嵌入式系统定义" class="headerlink" title="嵌入式系统定义"></a>嵌入式系统定义</h2><p>嵌入式系统是以应用为中心，以计算机技术为基础，软硬件可裁剪，对可靠性、成本、功耗、功能、体积有严格要求的专用计算机系统。</p>
-<h2 id="Unix家庭树"><a href="#Unix家庭树" class="headerlink" title="Unix家庭树"></a>Unix家庭树</h2><p>Linux是类Unix系统，通常所谓的Linux系统全称是GNU/Linux。<a href="http://www.ryjiaoyu.com/book/details/4461" target="_blank" rel="external">Unix家庭树</a>如下图所示，了解GNU/Linux所在位置。  </p>
+<h1 id="嵌入式系统定义"><a href="#嵌入式系统定义" class="headerlink" title="嵌入式系统定义"></a>嵌入式系统定义</h1><p>嵌入式系统是以应用为中心，以计算机技术为基础，软硬件可裁剪，对可靠性、成本、功耗、功能、体积有严格要求的专用计算机系统。</p>
+<h1 id="Unix家庭树"><a href="#Unix家庭树" class="headerlink" title="Unix家庭树"></a>Unix家庭树</h1><p>Linux是类Unix系统，通常所谓的Linux系统全称是GNU/Linux。<a href="http://www.ryjiaoyu.com/book/details/4461" target="_blank" rel="external">Unix家庭树</a>如下图所示，了解GNU/Linux所在位置。</p>
 <p>此外，与GNU/Linux和BSD家族系统有密切关系的是GPL、BSD软件许可协议。关于常见的<strong>开源软件许可协议</strong>可做专题分析。<br><img src="https://i.imgur.com/fzKN4on.jpg" alt=""></p>
-<h2 id="Linux操作系统组件"><a href="#Linux操作系统组件" class="headerlink" title="Linux操作系统组件"></a>Linux操作系统组件</h2><p>Linux操作系统主要由四部分组成：Linux内核、shell、文件系统和应用程序。  </p>
+<h1 id="Linux操作系统组件"><a href="#Linux操作系统组件" class="headerlink" title="Linux操作系统组件"></a>Linux操作系统组件</h1><p>Linux操作系统主要由四部分组成：Linux内核、shell、文件系统和应用程序。 </p>
 <ol>
 <li><p>Linux内核<br>内核是操作系统的核心，包括设备驱动、内存管理、进程管理、文件系统 、网络管理和系统调用接口。</p>
 </li>
 <li><p>shell<br>shell是一个命令解释器，它是Linux内核外层的保护工具，完成用户和内核之间的交互。常用的版本为<strong>BASH</strong>。</p>
 </li>
-<li><p>文件系统<br>文件系统是文件存放在磁盘等存储介质上的一种组织方式。Linux操作系统中将文件系统组织为一个层次化的<strong>树形结构</strong>。  </p>
-<p> <em>个人观点：Linux下一切皆文件，而通信的本质我认为就是文件的读写。</em>  </p>
+<li><p>文件系统<br>文件系统是文件存放在磁盘等存储介质上的一种组织方式。Linux操作系统中将文件系统组织为一个层次化的<strong>树形结构</strong>。 </p>
+<p> <em>个人观点：Linux下一切皆文件，而通信的本质我认为就是文件的读写。</em> </p>
 </li>
-<li><p>应用程序  </p>
+<li><p>应用程序 </p>
 </li>
 </ol>
 <p><em>参考文档：<a href="http://blog.csdn.net/hguisu/article/details/6122513" target="_blank" rel="external">Linux系统结构 详解</a></em></p>
-<h2 id="Linux作为嵌入式操作系统的优缺点"><a href="#Linux作为嵌入式操作系统的优缺点" class="headerlink" title="Linux作为嵌入式操作系统的优缺点"></a>Linux作为嵌入式操作系统的优缺点</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><pre><code>- 低成本开发：开源且免费使用。  
+<h1 id="Linux作为嵌入式操作系统的优缺点"><a href="#Linux作为嵌入式操作系统的优缺点" class="headerlink" title="Linux作为嵌入式操作系统的优缺点"></a>Linux作为嵌入式操作系统的优缺点</h1><h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><pre><code>- 低成本开发：开源且免费使用。 
 
 - 适用于多种硬件平台：x86、ARM、MIPS、PowerPC等。
 
 - 内核可定制：模块的插入或移除机制。
 
-- 性能优异：占用资源少、运行稳定、速度快。  
+- 性能优异：占用资源少、运行稳定、速度快。 
 
 - 良好的网络支持：实现了TCP/IP协议栈。
-</code></pre><h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><pre><code>- Linux对硬件有一定要求，而嵌入式硬件资源通常有限。
+</code></pre><h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><pre><code>- Linux对硬件有一定要求，而嵌入式硬件资源通常有限。
 
 - Linux结构体系复杂，代码量大。
 
@@ -512,6 +512,8 @@
             <a href="/tags/嵌入式/" rel="tag"># 嵌入式</a>
           
             <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
+          
+            <a href="/tags/unix家庭树/" rel="tag"># unix家庭树</a>
           
         </div>
       
@@ -633,7 +635,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -655,7 +657,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -690,7 +692,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#嵌入式系统定义"><span class="nav-number">1.</span> <span class="nav-text">嵌入式系统定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unix家庭树"><span class="nav-number">2.</span> <span class="nav-text">Unix家庭树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux操作系统组件"><span class="nav-number">3.</span> <span class="nav-text">Linux操作系统组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux作为嵌入式操作系统的优缺点"><span class="nav-number">4.</span> <span class="nav-text">Linux作为嵌入式操作系统的优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">4.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点"><span class="nav-number">4.2.</span> <span class="nav-text">缺点</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#嵌入式系统定义"><span class="nav-number">1.</span> <span class="nav-text">嵌入式系统定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Unix家庭树"><span class="nav-number">2.</span> <span class="nav-text">Unix家庭树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux操作系统组件"><span class="nav-number">3.</span> <span class="nav-text">Linux操作系统组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux作为嵌入式操作系统的优缺点"><span class="nav-number">4.</span> <span class="nav-text">Linux作为嵌入式操作系统的优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#优点"><span class="nav-number">4.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺点"><span class="nav-number">4.2.</span> <span class="nav-text">缺点</span></a></li></ol></li></ol></div>
             
 
           </div>
