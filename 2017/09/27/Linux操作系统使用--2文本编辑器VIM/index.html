@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="YOUBO&#39;S BLOG">
 <meta property="og:description" content="本篇文章简要叙述文本编辑器VIM的使用，包括VIM的3种模式，常用的功能键，常用的插件配置。同时给出可供参考的IDE，以作扩展学习。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-05T06:41:34.014Z">
+<meta property="og:updated_time" content="2017-11-05T08:40:21.545Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux操作系统使用--2文本编辑器VIM">
 <meta name="twitter:description" content="本篇文章简要叙述文本编辑器VIM的使用，包括VIM的3种模式，常用的功能键，常用的插件配置。同时给出可供参考的IDE，以作扩展学习。">
@@ -435,60 +435,51 @@
 </ul>
 <p><em>注：三种模式叫法可能存在差异，理解每个模式下的功能即可</em></p>
 <h2 id="常用功能键与快捷键"><a href="#常用功能键与快捷键" class="headerlink" title="常用功能键与快捷键"></a>常用功能键与快捷键</h2><p>这里只列举常用的一些功能键和快捷键。</p>
-<ul>
-<li><p>多窗口与多标签</p>
+<p><strong>多窗口与多标签</strong></p>
 <ul>
 <li>新窗口 Ctrl+shift+n</li>
 <li>新标签 Ctrl+shift+t</li>
 </ul>
-</li>
-<li><p>跳转 </p>
+<p><strong>跳转</strong> </p>
 <ul>
 <li>跳转到第n行 ngg </li>
 </ul>
-</li>
-<li><p>查找字符串 </p>
+<p><strong>查找字符串</strong> </p>
 <ul>
 <li>正向查找 /str </li>
 <li>跳到下一处 n </li>
 <li>跳到上一处 N </li>
 <li>反向查找 ?str</li>
 </ul>
-</li>
-<li><p>替换字符串</p>
+<p><strong>替换字符串</strong></p>
 <ul>
 <li>m行到n行的str1替换为str2 ：m,ns/str1/str2/g</li>
-<li>全文str1替换为str2 ：%s/str1/str2/g<br><em>注：最后的g表示一行中所有匹配的字符串，不加则只替换第一处</em></li>
-</ul>
+<li><p>全文str1替换为str2 ：%s/str1/str2/g </p>
+<p><em>注：最后的g表示一行中所有匹配的字符串，不加则只替换第一处</em></p>
 </li>
-<li><p>撤销与反撤销</p>
+</ul>
+<p><strong>撤销与反撤销</strong></p>
 <ul>
-<li>撤销 u</li>
+<li>撤销 u </li>
 <li>反撤销 Ctrl+r </li>
 </ul>
-</li>
-<li><p>重复上一修改正文的操作</p>
+<p><strong>重复上一修改正文的操作</strong></p>
 <ul>
 <li>.(点号) </li>
 </ul>
-</li>
-<li><p>显示行号</p>
+<p><strong>显示行号</strong></p>
 <ul>
 <li>:set number</li>
 </ul>
-</li>
-<li><p>分屏 </p>
+<p><strong>分屏</strong></p>
 <ul>
 <li>竖分屏 :vsp filename</li>
 <li>横分屏 :sp filename </li>
 </ul>
-</li>
-<li><p>比较两个文件</p>
+<p><strong>比较两个文件</strong></p>
 <ul>
 <li>未打开文件时 vimdiff a.c b.c</li>
 <li>打开a.c时，和b.c比较 :vert diffsplit b.c</li>
-</ul>
-</li>
 </ul>
 <p><em>参考文档：<a href="http://www.jianshu.com/p/bcbe916f97e1" target="_blank" rel="external">Vim入门基础</a></em> </p>
 <h2 id="配置文件与插件"><a href="#配置文件与插件" class="headerlink" title="配置文件与插件"></a>配置文件与插件</h2><p>网上有许多关于VIM配置的说明，我认为最重要的是知道自己要做什么，而不是盲目的使用教程做复杂的配置。 </p>
