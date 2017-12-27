@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="YOUBO&#39;S BLOG">
 <meta property="og:description" content="本篇文章围绕GNU make介绍了make工程管理器相关知识，包括Makefile基本结构、变量、规则的使用，以及一些相关问题：伪目标、文件搜索、嵌套执行make、Makefile函数的使用。最后结合实践情况，对一些Makefile文件做了简要分析，并介绍了autotools和cmake两种自动生成Makefile的工具。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-27T11:10:58.125Z">
+<meta property="og:updated_time" content="2017-12-27T12:34:33.507Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C语言高级编程--3Make">
 <meta name="twitter:description" content="本篇文章围绕GNU make介绍了make工程管理器相关知识，包括Makefile基本结构、变量、规则的使用，以及一些相关问题：伪目标、文件搜索、嵌套执行make、Makefile函数的使用。最后结合实践情况，对一些Makefile文件做了简要分析，并介绍了autotools和cmake两种自动生成Makefile的工具。">
@@ -475,11 +475,9 @@
 <li>自定义变量</li>
 <li>预定义变量</li>
 <li>自动变量 <ul>
-<li>$@    目标文件完整名称，在模式规则中， 可以匹配目标中模式定义的集合。</li>
-<li>$^    所有不重复的目标依赖文件。<ul>
-<li>$&lt;    第一个依赖文件名称，在模式规则中，是将符合模式的文件挨个取出。</li>
-</ul>
-</li>
+<li>$@目标文件完整名称，在模式规则中， 可以匹配目标中模式定义的集合。</li>
+<li>$^所有不重复的目标依赖文件。</li>
+<li>$&lt;第一个依赖文件名称，在模式规则中，是将符合模式的文件挨个取出。</li>
 </ul>
 </li>
 <li>环境变量<br>make在启动时会自动读取系统当前已经定义的环境变量，并创建与之相同的变量，若在Makefile中定义了相同名称的变量，则会覆盖同名的环境变量。 类似于全局变量和局部变量的关系。最好不要使用环境变量MAKEFILES,否则会影响使用make。</li>
@@ -742,6 +740,10 @@ cmake . 在当前目录下运行cmake
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2017/11/26/C语言高级编程--4数组与指针/" rel="prev" title="C语言高级编程--4数组与指针">
+                C语言高级编程--4数组与指针 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -837,7 +839,7 @@ cmake . 在当前目录下运行cmake
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -859,7 +861,7 @@ cmake . 在当前目录下运行cmake
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">30</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
