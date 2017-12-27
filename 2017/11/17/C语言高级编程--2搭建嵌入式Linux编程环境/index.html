@@ -1,0 +1,1196 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="嵌入式,学习笔记,gcc,gdb,交叉编译," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="搭建嵌入式Linux编程环境，就是搭建C语言编程环境，这是嵌入式系统开发的首要工作。另外在嵌入式Linux系统移植中，也需要首先搭建交叉开发环境。嵌入式开发工具包括编辑器、编译器、调试器、工程管理器等。前面已介绍过VIM编辑器，本篇主要总结gcc编译器和gdb调试器，此外简要介绍GNU Binutils工具集，并给出实践的使用实例。工程管理器make将在下一篇总结。">
+<meta name="keywords" content="嵌入式,学习笔记,gcc,gdb,交叉编译">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言高级编程--2搭建嵌入式linux编程环境">
+<meta property="og:url" content="http://www.youbo.website/2017/11/17/C语言高级编程--2搭建嵌入式Linux编程环境/index.html">
+<meta property="og:site_name" content="YOUBO&#39;S BLOG">
+<meta property="og:description" content="搭建嵌入式Linux编程环境，就是搭建C语言编程环境，这是嵌入式系统开发的首要工作。另外在嵌入式Linux系统移植中，也需要首先搭建交叉开发环境。嵌入式开发工具包括编辑器、编译器、调试器、工程管理器等。前面已介绍过VIM编辑器，本篇主要总结gcc编译器和gdb调试器，此外简要介绍GNU Binutils工具集，并给出实践的使用实例。工程管理器make将在下一篇总结。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-27T07:45:52.274Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C语言高级编程--2搭建嵌入式linux编程环境">
+<meta name="twitter:description" content="搭建嵌入式Linux编程环境，就是搭建C语言编程环境，这是嵌入式系统开发的首要工作。另外在嵌入式Linux系统移植中，也需要首先搭建交叉开发环境。嵌入式开发工具包括编辑器、编译器、调试器、工程管理器等。前面已介绍过VIM编辑器，本篇主要总结gcc编译器和gdb调试器，此外简要介绍GNU Binutils工具集，并给出实践的使用实例。工程管理器make将在下一篇总结。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.youbo.website/2017/11/17/C语言高级编程--2搭建嵌入式Linux编程环境/"/>
+
+
+
+
+
+  <title> C语言高级编程--2搭建嵌入式linux编程环境 | YOUBO'S BLOG </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?48a4e3570fd283499da1fa0f4fb218ac";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">YOUBO'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.youbo.website/2017/11/17/C语言高级编程--2搭建嵌入式Linux编程环境/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Bo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YOUBO'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                C语言高级编程--2搭建嵌入式linux编程环境
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-17T09:21:15+08:00">
+                2017-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/嵌入式/" itemprop="url" rel="index">
+                    <span itemprop="name">嵌入式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            <!--noindex-->
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/11/17/C语言高级编程--2搭建嵌入式Linux编程环境/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count hc-comment-count" data-xid="2017/11/17/C语言高级编程--2搭建嵌入式Linux编程环境/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+              <!--/noindex-->
+            
+          
+
+          
+          
+             <span id="/2017/11/17/C语言高级编程--2搭建嵌入式Linux编程环境/" class="leancloud_visitors" data-flag-title="C语言高级编程--2搭建嵌入式linux编程环境">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>搭建嵌入式Linux编程环境，就是搭建C语言编程环境，这是嵌入式系统开发的首要工作。另外在嵌入式Linux系统移植中，也需要首先搭建交叉开发环境。嵌入式开发工具包括编辑器、编译器、调试器、工程管理器等。前面已介绍过VIM编辑器，本篇主要总结gcc编译器和gdb调试器，此外简要介绍GNU Binutils工具集，并给出实践的使用实例。工程管理器make将在下一篇总结。<a id="more"></a></p>
+</blockquote>
+<h1 id="GNU工具集"><a href="#GNU工具集" class="headerlink" title="GNU工具集"></a>GNU工具集</h1><p>GNU工具集是包含了GNU项目所产生的各种编程工具的集合。这些工具形成一条工具链，用于开发应用程序和操作系统。ＧNU工具有很多，包括如下：</p>
+<ul>
+<li>编译工具：gcc。</li>
+<li>调试工具：gdb。</li>
+<li>二进制工具集：GNU Binutils,包括链接器、汇编器、格式转换工具等。</li>
+<li>软件管理工具：make、CVS、subvision等。</li>
+</ul>
+<p><em>参考文档：</em><br><em><a href="http://blog.chinaunix.net/uid-20331961-id-3079782.html" target="_blank" rel="external">gnu工具集</a></em><br><em><a href="https://www.cnblogs.com/MuyouSome/archive/2013/05/05/3061636.html" target="_blank" rel="external">GNU工具链（GNU toolchain）</a></em><br><em><a href="http://blog.csdn.net/u011630575/article/details/48676479" target="_blank" rel="external">gnu工具链简介 </a></em></p>
+<h2 id="GNU-Binutils"><a href="#GNU-Binutils" class="headerlink" title="GNU Binutils"></a>GNU Binutils</h2><p>binutils工具集主要包括as汇编器和ld链接器，除此之外，还有一些工具(即命令)是开发调试中常用的，此处做一简要介绍。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">readelf -h xxx 查看可执行文件的头部信息，包括系统架构、大小端等信息。elf文件是linux/unix系统下的二进制文件格式。</div><div class="line"></div><div class="line">readelf -a xxx 查看可执行文件的所有信息。</div><div class="line"></div><div class="line">file xxx 查看文件类型，如果是可执行文件，会显示文件类型、系统架构、大小端、是否strip等信息。</div><div class="line"></div><div class="line">size xxx 列出可执行文件每一段的大小和总大小。可显示可执行文件包括text、data、bss等部分。</div><div class="line"></div><div class="line">strip xxx 对可执行文件“瘦身”，丢弃目标文件中的全部或特定符号，减小文件体积。对于嵌入式系统，需要使用该命令。不可对中间文件“瘦身”，否则链接出错。</div><div class="line"></div><div class="line">nm xxx 查看可执行文件的所有符号。在调试段错误时可以使用，方便定义哪里发生了段错误。</div><div class="line"></div><div class="line">objdump -d xxx 对可执行文件进行反汇编，生成汇编代码，在调试段错误也会用到。</div><div class="line"> </div><div class="line">objcopy 进行目标文件格式转换 例如：objcopy --gap-fill=0xff -O binary u-boot u-boot.bin,用在uboot移植部分。</div><div class="line"></div><div class="line">addr2line 把程序地址转换为文件名和行号，常用于内核调试。注意编译时需加上-g选项，生成调试符号。否则运行addr2line出错。</div><div class="line">e.g</div><div class="line">gcc -o test -Wl,-Map=test.map -g test.c</div><div class="line">grep main test.map</div><div class="line">addr2line 0x08048368 -e test -f</div></pre></td></tr></table></figure></p>
+<p><em>参考文档：</em><br><em><a href="http://blog.csdn.net/zqixiao_09/article/details/50783007" target="_blank" rel="external">Binutils工具集 解析</a></em><br><em><a href="http://blog.csdn.net/yuzeze/article/details/53144072" target="_blank" rel="external">Linux环境下段错误的产生原因及调试方法小结</a></em><br><em><a href="http://www.linuxidc.com/Linux/2011-05/35780.htm" target="_blank" rel="external">Linux debug : addr2line追踪出错地址</a></em></p>
+<h2 id="GCC"><a href="#GCC" class="headerlink" title="GCC"></a>GCC</h2><h3 id="GCC简介"><a href="#GCC简介" class="headerlink" title="GCC简介"></a>GCC简介</h3><p>GCC可以编译如C、C++、Java等多种语言，GCC是可以在多种硬件平台上编译出可执行程序的超级编译器，其执行效率比一般的编译器要高20%-30%。在嵌入式领域开发需要交叉平台编译器。</p>
+<h3 id="GCC的基本用法"><a href="#GCC的基本用法" class="headerlink" title="GCC的基本用法"></a>GCC的基本用法</h3><p>该部分介绍GCC命令常用的选项，需熟练掌握。因为在makefile中也就是使用这些语句组成。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">-c 只编译,不链接为可执行文件。用于编译不包含主程序的子程序文件。由.c文件生成.o文件。</div><div class="line"></div><div class="line">-g 在使用gdb之前需要加上该选项。</div><div class="line"></div><div class="line">-o output_name 指定输出文件名。</div><div class="line"></div><div class="line">-O/O2 优化编译链接过程。-On n表示优化级别的整数。优化可以加快代码运行速度，但是会对调试造成影响，因此在开发阶段不要进行优化，在发布时可以优化。</div><div class="line"></div><div class="line">-I dirname 将dirname所指向目录加入到程序头文件目录列表中,在预编译过程使用。</div><div class="line"></div><div class="line">-L dirname 将dirname所指向的目录加到程序函数档案库文件的目录列表中,在链接时用到。</div><div class="line"></div><div class="line">-llibrary 链接名为library的库文件。</div><div class="line"></div><div class="line">-Dname 预定义一个名为name的宏，值为1。也可以是-Dname=xxx，值为xxx。 可以用于调试，如-DDEBUG。</div><div class="line"></div><div class="line">-Wall 打开所有类型的语法警告。运行含有警告信息的代码通常会有意想不到的结果，所以应尽量使用-Wall处理警告信息。</div><div class="line"></div><div class="line">-std=c99 指明使用标准ISO C99作为标准编译程序。</div><div class="line"></div><div class="line">-static 禁止使用动态库。</div><div class="line"></div><div class="line">-share 尽量使用动态库。</div></pre></td></tr></table></figure>
+<h3 id="GCC编译过程"><a href="#GCC编译过程" class="headerlink" title="GCC编译过程"></a>GCC编译过程</h3><p>GCC编译包括4个步骤：</p>
+<ol>
+<li>预处理<br>命令：gcc -E test.c -o test.i<br>作用：进行编译的第一遍扫描。由预处理程序负责完成。当编译一个程序时，系统自动调用预处理程序对程序中的以＃开头的预处理部分进行展开，然后才进入源程序的编译阶段。包括替换宏、条件编译、头文件展开等。该阶段不检查语法错误。</li>
+<li>编译<br>命令：gcc -S test.i -o test.s<br>作用：检查代码的规范性，是否有语法错误，检查无误后把代码翻译为汇编代码。</li>
+<li>汇编<br>命令：gcc -c test.c -o test.o 或者gcc -c test.s -o test.o或者 as test.s -o test.o<br>作用：生成目标代码。</li>
+<li>链接<br>命令：gcc test.o  -o test<br>作用：将目标程序链接库资源，生成可执行程序。对于头文件包含的函数声明，其函数实现大多数都包含在libc.so.6这个函数库中，gcc默认在路径/usr/lib下去搜索，即链接到libc.so.6库函数中，从而找到函数的实现。这就是链接的作用。</li>
+</ol>
+<h2 id="GDB"><a href="#GDB" class="headerlink" title="GDB"></a>GDB</h2><h3 id="GDB使用"><a href="#GDB使用" class="headerlink" title="GDB使用"></a>GDB使用</h3><p>GDB是GUN开源组织发布的一个强大的UNIX下的程序调试工具。使用时，必须在编译时加上-g选项，才可以使用GDB调试。编译完成后，使用命令gdb xxx,即进入调试过程。以下列出常用的选项。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">l 查看文件。</div><div class="line"></div><div class="line">b n 在第n行设置断点，表示程序运行到第n行之前停止。</div><div class="line"></div><div class="line">r 运行代码。</div><div class="line"></div><div class="line">c 恢复代码运行。</div><div class="line"></div><div class="line">p xxx 打印变量值xxx，在显示变量值时前面有一个$N,表示当前变量值的引用标记，后续再次查看该变量，可以使用$N简化书写。</div><div class="line"></div><div class="line">n 非进入式单步运行。</div><div class="line"></div><div class="line">s 进入式单步运行。</div><div class="line"></div><div class="line">watch xxx 对xxx变量设置观察点，单步运行会看到变量值的变化。</div><div class="line"></div><div class="line">q 退出。</div></pre></td></tr></table></figure></p>
+<p><em>参考文档：</em><br><em><a href="http://blog.csdn.net/21cnbao/article/details/7385161" target="_blank" rel="external">Linux gdb调试器用法全面解析</a></em></p>
+<h1 id="嵌入式交叉开发环境搭建"><a href="#嵌入式交叉开发环境搭建" class="headerlink" title="嵌入式交叉开发环境搭建"></a>嵌入式交叉开发环境搭建</h1><p>搭建嵌入式交叉开发环境是进行嵌入式应用开发前必需的准备工作，也是嵌入式系统移植的第一步。开发环境包括主机、目标机、以及连接介质。搭建嵌入式交叉开发环境就是要在主机上编译、调试目标机的代码，即涉及主机和目标机的通信。<br>关于嵌入式交叉开发环境搭建有以下几点说明：</p>
+<ul>
+<li>理解为什么要交叉编译。交叉编译是指在开发主机上运行编译器编译内核、应用程序，在目标机上运行内核和应用程序。原因是嵌入式系统硬件资源限制，且嵌入式系统MCU体系结构和指令集不同。</li>
+<li>理解如何搭建嵌入式开发环境。<ol>
+<li>准备好主机、目标机和连接介质。</li>
+<li>准备好目标机代码。</li>
+<li>安装交叉工具链。</li>
+<li>准备主机和目标机之间通信的辅助工具，即安装通信服务和软件。</li>
+</ol>
+</li>
+<li>关于安装交叉工具链。主要步骤是获取交叉工具链压缩包、解压、添加全局环境变量到配置文件、source 配置文件。一般情况是从网上下载已经编译好的交叉工具链。也可以下载源码，自行编译交叉工具链，需要使用工具crosstool-ng，后续有需求再做深入了解。GNU 交叉工具链和前面叙述一致，包括GNU Binutils、GNU GCC、GNU Glibc等部分。</li>
+<li>连接主机和目标机的介质通常是串口、USB、网络。对于每一种方式，掌握使用什么工具，如何使用，有何作用即可。具体情况需结合实践情况进行分析。通常情况下，有以下两个任务需要完成。<ul>
+<li>进入目标机终端的方法：（1）使用串口。（2）使用网络协议ssh、Telnet等。不管是使用串口还是网络，都可以使用putty、scureCRT软件，因为其支持serial、ssh、ftp等众多协议。此外，也可以使用命令行远程控制，例如ssh root@192.168.1.105。</li>
+<li>传输目标机代码的方法：（1）使用串口。使用dnw或超级终端软件。（2）使用网络协议scp、tftp等传输。同样，可以使用secureCRT，winSCP(windows平台下使用)等软件，也可以使用命令行，例如在主机上运行命令scp test root@192.168.1.105:/上传文件，或者在开发板上运行scp youbo@192.168.1.109:/home/youbo/test .下载文件。</li>
+<li>在使用的嵌入式硬件平台中，（1）JS9331开发板，使用串口进入终端，使用scp传输文件。（2）树莓派和Intel NUC3815，使用ssh进入终端，使用scp传输文件。（3）FS4412/ITOP4412开发板，使用串口进入终端，使用tftp传输文件，使用nfs共享根文件系统，此外还使用dnw或者超级终端烧写程序。</li>
+</ul>
+</li>
+</ul>
+<p><strong>说明</strong>：使用网络协议nfs共享根文件系统，是开发调试时比较方便的一种方法。应该理解为根文件系统在主机上，主机上对根文件系统的操作会同步到目标机上。因此可以方便的拖动应用软件，而不需要传输。等待功能开发完毕后，可以将根文件系统压缩传输到目标机的flash中，启动时从flash读取根文件系统即可。具体内容还可参见系统移植部分。</p>
+<p><em>参考文档：</em><br><em><a href="http://blog.csdn.net/sinat_36184075/article/details/71194832" target="_blank" rel="external">linux：嵌入式linux开发环境搭建（整理）</a></em><br><em><a href="http://www.eefocus.com/embedded/322804/r0" target="_blank" rel="external">嵌入式Linux开发环境的搭建之：嵌入式开发环境的搭建 </a></em><br><em><a href="http://blog.csdn.net/waterfall_zjw/article/details/50957095" target="_blank" rel="external">NFS文件系统简介及原理</a></em><br><em><a href="https://www.cnblogs.com/youthshouting/p/4541727.html" target="_blank" rel="external">目标板通过nfs挂载根文件系统</a></em><br><em><a href="https://zhidao.baidu.com/question/1755854973320265828.html" target="_blank" rel="external">嵌入式CRT和DnW工具有什么区别</a></em><br><em>扩展文档：</em><br><em><a href="http://blog.csdn.net/walker0411/article/details/51944096" target="_blank" rel="external">OpenWrt NFS启动 </a></em></p>
+<h1 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h1><h2 id="GCC编译C-程序"><a href="#GCC编译C-程序" class="headerlink" title="GCC编译C++程序"></a>GCC编译C++程序</h2><p>在实际编程中可能涉及调用第三方库函数。而基于第三方库，项目中他人可能编写c++程序，因此涉及如何同时编译c程序和c++程序。以openwrt移植opencv库，并使用c程序调用c++程序函数为例进行分析。详情参见<a href="https://gist.github.com/youxiaobo/b168b82d0192b90c7d54ab1b92956525" target="_blank" rel="external">源代码和Makefile</a>。</p>
+<p>说明：</p>
+<ol>
+<li>使用gcc编译C程序，使用g++编译C++程序，使用g++或者gcc -lstdc++链接。 </li>
+<li>如果要使用C程序调用C++函数，对于C++函数形参中的对象变量如何在C程序转换使用，需要扩展学习。因此此段代码暂时使用IplImage *指针传参，在函数内部转换为Mat类型。</li>
+</ol>
+<p><em>参考文档：</em><br><em><a href="http://blog.csdn.net/weiyuefei/article/details/51065802" target="_blank" rel="external">linux下C与C++混合编程 </a></em><br><em><a href="http://blog.csdn.net/junfeng_liu6/article/details/40075721" target="_blank" rel="external">GCC编译C C++ 和C混合C++</a></em></p>
+<h2 id="GDB远程调试"><a href="#GDB远程调试" class="headerlink" title="GDB远程调试"></a>GDB远程调试</h2><p>在实际开发过程中，调试程序是必不可少的环节，对于应用程序的调试，可以采用print方法。也可以使用gdb方法。因为gdb通常很大，不适合直接在目标机中运行，因此通常使用目标机运行gdbserver,主机运行gdb进行远程调试。此外，还有一些其他方法，例如分析core文件调试段错误，后续根据需要可做扩展研究。<br>这里分析gdb远程调试的方法。</p>
+<h3 id="js9331开发板"><a href="#js9331开发板" class="headerlink" title="js9331开发板"></a>js9331开发板</h3><p>使用gdb远程调试包括以下步骤：</p>
+<ol>
+<li>在openwrt源码目录下make menuconfig选中toolchain option中的gdb,以及development中的gdbserver。</li>
+<li>编译openwrt。将/openwrt/staging_dir/toolchain-mips_34kc_gcc-4.8-linaro_uClibc-0.9.33.2拷贝到/opt目录下，配置好环境变量。</li>
+<li>将/openwrt/bin/ar71xx/packages/base/目录下的gdbserver包及其依赖包传输到开发板进行安装。</li>
+<li>开发板运行命令./gdbserver 192.168.1.111:1234 hello。</li>
+<li>主机运行mips-openwrt-linux-gdb hello，进入gdb环境。</li>
+<li>在gdb环境下运行target remote 192.168.1.105:1234。</li>
+<li>在gdb环境下查看搜索文件路径前缀show solib-absolute-prefix，并设置为交叉编译环境库路径前缀set solib-absolute-prefix /opt/OpenWrt-Toolchain-ar71xx-for-mips_34kc-gcc-4.8-linaro_uClibc-0.9.33.2/toolchain-mips_34kc_gcc-4.8-linaro_uClibc-0.9.33.2/。之后则进入正式调试环节。</li>
+</ol>
+<h3 id="ITOP4412开发板"><a href="#ITOP4412开发板" class="headerlink" title="ITOP4412开发板"></a>ITOP4412开发板</h3><p>使用gdb远程调试包括以下步骤：</p>
+<ol>
+<li>在arm-2009q3交叉工具链中找到gdbserver可执行文件，使用arm-none-linux-gnueabi-strip对其进行瘦身。</li>
+<li>使用tftp将瘦身后的gdbserver传输到开发板。</li>
+<li>使用arm-none-linux-gnueabi-gcc编译待调试代码，加入选项-g。并用tftp传输到开发板。</li>
+<li>开发板运行命令./gdbserver 192.168.1.111:1234 hello。</li>
+<li>主机运行arm-none-linux-gnueabi-gdb hello，进入gdb环境。</li>
+<li>在gdb环境下运行target remote 192.168.1.230:1234。</li>
+<li>在gdb环境下查看搜索文件路径前缀show solib-absolute-prefix，并设置为交叉编译环境库路径前缀set solib-absolute-prefix /opt/arm-2009q3/arm-none-linux-gnueabi/libc。之后则进入正式调试环节。</li>
+</ol>
+<p><em>参考文档：</em><br><em><a href="https://my.oschina.net/shelllife/blog/180901" target="_blank" rel="external">嵌入式开发调试方法 </a></em><br><em><a href="http://www.cnblogs.com/xiansheng/p/5598994.html" target="_blank" rel="external">嵌入式Linux的调试技术</a></em><br><em><a href="https://www.cnblogs.com/pengdonglin137/p/4737045.html" target="_blank" rel="external">使用gdbserver远程调试</a></em><br><em><a href="http://blog.csdn.net/zimiao815/article/details/51312813" target="_blank" rel="external">openwrt下使用gdbserver远程调试</a></em></p>
+<h2 id="搭建交叉开发环境"><a href="#搭建交叉开发环境" class="headerlink" title="搭建交叉开发环境"></a>搭建交叉开发环境</h2><p>搭建交叉开发环境，主要是安装交叉编译工具链。此外，为了调试方法，会使用tftp和nfs服务，下面做简要分析。这里的操作均是在主机上运行。</p>
+<h3 id="js9331开发板-1"><a href="#js9331开发板-1" class="headerlink" title="js9331开发板"></a>js9331开发板</h3><p>openwrt系统搭建交叉编译环境步骤如下：</p>
+<ol>
+<li>openwrt官网下载工具链压缩包。</li>
+<li>解压到/opt文件夹下。</li>
+<li>配置环境变量，修改/etc/bash.bashrc文件。</li>
+<li>执行命令source /etc/bash.bashrc。</li>
+<li>执行mips-openwrt-linux-gcc -v检查安装是否成功。</li>
+</ol>
+<h3 id="ITOP4412开发板-1"><a href="#ITOP4412开发板-1" class="headerlink" title="ITOP4412开发板"></a>ITOP4412开发板</h3><p>linux最小系统搭建交叉编译环境步骤如下：</p>
+<ol>
+<li>获得工具链压缩包。</li>
+<li>解压到/opt文件夹下。</li>
+<li>配置环境变量，修改/etc/bash.bashrc文件。</li>
+<li>执行命令source /etc/bash.bashrc。</li>
+<li>执行arm-none-linux-gnueabi-gcc -v检查安装是否成功。</li>
+</ol>
+<h3 id="使用tftp服务"><a href="#使用tftp服务" class="headerlink" title="使用tftp服务"></a>使用tftp服务</h3><ol>
+<li>主机安装tftpd-hpa和tftp-hpa。</li>
+<li><p>配置tftp server配置文件，/etc/default/tftpd-hpa。内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">TFTP_USERNAME=&quot;tftp&quot;</div><div class="line">TFTP_DIRECTORY=&quot;/tftpboot&quot;</div><div class="line">TFTP_ADDRESS=&quot;0.0.0.0:69&quot;</div><div class="line">TFTP_OPTIONS=&quot;-c -s -l&quot;</div></pre></td></tr></table></figure>
+</li>
+<li><p>创建/tftpboot文件夹，并改变权限。</p>
+</li>
+<li>重启tftp服务，sudo /etc/init.d/tftpd-hpa restart。</li>
+<li>复制目标机代码到/tftpboot文件夹下。</li>
+<li>目标机输入命令”tftp -g -l 目标文件名 -r 源文件名 tftp服务器IP”即可下载代码。</li>
+</ol>
+<h3 id="使用nfs服务"><a href="#使用nfs服务" class="headerlink" title="使用nfs服务"></a>使用nfs服务</h3><ol>
+<li>主机安装nfs-kernel-server。</li>
+<li><p>配置文件，/etc/exports。内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/source/rootfs *(rw,sync,no_root_squash,no_subtree_check)</div></pre></td></tr></table></figure>
+</li>
+<li><p>创建/source/rootfs文件夹，解压根文件系统到该目录。</p>
+</li>
+<li>复制目标机代码到/source/rootfs文件夹下。</li>
+<li>配置目标机启动参数。</li>
+</ol>
+<p>注：在集成开发环境也可以编译、调试程序，例如eclipse CDT,其中也需要设置编译器、调试器等参数，其原理本质上和gcc、gdb等一样。</p>
+<p><em>参考文档</em><br><em><a href="http://www.ptpress.com.cn/shopping/buy?bookId=cd38272a-8d0e-4ff8-a02f-698d013ec3e2" target="_blank" rel="external">《嵌入式linux c语言程序设计基础教程》1.6</a></em></p>
+<h1 id="个人观点"><a href="#个人观点" class="headerlink" title="个人观点"></a>个人观点</h1><p>这一部分不涉及知识难点，只需要会使用gcc、gdb，以及主机和目标机之间通信的工具，达到完成开发的目的即可。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE.jpg" alt="You Bo WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%B6%E6%AC%BE.jpg" alt="You Bo Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/嵌入式/" rel="tag"># 嵌入式</a>
+          
+            <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
+          
+            <a href="/tags/gcc/" rel="tag"># gcc</a>
+          
+            <a href="/tags/gdb/" rel="tag"># gdb</a>
+          
+            <a href="/tags/交叉编译/" rel="tag"># 交叉编译</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/14/C语言高级编程--1基础零碎知识/" rel="next" title="C语言高级编程--1基础零碎知识">
+                <i class="fa fa-chevron-left"></i> C语言高级编程--1基础零碎知识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="hypercomments_widget"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F"
+               alt="You Bo" />
+          <p class="site-author-name" itemprop="name">You Bo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Done Is Better Than Perfect</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GNU工具集"><span class="nav-number">1.</span> <span class="nav-text">GNU工具集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GNU-Binutils"><span class="nav-number">1.1.</span> <span class="nav-text">GNU Binutils</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GCC"><span class="nav-number">1.2.</span> <span class="nav-text">GCC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GCC简介"><span class="nav-number">1.2.1.</span> <span class="nav-text">GCC简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GCC的基本用法"><span class="nav-number">1.2.2.</span> <span class="nav-text">GCC的基本用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GCC编译过程"><span class="nav-number">1.2.3.</span> <span class="nav-text">GCC编译过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GDB"><span class="nav-number">1.3.</span> <span class="nav-text">GDB</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GDB使用"><span class="nav-number">1.3.1.</span> <span class="nav-text">GDB使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#嵌入式交叉开发环境搭建"><span class="nav-number">2.</span> <span class="nav-text">嵌入式交叉开发环境搭建</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实例分析"><span class="nav-number">3.</span> <span class="nav-text">实例分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GCC编译C-程序"><span class="nav-number">3.1.</span> <span class="nav-text">GCC编译C++程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GDB远程调试"><span class="nav-number">3.2.</span> <span class="nav-text">GDB远程调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js9331开发板"><span class="nav-number">3.2.1.</span> <span class="nav-text">js9331开发板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ITOP4412开发板"><span class="nav-number">3.2.2.</span> <span class="nav-text">ITOP4412开发板</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建交叉开发环境"><span class="nav-number">3.3.</span> <span class="nav-text">搭建交叉开发环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js9331开发板-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">js9331开发板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ITOP4412开发板-1"><span class="nav-number">3.3.2.</span> <span class="nav-text">ITOP4412开发板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用tftp服务"><span class="nav-number">3.3.3.</span> <span class="nav-text">使用tftp服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用nfs服务"><span class="nav-number">3.3.4.</span> <span class="nav-text">使用nfs服务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#个人观点"><span class="nav-number">4.</span> <span class="nav-text">个人观点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Bo</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+
+		_hcwp.push({widget:"Bloggerstream", widget_id: 93304, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+
+		
+		_hcwp.push({widget:"Stream", widget_id: 93304, xid: "2017/11/17/C语言高级编程--2搭建嵌入式Linux编程环境/"});
+		
+
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/93304/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8QMQj1UnbwzGuBYQq2wN1HrR-gzGzoHsz", "am1SdGrz3btqx5wyV7DB0qUj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
