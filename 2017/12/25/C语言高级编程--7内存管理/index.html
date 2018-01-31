@@ -1,0 +1,1160 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="嵌入式,学习笔记,内存管理,malloc,free," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本篇围绕C语言内存管理，讨论了变量存储模型、程序内存分配以及动态内存分配的使用方法，以及其使用注意事项，这些内容需结合函数、指针等知识进行综合分析。">
+<meta name="keywords" content="嵌入式,学习笔记,内存管理,malloc,free">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言高级编程--7内存管理">
+<meta property="og:url" content="http://www.youbo.website/2017/12/25/C语言高级编程--7内存管理/index.html">
+<meta property="og:site_name" content="YOUBO&#39;S BLOG">
+<meta property="og:description" content="本篇围绕C语言内存管理，讨论了变量存储模型、程序内存分配以及动态内存分配的使用方法，以及其使用注意事项，这些内容需结合函数、指针等知识进行综合分析。">
+<meta property="og:updated_time" content="2018-01-14T08:55:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C语言高级编程--7内存管理">
+<meta name="twitter:description" content="本篇围绕C语言内存管理，讨论了变量存储模型、程序内存分配以及动态内存分配的使用方法，以及其使用注意事项，这些内容需结合函数、指针等知识进行综合分析。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.youbo.website/2017/12/25/C语言高级编程--7内存管理/"/>
+
+
+
+
+
+  <title> C语言高级编程--7内存管理 | YOUBO'S BLOG </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?48a4e3570fd283499da1fa0f4fb218ac";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">YOUBO'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.youbo.website/2017/12/25/C语言高级编程--7内存管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Bo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YOUBO'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                C语言高级编程--7内存管理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-25T09:21:15+08:00">
+                2017-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/嵌入式/" itemprop="url" rel="index">
+                    <span itemprop="name">嵌入式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            <!--noindex-->
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/12/25/C语言高级编程--7内存管理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count hc-comment-count" data-xid="2017/12/25/C语言高级编程--7内存管理/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+              <!--/noindex-->
+            
+          
+
+          
+          
+             <span id="/2017/12/25/C语言高级编程--7内存管理/" class="leancloud_visitors" data-flag-title="C语言高级编程--7内存管理">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本篇围绕C语言内存管理，讨论了变量存储模型、程序内存分配以及动态内存分配的使用方法，以及其使用注意事项，这些内容需结合函数、指针等知识进行综合分析。<a id="more"></a></p>
+</blockquote>
+<h1 id="存储模型"><a href="#存储模型" class="headerlink" title="存储模型"></a>存储模型</h1><ul>
+<li>变量是对程序中数据的存储空间的抽象。一个变量可以通过<strong>存储期、作用域、链接点</strong>来描述。</li>
+<li>存储期（生命期）：表示变量在内存中保存的时间。分为静态变量和动态变量。静态变量是编译时分配存储空间，从程序开始到程序结束。文件作用域的变量具有静态存储期。动态存储变量在程序执行中使用它时才分配存储空间，使用完立即释放。代码块作用域具有动态存储期，例如函数的形参。函数定义时并不给形参分配存储空间，只有在函数被调用时，才予以分配。</li>
+<li>作用域：表示变量出现有效区域。分为三种，代码块内作用域（即局部变量的情况）、函数原型作用域（从变量定义处到原型声明末尾，编译器只关心参数类型，不关心名字）、文件作用域（函数之外定义的变量具有文件作用域，也称为全局变量）。</li>
+<li>链接点：用来说明程序哪些部分可以使用该变量。分为内部链接（一个文件内有效，使用static）、外部链接(一个或多个文件有效)、空链接（代码块作用域或者函数原型作用域）。</li>
+</ul>
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>从存储期、作用域、链接点三个方面考虑，将变量的存储模型分为五类。</p>
+<ul>
+<li>自动：使用关键字auto，可省略。一个代码块内或者函数头部声明的变量，即所谓的普通局部变量，具有动态存储期，代码块作用域、空链接。如果未初始化，则值不确定。</li>
+<li>寄存器: 使用关键词register，具有自动存储期、代码块作用域和空链接。由于变量在寄存器中，不能使用取地址运算符获取变量的地址。未初始化则值不确定。</li>
+<li>具有外部链接的静态：在所有函数外定义未使用static修饰的变量，即通常的全局变量，具有静态存储期，文件作用域和外部链接。仅在编译时初始化一次，默认为0,如果要在其他文件中使用，需要使用关键词extern。通常在.c文件定义，在.h文件中声明为外部变量。但不能在头文件为变量赋初值。</li>
+<li>具有内部链接的静态：使用static修饰的全局变量，具有静态存储期、文件作用域、内部链接，只能在同一个文件中使用。仅在编译时初始化一次，默认为0。</li>
+<li>空链接的静态：即static修饰局部变量，具有静态存储期、代码块作用域和空链接，仅在编译时初始化一次，默认为0。适用于多次调用函数且要求保留这些变量的值，可以考虑使用静态局部变量。</li>
+</ul>
+<p>说明：</p>
+<ol>
+<li>存储期是从时间上考虑变量，而作用域是从空间上考虑变量。要注意区别。</li>
+<li>在函数专题中，提及函数返回值不能是局部变量，可以是静态局部变量或者堆上的内容。</li>
+<li>注意区分一些概念。例如动态存储期。动态存储期是指局部变量空间在使用时才分配，且使用完就释放了，是相对于静态存储期而言。而动态分配是指程序员可以自己手动分配内存空间，是相对于自动分配而言。</li>
+<li>static关键词的作用：<ul>
+<li>修饰全局变量，限制其作用域，只能在本文件中使用。</li>
+<li>修饰局部变量，扩展其生存期，其值能保持到下一次调用，到程序结束时释放。</li>
+<li>修饰函数，限制其作用域，只能在本文件中使用。</li>
+</ul>
+</li>
+</ol>
+<p><em>参考文献：</em><br><em><a href="http://blog.csdn.net/sinat_16046537/article/details/51718837" target="_blank" rel="external">C语言编程之存储模型、链接</a></em><br><em><a href="https://www.cnblogs.com/wanglun/p/7114817.html" target="_blank" rel="external">C语言存储模型</a></em></p>
+<h1 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h1><p>一个在运行的C语言程序占用内存的情况，分为以下几个区域：</p>
+<ul>
+<li>代码区：只读，存放CPU执行的机器指令。</li>
+<li>已初始化的全局数据与静态数据区：包括全局变量、静态变量（全局或局部）、常量数据（如字符串常量）。</li>
+<li>未初始化数据区：即BSS区，存放未初始化的全局变量。</li>
+<li>堆区：用于动态分配内存。位于BSS区和栈区之间。</li>
+<li>栈区：存放函数参数、局部变量等。</li>
+</ul>
+<p>说明：</p>
+<ol>
+<li>这里的堆区别于数据结构中的堆，类似于链表。这里的栈，类似于数据结构中的栈，符合先进先出的规则。</li>
+<li>size exename可以看到可执行文件各个区的大小，包括text、data、BSS，这里没有堆和栈，是存储时的三个区域，当程序执行时，才会有堆和栈。</li>
+<li>ulimit -a命令可以查看资源限制的设定，包括栈空间、可打开的文件数等。</li>
+<li>堆和栈的区别如下：<ul>
+<li>管理方式：堆区空间申请和释放需要程序员控制，而栈区由编译器自动管理。</li>
+<li>空间大小：堆区内存不连续，空间大，而栈区连续空间，空间较小。</li>
+<li>是否产生碎片：堆区需要频繁的malloc，容易造成内存空间不连续，产生碎片。</li>
+<li>增长方向：堆区向着内存地址增加的方向，<strong>栈区向着内存地址减小的方向</strong>。</li>
+<li>分配效率：堆区的效率低于栈区。</li>
+</ul>
+</li>
+</ol>
+<p><em>参考文档：</em><br><em><a href="http://blog.csdn.net/youoran/article/details/10990815" target="_blank" rel="external">C语言中内存分配</a></em></p>
+<h1 id="动态内存"><a href="#动态内存" class="headerlink" title="动态内存"></a>动态内存</h1><ul>
+<li>通常情况下，编译器根据变量的类型知道所需的内存空间，在合适的时间分配确定的存储空间。在栈上创建局部变量，函数执行完毕自动释放存储单元，效率高，但分配的内存空间有限。该方式的分配和释放都是自动进行。</li>
+<li>而有的情况只有在程序运行的时候才能确定内存分配大小，系统根据运行时的要求进行内存分配，称为动态存储分配。动态存储分配在堆上进行。使用malloc函数手动分配，使用free函数手动释放，因此其生存期由程序员决定。</li>
+<li>对于动态分配的内存唯一的访问方式是通过指针间接访问。malloc函数在内存中动态的分配一个长度为size的连续空间，返回指向所分配连续空间起始地址的指针。内存空间有限，须在不用时，使用free函数显示释放空间。函数原型如下：</li>
+</ul>
+<p>malloc函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void *malloc(size_t num);</div></pre></td></tr></table></figure></p>
+<p>free函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void free(void *p);</div></pre></td></tr></table></figure></p>
+<p>说明：</p>
+<ol>
+<li>malloc函数本身并不识别要申请的内存是什么类型，只关心申请内存的大小。在实际调用中，需要显示的进行强制类型转换。如果申请失败，返回NULL，因此要做错误判断。</li>
+<li>堆区不会自动在分配时初始化，<strong>必须显示的进行初始化</strong>。例如：memset(p,0,n*sizeof(int));这一点在实践中应该注意。</li>
+<li>分配的内存如果操作越界，会造成不可估量的后果，比如给char类型指针动态分配空间，需要考虑’\0’的存储空间。</li>
+<li>使用堆上的空间，必须记得使用free释放，且只能释放一次。如果忘记释放，则会造成内存泄露。如果释放多次也会出错。</li>
+<li>free 不允许释放部分内存。即free(p+2)是错误的。必须提供释放内存的起始地址。</li>
+<li>free只是告诉系统这段空间不使用了，可以再次分配。但是其空间上的内容尚未改变，还可以访问，因此free后，通常置指针为NULL。释放的是堆空间，指针P在栈上，还指向原来的位置，因此可以访问，所有让其置NULL。</li>
+<li>free只能释放堆空间。代码区、全局变量、静态变量区、栈区上的指针变量都不能用free释放空间。</li>
+<li>malloc与free必须配对使用。不需要的内存空间都需要释放回收。</li>
+<li>在函数内建立的动态对象在函数外仍然可以使用，这就是为什么函数可以返回堆上的地址的原因。因此堆上的空间称为自由空间。在函数运行时才能确定大小的情况，通常会在函数内动态分配内存并返回指针。但是在函数内申请动态空间而在函数外释放是一件很容易失控的事情，往往会出错。此种情况，要保证指针起始位置的正确赋值，并在函数外不使用指针时及时释放。</li>
+<li>关于野指针：指向垃圾内存的指针。形成原因：（1）指针没有初始化；（2）指针free后没有置NULL。（3）指针操作超过了变量的作用范围，访问了非法内存。（4）返回指向栈内存的指针。</li>
+<li>关于野指针会造成什么后果是难以估计的。若内存暂时空闲，可能程序正常运行，若内存再次被分配，又通过野指针对内存进行写操作，则原有合法数据会被覆盖。尽量应避免出现野指针。即指针初始化时置NULL，使用完毕释放后再次置NULL。</li>
+</ol>
+<p><em>参考文档：</em><br><em><a href="http://blog.csdn.net/zxx910509/article/details/63277561" target="_blank" rel="external">C动态内存分配：（三）malloc/calloc/realloc/free使用注意事项 </a></em><br><em><a href="https://www.cnblogs.com/youthshouting/p/4280543.html" target="_blank" rel="external">浅谈C语言内存管理、内存泄露、堆栈</a></em><br><em><a href="http://blog.csdn.net/h542723151/article/details/43422711" target="_blank" rel="external">结构体指针内的指针变量成员的内存分配</a></em><br><em><a href="http://ask.csdn.net/questions/207027" target="_blank" rel="external">结构体内指针字符数组的释放</a></em><br><em><a href="https://zhidao.baidu.com/question/516360949.html" target="_blank" rel="external">free函数的实质</a></em></p>
+<h1 id="个人观点"><a href="#个人观点" class="headerlink" title="个人观点"></a>个人观点</h1><p>对于本节内容，主要是要掌握动态内存分配使用的各种注意事项，在实践中避免不规范的使用造成的内存错误。结合前面总结的指针、函数等内容综合分析。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE.jpg" alt="You Bo WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%B6%E6%AC%BE.jpg" alt="You Bo Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/嵌入式/" rel="tag"># 嵌入式</a>
+          
+            <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
+          
+            <a href="/tags/内存管理/" rel="tag"># 内存管理</a>
+          
+            <a href="/tags/malloc/" rel="tag"># malloc</a>
+          
+            <a href="/tags/free/" rel="tag"># free</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/24/常用JVM分析命令/" rel="next" title="常用JVM分析命令">
+                <i class="fa fa-chevron-left"></i> 常用JVM分析命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/08/巧用环形队列处理定时任务/" rel="prev" title="巧用环形队列处理定时任务">
+                巧用环形队列处理定时任务 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="hypercomments_widget"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F"
+               alt="You Bo" />
+          <p class="site-author-name" itemprop="name">You Bo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Done Is Better Than Perfect</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#存储模型"><span class="nav-number">1.</span> <span class="nav-text">存储模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#分类"><span class="nav-number">1.1.</span> <span class="nav-text">分类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#内存分配"><span class="nav-number">2.</span> <span class="nav-text">内存分配</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#动态内存"><span class="nav-number">3.</span> <span class="nav-text">动态内存</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#个人观点"><span class="nav-number">4.</span> <span class="nav-text">个人观点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Bo</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+
+		_hcwp.push({widget:"Bloggerstream", widget_id: 93304, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+
+		
+		_hcwp.push({widget:"Stream", widget_id: 93304, xid: "2017/12/25/C语言高级编程--7内存管理/"});
+		
+
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/93304/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8QMQj1UnbwzGuBYQq2wN1HrR-gzGzoHsz", "am1SdGrz3btqx5wyV7DB0qUj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
