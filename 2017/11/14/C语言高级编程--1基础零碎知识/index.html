@@ -94,7 +94,6 @@
 <meta property="og:url" content="http://www.youbo.website/2017/11/14/C语言高级编程--1基础零碎知识/index.html">
 <meta property="og:site_name" content="YOUBO&#39;S BLOG">
 <meta property="og:description" content="本篇文章作为C语言高级编程的铺垫，介绍一些C语言相关的基础概念，以及容易出错的零碎知识点。重点包括typedef定义数据类型，宏定义，条件编译，sizeof运算符。">
-<<<<<<< HEAD
 <meta property="og:image" content="http://images.cnitblog.com/blog/391262/201402/211253044799697.png">
 <meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/C%E8%AF%AD%E8%A8%80%E8%BF%90%E7%AE%97%E4%BC%98%E5%85%88%E7%BA%A7.jpg">
 <meta property="og:updated_time" content="2018-01-14T08:55:11.000Z">
@@ -102,16 +101,6 @@
 <meta name="twitter:title" content="C语言高级编程--1基础零碎知识">
 <meta name="twitter:description" content="本篇文章作为C语言高级编程的铺垫，介绍一些C语言相关的基础概念，以及容易出错的零碎知识点。重点包括typedef定义数据类型，宏定义，条件编译，sizeof运算符。">
 <meta name="twitter:image" content="http://images.cnitblog.com/blog/391262/201402/211253044799697.png">
-=======
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%88%86%E5%B8%83%E5%9B%BE.png">
-<meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/C%E8%AF%AD%E8%A8%80%E8%BF%90%E7%AE%97%E4%BC%98%E5%85%88%E7%BA%A7.jpg">
-<meta property="og:updated_time" content="2018-01-23T20:46:33.495Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C语言高级编程--1基础零碎知识">
-<meta name="twitter:description" content="本篇文章作为C语言高级编程的铺垫，介绍一些C语言相关的基础概念，以及容易出错的零碎知识点。重点包括typedef定义数据类型，宏定义，条件编译，sizeof运算符。">
-<meta name="twitter:image" content="http://osjn6k0nm.bkt.clouddn.com/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%88%86%E5%B8%83%E5%9B%BE.png">
->>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
 
 
 
@@ -438,7 +427,6 @@
         <blockquote>
 <p>本篇文章作为C语言高级编程的铺垫，介绍一些C语言相关的基础概念，以及容易出错的零碎知识点。重点包括typedef定义数据类型，宏定义，条件编译，sizeof运算符。<a id="more"></a></p>
 </blockquote>
-<<<<<<< HEAD
 <h1 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h1><p>这里介绍嵌入式linux c语言数据相关的知识点,包括GUN C简介、基本数据类型、变量与常量定义、预处理等。</p>
 <h2 id="ANSI-C与GUN-C"><a href="#ANSI-C与GUN-C" class="headerlink" title="ANSI C与GUN C"></a>ANSI C与GUN C</h2><ul>
 <li>ANSI C是美国国家标准协会ANSI(American National Standard Institute) 1989年颁布的C语言标准，也称为C89，Standard C。1990年ISO和IEC采用了ANSI C(带有一些小改动)为国际标准，所以C89标准又被称为C90标准。后来又有C99和C11。</li>
@@ -448,18 +436,6 @@
 <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>C语言数据类型<a href="https://www.cnblogs.com/ysfox/articles/3558703.html" target="_blank" rel="external">如图所示</a>。<br><img src="http://images.cnitblog.com/blog/391262/201402/211253044799697.png" alt=" " title="C语言数据类型"></p>
 <p><strong>说明</strong>:不同计算机体系结构中数据类型所占字节数不同，比如32位机或者64位机不一样，编译器相关目录下的limits.h中有相关的规定。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ubuntu系统： /usr/include/limits.h</div><div class="line"></div><div class="line">openwrt交叉工具链： /opt/OpenWrt-Toolchain-ar71xx-for-mips_34kc-gcc-4.8-linaro_uClibc-0.9.33.2/toolchain-mips_34kc_gcc-4.8-linaro_uClibc-0.9.33.2/include/limits.h</div></pre></td></tr></table></figure></p>
 <h2 id="变量与常量"><a href="#变量与常量" class="headerlink" title="变量与常量"></a>变量与常量</h2><p><strong>变量</strong>：变量采用先定义后使用的规则。变量定义后存储器会为其分配一定的存储空间，一个变量在其作用域内只能有一个定义，可以有多次声明，且存储器不会为其分配存储空间。用<strong>typedef</strong>定义一种新的数据类型，是编程中常见的处理。<br><strong>常量</strong>：常量定义可以使用const，也可以使用define。const的主要知识点在于修饰指针。详见《C语言高级编程-4数组与指针》。</p>
-=======
-<h1 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h1><p>这里介绍嵌入式linux c语言数据相关的知识点,包括GNU C简介、基本数据类型、变量与常量定义、预处理等。</p>
-<h2 id="ANSI-C与GNU-C"><a href="#ANSI-C与GNU-C" class="headerlink" title="ANSI C与GNU C"></a>ANSI C与GNU C</h2><ul>
-<li>ANSI C是美国国家标准协会ANSI(American National Standard Institute) 1989年颁布的C语言标准，也称为C89，Standard C。1990年ISO和IEC采用了ANSI C(带有一些小改动)为国际标准，所以C89标准又被称为C90标准。后来又有C99和C11。</li>
-<li>GNU C(支持GNU扩展的Ｃ语言称之为GNU C)是在标准Ｃ基础上进行了扩展而来，GCC支持C90，不完全支持C99和C11,使用时需加上<strong>-std=gnu99</strong>之类。GCC由开始的GNU C Compiler变成了GNU Compiler Connection，支持多种语言的编译。</li>
-</ul>
-<p><em>参考文档：</em><br><em>1.<a href="http://www.jianshu.com/p/3756ccb7c0c2" target="_blank" rel="external">《ANSI C, Standard C与GCC》</a></em><br><em>2.<a href="http://blog.csdn.net/rheostat/article/details/7614524" target="_blank" rel="external">《GNU C 、ANSI C、标准C、标准c++的区别和联系》</a></em></p>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>C语言数据类型<a href="https://www.cnblogs.com/ysfox/articles/3558703.html" target="_blank" rel="external">如图所示</a>。</p>
-<p><img src="http://osjn6k0nm.bkt.clouddn.com/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%88%86%E5%B8%83%E5%9B%BE.png" alt=" " title="C语言数据类型"></p>
-<p><strong>说明</strong>:不同计算机体系结构中数据类型所占字节数不同，比如32位机或者64位机不一样，编译器相关目录下的limits.h中有相关的规定。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ubuntu系统： /usr/include/limits.h</div><div class="line"></div><div class="line">openwrt交叉工具链： /opt/OpenWrt-Toolchain-ar71xx-for-mips_34kc-gcc-4.8-linaro_uClibc-0.9.33.2/toolchain-mips_34kc_gcc-4.8-linaro_uClibc-0.9.33.2/include/limits.h</div></pre></td></tr></table></figure></p>
-<h2 id="变量与常量"><a href="#变量与常量" class="headerlink" title="变量与常量"></a>变量与常量</h2><p><strong>变量</strong>：变量采用先定义后使用的规则。变量定义后存储器会为其分配一定的存储空间，一个变量在其作用域内只能有一个定义，可以有多次声明，且存储器不会为其分配存储空间。用<strong>typedef</strong>定义一种新的数据类型，是编程中常见的处理。<br><strong>常量</strong>：常量定义可以使用const，也可以使用define。const的主要知识点在于修饰指针。详见<a href="http://www.youbo.website/2017/11/26/C%E8%AF%AD%E8%A8%80%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B--4%E6%95%B0%E7%BB%84%E4%B8%8E%E6%8C%87%E9%92%88/">《C语言高级编程-4数组与指针》</a>。</p>
->>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
 <h3 id="typedef"><a href="#typedef" class="headerlink" title="typedef"></a>typedef</h3><p>typedef是c语言的关键字，用于为一种数据类型定义一个新名字。</p>
 <p>格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">typedef 已有数据类型 新数据类型</div></pre></td></tr></table></figure></p>
 <p>使用typedef的好处有：</p>
@@ -469,11 +445,7 @@
 <li>用在嵌入式开发移植中，通过typedef为标识符取名为一个统一的名称，在需要修改标识符时，只需要修改typedef的内容。例如/usr/include/asm-generic/types.h，以及linux内核源码中include/asm-arm/types.h。</li>
 </ol>
 <p>使用示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">e.g1:链表节点定义，注意这里int也重新定义一个名字，方便后续可以替换其他类型。</div><div class="line">typedef int datatype;</div><div class="line">typedef struct node</div><div class="line">&#123;</div><div class="line">	datatype data;</div><div class="line">	struct node *next;</div><div class="line">&#125;linknode,*linknode_t;</div><div class="line">void list_show(linknode_t H)</div><div class="line"></div><div class="line">e.g2:枚举类型重新定义新名称。</div><div class="line">typedef enum&#123;</div><div class="line">	SENSOR_BOOL = 1,</div><div class="line">	SENSOR_INT = 2,</div><div class="line">	SENSOR_DOUBLE = 3,</div><div class="line">&#125;SENSORTYPE;</div><div class="line">typedef struct sensorInfo&#123;</div><div class="line">	int sensorID;</div><div class="line">	char sensorName[20];</div><div class="line">	SENSORTYPE type;</div><div class="line">	void *pValue;</div><div class="line">&#125;sensorInfo;</div><div class="line"></div><div class="line">e.g3:函数指针重新定义新名称。</div><div class="line">#include &lt;signal.h&gt;</div><div class="line">typedef void (*sighandler_t)(int);</div><div class="line">sighandler_t signal(int signum,sighandler_t handler);</div></pre></td></tr></table></figure></p>
-<<<<<<< HEAD
 <h2 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h2><p>预处理是gcc编译的第一步，包括预定义、文件包含、条件编译等功能。预处理的主要作用是用预处理程序将以#开头的语句进行展开。具体关于预处理的相关内容详见《C语言高级编程–2搭建嵌入式linux编程环境》。</p>
-=======
-<h2 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h2><p>预处理是gcc编译的第一步，包括预定义、文件包含、条件编译等功能。预处理的主要作用是用预处理程序将以#开头的语句进行展开。具体关于预处理的相关内容详见<a href="http://www.youbo.website/2017/11/17/C%E8%AF%AD%E8%A8%80%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B--2%E6%90%AD%E5%BB%BA%E5%B5%8C%E5%85%A5%E5%BC%8FLinux%E7%BC%96%E7%A8%8B%E7%8E%AF%E5%A2%83/">《C语言高级编程–2搭建嵌入式linux编程环境》</a>。</p>
->>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
 <h3 id="预定义"><a href="#预定义" class="headerlink" title="预定义"></a>预定义</h3><p><strong>预定义符号</strong><br>在C语言中有一些预处理定义的符号串，其值为字符串常量或者十进制常量，常用在调试程序时输出源程序各项信息。常用的有__FILE__、__LINE__、__FUNCTION__等。</p>
 <p><strong>宏定义</strong><br>除了系统定义的预处理符号，还有用户自定义编写的宏。这里的宏定义即为用户编写的宏。分为两种，无参宏定义和带参宏定义，定义如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">无参宏定义	#define 宏名 字符串 </div><div class="line">带参宏定义	#define 宏名() 字符串</div></pre></td></tr></table></figure></p>
 <p>使用说明：</p>
@@ -520,11 +492,7 @@
 </ul>
 </li>
 <li>条件运算符：三目运算符。<br>示例：#define MAX(a,b) (a)&gt;(b)?a:b 取两个值中的大数。</li>
-<<<<<<< HEAD
 <li>类型转换运算符：即强制转换。<br>示例：void *需要强制转化，详情见void *知识点,《C语言高级编程-4数组与指针》。<br>如果某数据打印结果显示为一长串数字，不是预期的，需要考虑可能数据类型出现问题。</li>
-=======
-<li>类型转换运算符：即强制转换。<br>示例：void *需要强制转化，详情见void *知识点,<a href="http://www.youbo.website/2017/11/26/C%E8%AF%AD%E8%A8%80%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B--4%E6%95%B0%E7%BB%84%E4%B8%8E%E6%8C%87%E9%92%88/">《C语言高级编程-4数组与指针》</a>。<br>如果某数据打印结果显示为一长串数字，不是预期的，需要考虑可能数据类型出现问题。</li>
->>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
 </ul>
 <h2 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h2><p>C语言中，一个表达式中如有不同优先级的运算符，优先级高的先运算。如果相同优先级，则按照结合性规则进行运算。运算符的优先级总结如<a href="http://www.ryjiaoyu.com/book/details/4142" target="_blank" rel="external">下表</a>。<br><img src="http://osjn6k0nm.bkt.clouddn.com/C%E8%AF%AD%E8%A8%80%E8%BF%90%E7%AE%97%E4%BC%98%E5%85%88%E7%BA%A7.jpg" alt=" " title="c语言运算符优先级"></p>
 <h1 id="程序结构与控制语句"><a href="#程序结构与控制语句" class="headerlink" title="程序结构与控制语句"></a>程序结构与控制语句</h1><p>C语言中的语句分为：顺序结构、分支结构和循环结构。<br>控制语句有：条件判断语句、循环语句和跳转语句。<br>其具体使用方法在此不再赘述。</p>
@@ -712,11 +680,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-<<<<<<< HEAD
                 <span class="site-state-item-count">20</span>
-=======
-                <span class="site-state-item-count">17</span>
->>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -727,11 +691,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-<<<<<<< HEAD
                 <span class="site-state-item-count">4</span>
-=======
-                <span class="site-state-item-count">3</span>
->>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -742,11 +702,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-<<<<<<< HEAD
                 <span class="site-state-item-count">43</span>
-=======
-                <span class="site-state-item-count">38</span>
->>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -781,11 +737,7 @@
             
 
             
-<<<<<<< HEAD
               <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据"><span class="nav-number">1.</span> <span class="nav-text">数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ANSI-C与GUN-C"><span class="nav-number">1.1.</span> <span class="nav-text">ANSI C与GUN C</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型"><span class="nav-number">1.2.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量与常量"><span class="nav-number">1.3.</span> <span class="nav-text">变量与常量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#typedef"><span class="nav-number">1.3.1.</span> <span class="nav-text">typedef</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预处理"><span class="nav-number">1.4.</span> <span class="nav-text">预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#预定义"><span class="nav-number">1.4.1.</span> <span class="nav-text">预定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件包含"><span class="nav-number">1.4.2.</span> <span class="nav-text">文件包含</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#条件编译"><span class="nav-number">1.4.3.</span> <span class="nav-text">条件编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用实例"><span class="nav-number">1.4.4.</span> <span class="nav-text">应用实例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据的输入输出"><span class="nav-number">2.</span> <span class="nav-text">数据的输入输出</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运算符和表达式"><span class="nav-number">3.</span> <span class="nav-text">运算符和表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#重点说明"><span class="nav-number">3.1.</span> <span class="nav-text">重点说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运算符优先级"><span class="nav-number">3.2.</span> <span class="nav-text">运算符优先级</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序结构与控制语句"><span class="nav-number">4.</span> <span class="nav-text">程序结构与控制语句</span></a></li></ol></div>
-=======
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据"><span class="nav-number">1.</span> <span class="nav-text">数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ANSI-C与GNU-C"><span class="nav-number">1.1.</span> <span class="nav-text">ANSI C与GNU C</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型"><span class="nav-number">1.2.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量与常量"><span class="nav-number">1.3.</span> <span class="nav-text">变量与常量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#typedef"><span class="nav-number">1.3.1.</span> <span class="nav-text">typedef</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预处理"><span class="nav-number">1.4.</span> <span class="nav-text">预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#预定义"><span class="nav-number">1.4.1.</span> <span class="nav-text">预定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件包含"><span class="nav-number">1.4.2.</span> <span class="nav-text">文件包含</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#条件编译"><span class="nav-number">1.4.3.</span> <span class="nav-text">条件编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用实例"><span class="nav-number">1.4.4.</span> <span class="nav-text">应用实例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据的输入输出"><span class="nav-number">2.</span> <span class="nav-text">数据的输入输出</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运算符和表达式"><span class="nav-number">3.</span> <span class="nav-text">运算符和表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#重点说明"><span class="nav-number">3.1.</span> <span class="nav-text">重点说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运算符优先级"><span class="nav-number">3.2.</span> <span class="nav-text">运算符优先级</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序结构与控制语句"><span class="nav-number">4.</span> <span class="nav-text">程序结构与控制语句</span></a></li></ol></div>
->>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
             
 
           </div>
