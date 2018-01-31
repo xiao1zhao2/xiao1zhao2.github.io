@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="YOUBO&#39;S BLOG">
 <meta property="og:description" content="本篇文章主要介绍了数组和指针相关的知识点，并分析了二者之间的联系和区别。此外还介绍了一些特殊情况：空指针、void 指针、const修饰指针。最后针对实践中常用的字符串，总结了其使用的注意事项。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-28T07:42:46.629Z">
+<meta property="og:updated_time" content="2018-01-31T08:13:50.013Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C语言高级编程--4数组与指针">
 <meta name="twitter:description" content="本篇文章主要介绍了数组和指针相关的知识点，并分析了二者之间的联系和区别。此外还介绍了一些特殊情况：空指针、void 指针、const修饰指针。最后针对实践中常用的字符串，总结了其使用的注意事项。">
@@ -493,7 +493,7 @@
 <li>对指针的引用使用*。*叫做指针运算符或者叫间接存取运算符。通过指针访问它所指向的对象叫做变量的间接访问。</li>
 <li>&amp;是取地址运算符，和*互为逆运算。</li>
 </ol>
-<p>注意：<br>将一个变量的地址赋值给指针，那就意味着指针所指向的内存单元就是存储该变量的内存单元。无论是改变指针所指向的内存单元的内容还是直接改变变量的值，都会相同的效果。</p>
+<p>注意：<br>将一个变量的地址赋值给指针，那就意味着指针所指向的内存单元就是存储该变量的内存单元。无论是改变指针所指向的内存单元的内容还是直接改变变量的值，都会有相同的效果。</p>
 <p>使用示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">int a,*p;</div><div class="line">a = 1;</div><div class="line">p = &amp;a;</div><div class="line">*p=2;</div></pre></td></tr></table></figure></p>
 <p>该例中a的值也会有变化，这是通过指针改变了变量的值。因此才会有如果不希望通过指针改变变量的值，那么使用const修饰。</p>
 <h2 id="指针运算"><a href="#指针运算" class="headerlink" title="指针运算"></a>指针运算</h2><p>指针的运算是指以指针变量所存放的值作为运算量而进行的运算。指针的运算就是地址的运算。</p>
@@ -513,7 +513,7 @@
 <li>sizeof运算符：sizeof(px)，任何类型的指针变量求sizeof，大小始终是4或者8字节，是由计算机系统位数决定，和类型无关。</li>
 </ul>
 <h2 id="二级指针"><a href="#二级指针" class="headerlink" title="二级指针"></a>二级指针</h2><ul>
-<li>二级指针是即指向一级指针变量的指针变量，即指针指向的目标是指针。</li>
+<li>二级指针是指向一级指针变量的指针变量，即指针指向的目标是指针。</li>
 <li>定义：&lt;存储类型&gt; &lt;数据类型&gt; **&lt;指针名&gt;</li>
 <li>二级指针的运算，和一级指针类似，理解本质即可。++，--也是移动单位长度，这里的单位长度是指针类型的长度，则是4字节或者8字节。另外，用sizeof对二级指针运算，同样是4字节或者8字节。</li>
 </ul>
@@ -530,7 +530,7 @@
 <li>不确定数据类型表示只知道目标的起始位置，但是不知道目标的大小，即占用字节数。</li>
 <li>void指针可以指向任何类型的数据，那么任何类型的指针可以赋值给void指针，不需要强制类型转换。但是反过来，void指针赋值给某一具体类型的指针变量，则需要强制类型转换。</li>
 <li>在引用void指针的目标值时，需要进行强制类型转换。</li>
-<li>void指针的运算，ANSI C和GUN C规定不一样。ANSI C规定不允许对void指针进行运算，而GUN C可以。</li>
+<li>void指针的运算，ANSI C和GNU C规定不一样。ANSI C规定不允许对void指针进行运算，而GNU C可以。</li>
 <li>使用场合：使用任意类型的指针的场合，比如函数参数传递，函数返回值。例如作为一种函数模板，适用于多种情况。</li>
 <li>扩展知识：void也是一种数据类型，空类型。void不能定义变量。void的作用是(1)对函数返回做限定。(2)对函数参数做限定。</li>
 </ul>
@@ -873,7 +873,7 @@
         <div class="copyright" >
   
   &copy;  2016 - 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
