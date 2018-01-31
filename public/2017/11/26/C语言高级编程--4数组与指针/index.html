@@ -1,0 +1,1276 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="嵌入式,学习笔记,数组,指针," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本篇文章主要介绍了数组和指针相关的知识点，并分析了二者之间的联系和区别。此外还介绍了一些特殊情况：空指针、void 指针、const修饰指针。最后针对实践中常用的字符串，总结了其使用的注意事项。">
+<meta name="keywords" content="嵌入式,学习笔记,数组,指针">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言高级编程--4数组与指针">
+<meta property="og:url" content="http://www.youbo.website/2017/11/26/C语言高级编程--4数组与指针/index.html">
+<meta property="og:site_name" content="YOUBO&#39;S BLOG">
+<meta property="og:description" content="本篇文章主要介绍了数组和指针相关的知识点，并分析了二者之间的联系和区别。此外还介绍了一些特殊情况：空指针、void 指针、const修饰指针。最后针对实践中常用的字符串，总结了其使用的注意事项。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-31T08:13:50.013Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C语言高级编程--4数组与指针">
+<meta name="twitter:description" content="本篇文章主要介绍了数组和指针相关的知识点，并分析了二者之间的联系和区别。此外还介绍了一些特殊情况：空指针、void 指针、const修饰指针。最后针对实践中常用的字符串，总结了其使用的注意事项。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.youbo.website/2017/11/26/C语言高级编程--4数组与指针/"/>
+
+
+
+
+
+  <title> C语言高级编程--4数组与指针 | YOUBO'S BLOG </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?48a4e3570fd283499da1fa0f4fb218ac";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">YOUBO'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.youbo.website/2017/11/26/C语言高级编程--4数组与指针/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Bo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YOUBO'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                C语言高级编程--4数组与指针
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-26T09:21:15+08:00">
+                2017-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/嵌入式/" itemprop="url" rel="index">
+                    <span itemprop="name">嵌入式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            <!--noindex-->
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/11/26/C语言高级编程--4数组与指针/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count hc-comment-count" data-xid="2017/11/26/C语言高级编程--4数组与指针/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+              <!--/noindex-->
+            
+          
+
+          
+          
+             <span id="/2017/11/26/C语言高级编程--4数组与指针/" class="leancloud_visitors" data-flag-title="C语言高级编程--4数组与指针">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本篇文章主要介绍了数组和指针相关的知识点，并分析了二者之间的联系和区别。此外还介绍了一些特殊情况：空指针、void 指针、const修饰指针。最后针对实践中常用的字符串，总结了其使用的注意事项。<a id="more"></a></p>
+</blockquote>
+<h1 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h1><h2 id="数组基础"><a href="#数组基础" class="headerlink" title="数组基础"></a>数组基础</h2><p><strong>数组的特点</strong></p>
+<ol>
+<li>数组元素类型一样。</li>
+<li>存储空间连续。区别于链表。</li>
+<li>数组名是数组的起始位置，是地址常量。</li>
+</ol>
+<p><strong>注意事项</strong></p>
+<ol>
+<li>对数组名求sizeof，结果是整个数组的占用总空间，数组个数=sizeof(数组名)/sizeof(数据类型)。</li>
+<li>数组名是地址常量，则说明不能对其做自增自减，改变其值。</li>
+<li>数组元素的数据类型可以是基本类型也可以是构造类型。因此有字符数组、指针数组、结构体数组等，后续相关部分有详细介绍。</li>
+<li>方括号中的常量表达式在定义就必须确定，而不能随着程序运行而改变。</li>
+</ol>
+<h2 id="数组定义、初始化、引用"><a href="#数组定义、初始化、引用" class="headerlink" title="数组定义、初始化、引用"></a>数组定义、初始化、引用</h2><p><strong>定义</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;存储类型&gt;  &lt;数据类型&gt;  &lt;数组名&gt;[数组元素个数]</div></pre></td></tr></table></figure></p>
+<p><strong>初始化</strong></p>
+<ol>
+<li>全部元素初始化时，方括号中个数可省略不写。</li>
+<li>数组全部初始化为0的几种方法：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">int a[10]=&#123;0&#125;;</div><div class="line">int a[10];memset(a,0,sizeof(a));</div><div class="line">int a[10];bzero(a,sizeof(a));</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><strong>引用</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;数组名&gt;[下标]</div></pre></td></tr></table></figure></p>
+<p>说明：</p>
+<ol>
+<li>数组必须逐个元素引用，不能整体引用。所以在定义完毕后如果需要赋值，必须一个一个赋值，可以使用for循环。而不能写int a[3];a[3] = {1,2,3};</li>
+<li>注意数组下标越界，相当于内存访问越界，造成的结果无法估量。不确定会产生什么后果，这取决于越界访问的内存空间是否是空闲以及访问是读还是写。</li>
+</ol>
+<h2 id="二维数组"><a href="#二维数组" class="headerlink" title="二维数组"></a>二维数组</h2><ul>
+<li>二维数组的定义、引用、初始化类似于一维数组。</li>
+<li>二维数组的存储是按行优先顺序存储的，也是存储在连续的空间。</li>
+<li>初始化时可以省略第一个方括号中的数字。</li>
+<li>对于二维数组元素或者元素地址的各种变形，要从本质上理解其含义，以a[2][3]为例：<ul>
+<li>a是二维数组名，是地址常量。a+1表示移动一行。a+1表示第二行的地址。</li>
+<li>a[0]、a[1]等是一维数组名，也是地址常量。a[0]+1表示移动一列，a[0]+1表示第一行第二列的地址，即&amp;a[0][1]。</li>
+</ul>
+</li>
+</ul>
+<h1 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h1><h2 id="指针基础"><a href="#指针基础" class="headerlink" title="指针基础"></a>指针基础</h2><p><strong>基本概念</strong></p>
+<ul>
+<li>在计算机中，所有的数据都存放在存储器中，将存储器中的一个字节称为一个内存单元，不同的数据类型占有不同的内存单元数量。比如整型占4个内存单元(即4个字节)。</li>
+<li>为了正确的访问内存单元,必须为每个内存单元编号,根据每个内存单元的编号就可以找到该内存单元。内存单元的编号也叫地址,而又称这个地址为指针。</li>
+<li>内存单元的指针(地址)和内存单元的内容（具体存放的变量）是两个不同的概念。指针指向的内存区域的数据称为指针的目标，如果指向的区域是一个变量的内存空间，则这个变量称为指针的目标变量。</li>
+</ul>
+<p><strong>使用指针的好处</strong></p>
+<ol>
+<li>使程序简洁、紧凑、高效。</li>
+<li>有效地表示复杂的数据结构。</li>
+<li>实现动态分配内存。</li>
+<li>得到多于一个函数返回值。</li>
+</ol>
+<p><strong>注意事项</strong></p>
+<ol>
+<li>理清各个概念的本质。是变量还是常量，是指针还是数据，指针是变量还是常量，所指向的目标是变量还是常量。</li>
+<li>实践中建议画图标明指向关系。在程序出错时，也要从本质上分析原因。</li>
+</ol>
+<p>使用示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">px		表示指针变量，内容是地址变量。</div><div class="line">*px		表示指针指向的目标，内容是数据。</div><div class="line">&amp;px		表示指针变量占用存储区域的地址，内容是地址常量。</div></pre></td></tr></table></figure></p>
+<h2 id="指针定义、初始化、引用"><a href="#指针定义、初始化、引用" class="headerlink" title="指针定义、初始化、引用"></a>指针定义、初始化、引用</h2><p><strong>定义</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;存储类型&gt; &lt;数据类型&gt; *&lt;指针变量名&gt;</div></pre></td></tr></table></figure></p>
+<p>说明：</p>
+<ol>
+<li>定义时，将星号写在靠近变量名的一侧，而不是靠近数据类型。</li>
+<li>这里的数据类型是指指针指向的目标的数据类型。</li>
+</ol>
+<p><strong>初始化</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;数据类型&gt; *&lt;指针变量名&gt;=&lt;地址量&gt;</div><div class="line">int *p = &amp;m;</div><div class="line">或者</div><div class="line">int m,*p;</div><div class="line">p=&amp;m;</div></pre></td></tr></table></figure></p>
+<p>说明：<br>未经赋值的指针变量不能随便使用。例如：int *p;*p=50;这是错误的，没有对指针进行初始化，指针随机指向一个内存单元，这样的指针成为野指针，代码在执行时会出现segmentation fault，访问了一个非法地址。在对指针变量进行间接引用前必须确保它们已经指向了一个合法的对象。</p>
+<p><strong>引用</strong></p>
+<ol>
+<li>对指针的引用使用*。*叫做指针运算符或者叫间接存取运算符。通过指针访问它所指向的对象叫做变量的间接访问。</li>
+<li>&amp;是取地址运算符，和*互为逆运算。</li>
+</ol>
+<p>注意：<br>将一个变量的地址赋值给指针，那就意味着指针所指向的内存单元就是存储该变量的内存单元。无论是改变指针所指向的内存单元的内容还是直接改变变量的值，都会有相同的效果。</p>
+<p>使用示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">int a,*p;</div><div class="line">a = 1;</div><div class="line">p = &amp;a;</div><div class="line">*p=2;</div></pre></td></tr></table></figure></p>
+<p>该例中a的值也会有变化，这是通过指针改变了变量的值。因此才会有如果不希望通过指针改变变量的值，那么使用const修饰。</p>
+<h2 id="指针运算"><a href="#指针运算" class="headerlink" title="指针运算"></a>指针运算</h2><p>指针的运算是指以指针变量所存放的值作为运算量而进行的运算。指针的运算就是地址的运算。</p>
+<ul>
+<li>算术运算<ul>
+<li>+、-、++、--，表示移动一个或多个单位长度，单位长度是指数据类型所占字节数。因此其值的改变为数据类型所占字节大小乘以1或n。</li>
+<li>两指针相减：结果为一个整数，而不是地址量，表示两指针相隔的数据个数。</li>
+</ul>
+</li>
+<li>关系运算：比较少用。多用if(px != NULL)和空指针进行比较。或者两个指针一起向中间移动时，会比较两个指针。</li>
+<li>赋值运算<ul>
+<li>对指针赋值使用&amp;，和*互为逆运算。多个运算符在一起要注意优先级。</li>
+<li>*p++ 表示*(p++)，表达式的值是取原p指向的对象值，然后p移动一个位置。 </li>
+<li>*++p 表示*(++p)，表达式的值是p移动一个位置后，再取其指向的对象值。</li>
+</ul>
+</li>
+<li>sizeof运算符：sizeof(px)，任何类型的指针变量求sizeof，大小始终是4或者8字节，是由计算机系统位数决定，和类型无关。</li>
+</ul>
+<h2 id="二级指针"><a href="#二级指针" class="headerlink" title="二级指针"></a>二级指针</h2><ul>
+<li>二级指针是指向一级指针变量的指针变量，即指针指向的目标是指针。</li>
+<li>定义：&lt;存储类型&gt; &lt;数据类型&gt; **&lt;指针名&gt;</li>
+<li>二级指针的运算，和一级指针类似，理解本质即可。++，--也是移动单位长度，这里的单位长度是指针类型的长度，则是4字节或者8字节。另外，用sizeof对二级指针运算，同样是4字节或者8字节。</li>
+</ul>
+<p>使用示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">e.g1:字符指针数组名赋值给字符二级指针</div><div class="line">char *p[5]=&#123;&quot;beijing&quot;,&quot;tianjin&quot;,&quot;shanghai&quot;,&quot;sichuan&quot;,&quot;liaoning&quot;&#125;;</div><div class="line">char **pp=p;</div><div class="line"></div><div class="line">e.g2:指针数组名赋值给二级指针</div><div class="line">int a[2][3];</div><div class="line">int *p[2];</div><div class="line">p[0]=a;</div><div class="line">p[1]=a+1;</div><div class="line">int **q = p;</div></pre></td></tr></table></figure></p>
+<h2 id="特殊指针"><a href="#特殊指针" class="headerlink" title="特殊指针"></a>特殊指针</h2><h3 id="空指针"><a href="#空指针" class="headerlink" title="空指针"></a>空指针</h3><ul>
+<li>空指针是指指针变量为0的指针，表示为NULL。表示目前<strong>尚未指向任何对象。</strong></li>
+<li>用处：(1)在需要返回指针时，如果失败常常返回NULL。(2)在指针定义时，常常初始化为NULL。</li>
+<li>修改0地址的值或者进行间接引用操作都是不允许的，会出现段错误。</li>
+<li>如果指针初始化为NULL，后又访问或者修改该地址的内容，则一定会出现段错误，所以可以分析出原因：是由于指针指向的对象不明确造成的。</li>
+<li>一般在对指针进行引用前，应该先判断指针是否为空。</li>
+</ul>
+<h3 id="void指针"><a href="#void指针" class="headerlink" title="void指针"></a>void指针</h3><ul>
+<li>void指针是指向不明确数据类型的指针变量。这是空类型指针，区别空指针概念。</li>
+<li>不确定数据类型表示只知道目标的起始位置，但是不知道目标的大小，即占用字节数。</li>
+<li>void指针可以指向任何类型的数据，那么任何类型的指针可以赋值给void指针，不需要强制类型转换。但是反过来，void指针赋值给某一具体类型的指针变量，则需要强制类型转换。</li>
+<li>在引用void指针的目标值时，需要进行强制类型转换。</li>
+<li>void指针的运算，ANSI C和GNU C规定不一样。ANSI C规定不允许对void指针进行运算，而GNU C可以。</li>
+<li>使用场合：使用任意类型的指针的场合，比如函数参数传递，函数返回值。例如作为一种函数模板，适用于多种情况。</li>
+<li>扩展知识：void也是一种数据类型，空类型。void不能定义变量。void的作用是(1)对函数返回做限定。(2)对函数参数做限定。</li>
+</ul>
+<p>使用示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">e.g1:给某个指针动态分配内存，malloc需要强制类型转换</div><div class="line">void *malloc(size_t size);</div><div class="line">int *p;</div><div class="line">p = (int *)malloc(sizeof(int)*n);</div><div class="line"></div><div class="line">e.g2:内存拷贝函数，任何类型的指针都可以使用。也符合内存拷贝的本质，与类型无关。</div><div class="line">void *memcpy(void *dest, const void *src, size_t n);</div><div class="line">char a1[5]=&#123;0&#125;;</div><div class="line">char b1[]=&#123;&quot;hi&quot;&#125;;</div><div class="line">memcpy(a1,b1,sizeof(b1));</div></pre></td></tr></table></figure></p>
+<p><em>参考文档：</em><br><em><a href="http://blog.csdn.net/zycxnanwang/article/details/52876985" target="_blank" rel="external">void指针详解</a></em><br><em><a href="http://blog.csdn.net/geekcome/article/details/6249151" target="_blank" rel="external">void及void指针含义的深刻解析</a></em><br><em><a href="http://blog.chinaunix.net/uid-22197900-id-359211.html" target="_blank" rel="external">void指针用法</a></em></p>
+<h3 id="const修饰指针"><a href="#const修饰指针" class="headerlink" title="const修饰指针"></a>const修饰指针</h3><ul>
+<li>const int *a：常量化指针指向的对象，不予许通过指针修改指向的对象，但可以直接修改变量。</li>
+<li>int * const a：常量化指针变量，只能指向同一个对象，指针变量的值不能改变，但是可以通过指针改变对象的值。</li>
+<li>const int * const a：常量化指针变量和目标表达式，既不能通过指针修改指针所指向的变量的值，也不能修改指针变量的地址。</li>
+</ul>
+<p>注意：</p>
+<ol>
+<li>强行修改会报错：assignment of read-only location ……</li>
+<li>const声明的变量必须在初始化时赋值，后面再赋值，则会报错。</li>
+</ol>
+<p>使用示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">e.g1:</div><div class="line">char *strcpy(char *dest, const char *src);</div><div class="line">这里加const是为了不予许在函数内，通过*src修改原字符串的内容。</div><div class="line"></div><div class="line">e.g2:</div><div class="line">int main(int argc,const char *argv[])</div><div class="line">这里的形参char *argv[]可以理解为char **argv。const限制*argv[]不能变，即不能通过指针改变字符串。而argv[1]和argv都是可变的。</div></pre></td></tr></table></figure></p>
+<p><em>参考文档：</em><br><em><a href="https://www.cnblogs.com/kewei-ma/p/3668227.html" target="_blank" rel="external">读懂C语言const限定以及复杂定义</a></em><br><em><a href="https://www.cnblogs.com/haore147/p/3646311.html" target="_blank" rel="external">C语言中strcpy字符串复制库函数的理解与分析</a></em></p>
+<h1 id="指针与数组"><a href="#指针与数组" class="headerlink" title="指针与数组"></a>指针与数组</h1><p>由上面内容可知，指针和数组有很多相似之处。要从本质上理解区分指针和数组。在C语言中指针的效率往往高于数组下标。编译器对程序中数组下标操作会全部转换为对指针的偏移量操作。</p>
+<h2 id="数组指针"><a href="#数组指针" class="headerlink" title="数组指针"></a>数组指针</h2><p>数组指针是指向数组起始位置的指针，本质是指针。实践中多指指向二维数组的指针。</p>
+<h3 id="指针与一维数组"><a href="#指针与一维数组" class="headerlink" title="指针与一维数组"></a>指针与一维数组</h3><ul>
+<li>数组在内存中的位置在运行过程中不能动态改变。数组名不允许被赋值。</li>
+<li>数组的指针是地址常量，而指针变量是地址变量。</li>
+<li>*运算符称之为指针解引用，即根据地址获取地址里的内容。[]运算符称之为下标运算，表示指针移动n个单位长度后取内容。</li>
+</ul>
+<p>使用示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">int a[5];</div><div class="line">int *p = a;</div><div class="line">则有</div><div class="line">数组元素表示：*(p+i)&lt;=&gt;p[i]&lt;=&gt;a[i]&lt;=&gt;*(a+i)</div><div class="line">数组元素地址表示：p+i&lt;=&gt;&amp;p[i]&lt;=&gt;&amp;a[i]&lt;=&gt;a+i</div></pre></td></tr></table></figure></p>
+<h3 id="指针与二维数组"><a href="#指针与二维数组" class="headerlink" title="指针与二维数组"></a>指针与二维数组</h3><p>访问二维数组元素的方法有：</p>
+<ol>
+<li>列指针（一级指针），利用顺序存储的特点访问。</li>
+<li>行指针。<br>定义：存储行地址的指针称为行地址。加1表示移动一行。<br>格式：&lt;存储类型&gt; &lt;数据类型&gt; (*&lt;指针变量名&gt;)[表达式]<br>注意：方括号的表达式表示指针加1，移动几个数据，用行指针操作二维数组时，代表一行的个数，即列数。</li>
+<li>一级指针数组。<br>定义指针数组操作二维数组时，指针数组的个数应该为二维数组的行数。</li>
+<li>二级指针。注意：二级指针的初始化在这里必须赋值为指针数组名，而不是二维数组名，否则不知道如何偏移。</li>
+</ol>
+<p>使用示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">int a[2][3]=&#123;&#123;1,2,3&#125;,&#123;4,5,6&#125;&#125;;</div><div class="line">//访问二维数组元素</div><div class="line">//数组方式</div><div class="line">//a[1][2];</div><div class="line">printf(&quot;%d %d %d\n&quot;,a[1][2],*(a[1]+2),*(*(a+1)+2));</div><div class="line"></div><div class="line">//列指针访问</div><div class="line">int num = sizeof(a)/sizeof(int);</div><div class="line">int row = sizeof(a)/sizeof(a[0]);</div><div class="line">int col = num / row;</div><div class="line">int *pcol = &amp;a[0][0];</div><div class="line">printf(&quot;%d\n&quot;,*(pcol+1*col+2));</div><div class="line"></div><div class="line">//行指针访问</div><div class="line">int (*prow)[3];</div><div class="line">prow = a;</div><div class="line">printf(&quot;%d\n&quot;,*(*(prow+1)+2));</div><div class="line"></div><div class="line">//指针数组访问</div><div class="line">int *parray[2];</div><div class="line">parray[0] = a[0];</div><div class="line">parray[1] = a[1];</div><div class="line">printf(&quot;%d\n&quot;,*(parray[1]+2));</div><div class="line"></div><div class="line">//二级指针访问</div><div class="line">int **psec;</div><div class="line">//psec =a;//对二级指针赋值，是指针数组名，而不是二维数组名，否则psec+1不知道如何偏移</div><div class="line">psec = parray;</div><div class="line">printf(&quot;%d\n&quot;,*(*(psec+1)+2));</div><div class="line"></div><div class="line">//访问二维数组元素的地址</div><div class="line">printf(&quot;%p %p %p\n&quot;,&amp;a[1][2],a[1]+2,*(a+1)+2);</div><div class="line">printf(&quot;%p %p %p %p\n&quot;,pcol+1*col+2,*(prow+1)+2,parray[1]+2,*(psec+1)+2);</div></pre></td></tr></table></figure></p>
+<p>注意：<br>a[i]和*(a+i)是完全等价的，不管a是数组名还是指针，因此示例中可以按照此规则等价转换书写更多的形式。</p>
+<h2 id="指针数组"><a href="#指针数组" class="headerlink" title="指针数组"></a>指针数组</h2><p>指针数组：本质数组，数组名相当于多级指针。指针数组的数组名是数组的起始地址。</p>
+<p>使用示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">e.g1:</div><div class="line">访问二维数组</div><div class="line">int a[2][3]=&#123;&#123;1,2,3&#125;,&#123;4,5,6&#125;&#125;;</div><div class="line">int *parray[2];</div><div class="line">parray[0] = a[0];</div><div class="line">parray[1] = a[1];</div><div class="line"></div><div class="line">e.g2:</div><div class="line">字符指针数组</div><div class="line">int main(int argc,const char *argv[])</div><div class="line">这里是指针数组做形参，相当于同级别的指针。</div><div class="line"></div><div class="line">char *fruit[3]=&#123;&quot;apple&quot;,&quot;pear&quot;,&quot;grape&quot;&#125;;</div></pre></td></tr></table></figure></p>
+<h1 id="字符串、字符数组、字符指针"><a href="#字符串、字符数组、字符指针" class="headerlink" title="字符串、字符数组、字符指针"></a>字符串、字符数组、字符指针</h1><p>关于字符串的使用，涉及字符数组和字符指针。数组和指针前面已经介绍，数组和指针使用的注意事项，字符数组和字符指针同样应注意。除此之外，重点理解字符串的特殊之处即可。</p>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><p><strong>定义</strong><br>字符串是由’\0’作为结束符的一组字符，用字符数组表示。</p>
+<p><strong>字符串常量</strong><br>在程序中使用字符串常量会生成一个“指向字符串的常指针”。当一个字符串常量出现在一个表达式中，表达式所引用的值是存储该字符串常量的内存首地址，而不是字符串本身。</p>
+<p><strong>字符串处理函数</strong><br>字符处理函数常用的有strlen、strcpy、strcmp、strcat、strtok。以及带有长度限制的对应函数，例如strncpy等。这些函数需要熟练使用，这在Linux应用程序开发中有使用。<br>说明：</p>
+<ol>
+<li>每一个函数的具体用法参见man手册。一定要理解各个函数的含义，尤其是特殊处理。</li>
+<li>strlen统计字符长度，不带’\0’。</li>
+<li>strcpy不会做越界检查，需自己保证长度合适。而strncpy不保证最后一个字符是’\0’。</li>
+<li>strtok功能是分割字符串，会破坏原有字符串完整性，如果要想保持不变，使用strchr和sscanf组合代替。</li>
+</ol>
+<p><em>参考文档:</em><br><em><a href="http://blog.csdn.net/lhl_blog/article/details/39695457" target="_blank" rel="external">C语言字符串使用注意事项</a></em><br><em><a href="http://www.sohu.com/a/162885448_505901" target="_blank" rel="external">常见字符串处理函数梳理及分析 </a></em><br><em><a href="http://www.jb51.net/article/37410.htm" target="_blank" rel="external">C语言字符串操作总结大全(超详细)</a></em><br><em><a href="https://www.cnblogs.com/haore147/p/3646311.html" target="_blank" rel="external">C语言中strcpy字符串复制库函数的理解与分析</a></em></p>
+<h2 id="字符数组"><a href="#字符数组" class="headerlink" title="字符数组"></a>字符数组</h2><ul>
+<li>字符数组是有一定顺序关系的若干字符变量的集合。可以是一维的也可以是二维的。字符数组具有普通数组的性质，又有其特殊性。</li>
+<li>初始化：可以使用逐个赋值，也可以使用字符串常量。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">char str[6]=&#123;&apos;h&apos;,&apos;e&apos;,&apos;l&apos;,&apos;l&apos;,&apos;o&apos;,&apos;\0&apos;&#125;;</div><div class="line">char str[6]=&quot;hello&quot;;</div><div class="line">char str[]=&quot;hello&quot;;</div><div class="line">char fruit[][7]=&#123;&quot;apple&quot;,&quot;orange&quot;,&quot;grape&quot;&#125;;</div></pre></td></tr></table></figure>
+<p>注意：</p>
+<ol>
+<li>用字符串赋值比用字符逐个赋值多一个字符，所以通常用字符串赋初值时，不写数组长度。</li>
+<li>如果希望字符数组表示字符串，那么字符逐个赋值时，应该额外在最后手动添加’\0’。即a[strlen(s)]=’\0’。</li>
+<li>字符数组一定不能越界访问。如果定义了数组长度N，输入时只能输入N-1个字符。</li>
+<li>字符数组名同样也是地址常量，不能自增自减改变其值。</li>
+</ol>
+<h2 id="字符指针"><a href="#字符指针" class="headerlink" title="字符指针"></a>字符指针</h2><ul>
+<li>字符指针就是指向字符类型对象的指针。如果字符指针指向字符串，则存储字符串的起始地址，即指针指向字符串的第一个字符。</li>
+<li>初始化：可以赋值为字符数组名，也可以使用字符串常量。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">char str[]=&quot;hello&quot;;char *p = str;</div><div class="line">char *p=&quot;welcome&quot;;</div></pre></td></tr></table></figure>
+<p>注意：</p>
+<ol>
+<li>初始化字符指针是把内存中字符串的首地址赋予指针，并不是把字符串复制到指针中。而字符串本身存储在内存的其他地方。</li>
+<li>char *p=”welcome”;相当于const char *p=”welcome”;因此按照const修饰指针的规则，则不能通过指针修改字符串的内容，会引起段错误。但是指针本身可以改变，p++是允许的。</li>
+<li>字符指针作为形参，函数内判断字符串是否达到结尾，通常使用while(*s == ‘\0’)，而不用其长度判断。</li>
+<li>获得字符串长度，通常使用strlen，而不能对字符指针求sizeof，因为其代表的是指针占内存空间大小。如果对字符指针求sizeof控制长度，打印时会导致字符串打印不全。</li>
+<li>如果给指向字符串的字符指针动态分配空间时，也应该是strlen(s)+1，因为要给’\0’提供一个位置。否则在打印时会导致字符串打印完全后还跟着乱码字符。</li>
+</ol>
+<p><em>参考文档</em><br><em><a href="http://c.biancheng.net/cpp/html/80.html" target="_blank" rel="external">C语言字符串指针（指向字符串的指针）</a></em><br><em><a href="https://www.cnblogs.com/lumanman/p/3297091.html" target="_blank" rel="external">c中给字符数组，字符串指针赋值的方法总结</a></em></p>
+<h2 id="字符指针数组"><a href="#字符指针数组" class="headerlink" title="字符指针数组"></a>字符指针数组</h2><ul>
+<li>字符指针数组即是在数组中存储若干个字符串首地址。</li>
+<li>字符指针数组的数组名是代表数组的起始位置，而数组元素是字符指针，因此数组名是指针的地址，即为二级指针，因此使用二级指针操作。</li>
+</ul>
+<p>使用示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">char *p[5]=&#123;&quot;beijing&quot;,&quot;tianjin&quot;,&quot;shanghai&quot;,&quot;sichuan&quot;,&quot;liaoning&quot;&#125;;</div><div class="line">char **pp=p;//(用二级指针承接指针数组名)</div></pre></td></tr></table></figure>
+<h1 id="个人观点"><a href="#个人观点" class="headerlink" title="个人观点"></a>个人观点</h1><ol>
+<li>理解每一个概念的本质含义。从本质上去理解每一个知识点的使用方法和注意事项。</li>
+<li>当出现多个名词组合在一起时，学会分解，从简单组合到复杂。</li>
+<li>对数组和指针的掌握程度是熟练使用。此外建议通过读经典源码，了解通用写法。</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE.jpg" alt="You Bo WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%B6%E6%AC%BE.jpg" alt="You Bo Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/嵌入式/" rel="tag"># 嵌入式</a>
+          
+            <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
+          
+            <a href="/tags/数组/" rel="tag"># 数组</a>
+          
+            <a href="/tags/指针/" rel="tag"># 指针</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/23/C语言高级编程--3Make/" rel="next" title="C语言高级编程--3Make">
+                <i class="fa fa-chevron-left"></i> C语言高级编程--3Make
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/11/C语言高级编程--5函数/" rel="prev" title="C语言高级编程--5函数">
+                C语言高级编程--5函数 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="hypercomments_widget"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F"
+               alt="You Bo" />
+          <p class="site-author-name" itemprop="name">You Bo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Done Is Better Than Perfect</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数组"><span class="nav-number">1.</span> <span class="nav-text">数组</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数组基础"><span class="nav-number">1.1.</span> <span class="nav-text">数组基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组定义、初始化、引用"><span class="nav-number">1.2.</span> <span class="nav-text">数组定义、初始化、引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二维数组"><span class="nav-number">1.3.</span> <span class="nav-text">二维数组</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#指针"><span class="nav-number">2.</span> <span class="nav-text">指针</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#指针基础"><span class="nav-number">2.1.</span> <span class="nav-text">指针基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指针定义、初始化、引用"><span class="nav-number">2.2.</span> <span class="nav-text">指针定义、初始化、引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指针运算"><span class="nav-number">2.3.</span> <span class="nav-text">指针运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二级指针"><span class="nav-number">2.4.</span> <span class="nav-text">二级指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特殊指针"><span class="nav-number">2.5.</span> <span class="nav-text">特殊指针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#空指针"><span class="nav-number">2.5.1.</span> <span class="nav-text">空指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#void指针"><span class="nav-number">2.5.2.</span> <span class="nav-text">void指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#const修饰指针"><span class="nav-number">2.5.3.</span> <span class="nav-text">const修饰指针</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#指针与数组"><span class="nav-number">3.</span> <span class="nav-text">指针与数组</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数组指针"><span class="nav-number">3.1.</span> <span class="nav-text">数组指针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#指针与一维数组"><span class="nav-number">3.1.1.</span> <span class="nav-text">指针与一维数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指针与二维数组"><span class="nav-number">3.1.2.</span> <span class="nav-text">指针与二维数组</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指针数组"><span class="nav-number">3.2.</span> <span class="nav-text">指针数组</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字符串、字符数组、字符指针"><span class="nav-number">4.</span> <span class="nav-text">字符串、字符数组、字符指针</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串"><span class="nav-number">4.1.</span> <span class="nav-text">字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符数组"><span class="nav-number">4.2.</span> <span class="nav-text">字符数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符指针"><span class="nav-number">4.3.</span> <span class="nav-text">字符指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符指针数组"><span class="nav-number">4.4.</span> <span class="nav-text">字符指针数组</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#个人观点"><span class="nav-number">5.</span> <span class="nav-text">个人观点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Bo</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+
+		_hcwp.push({widget:"Bloggerstream", widget_id: 93304, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+
+		
+		_hcwp.push({widget:"Stream", widget_id: 93304, xid: "2017/11/26/C语言高级编程--4数组与指针/"});
+		
+
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/93304/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8QMQj1UnbwzGuBYQq2wN1HrR-gzGzoHsz", "am1SdGrz3btqx5wyV7DB0qUj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

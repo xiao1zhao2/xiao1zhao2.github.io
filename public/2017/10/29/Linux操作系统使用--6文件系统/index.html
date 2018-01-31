@@ -1,0 +1,1171 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="嵌入式,学习笔记,文件系统,根文件系统,虚拟文件系统," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本篇文章主要围绕linux文件系统总结相关知识点，包括文件系统类型、分区与挂载等基本概念以及文件系统重要目录分析。最后简要叙述文件系统体系结构中起重要作用的虚拟文件系统概念，以作后期扩展学习。">
+<meta name="keywords" content="嵌入式,学习笔记,文件系统,根文件系统,虚拟文件系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux操作系统使用--6文件系统">
+<meta property="og:url" content="http://www.youbo.website/2017/10/29/Linux操作系统使用--6文件系统/index.html">
+<meta property="og:site_name" content="YOUBO&#39;S BLOG">
+<meta property="og:description" content="本篇文章主要围绕linux文件系统总结相关知识点，包括文件系统类型、分区与挂载等基本概念以及文件系统重要目录分析。最后简要叙述文件系统体系结构中起重要作用的虚拟文件系统概念，以作后期扩展学习。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/linux%E5%92%8Cwindows%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%AF%94%E8%BE%83.jpg">
+<meta property="og:image" content="https://www.ibm.com/developerworks/cn/linux/l-linux-filesystem/figure1.gif">
+<meta property="og:updated_time" content="2017-11-05T08:04:30.993Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux操作系统使用--6文件系统">
+<meta name="twitter:description" content="本篇文章主要围绕linux文件系统总结相关知识点，包括文件系统类型、分区与挂载等基本概念以及文件系统重要目录分析。最后简要叙述文件系统体系结构中起重要作用的虚拟文件系统概念，以作后期扩展学习。">
+<meta name="twitter:image" content="http://osjn6k0nm.bkt.clouddn.com/linux%E5%92%8Cwindows%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%AF%94%E8%BE%83.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.youbo.website/2017/10/29/Linux操作系统使用--6文件系统/"/>
+
+
+
+
+
+  <title> Linux操作系统使用--6文件系统 | YOUBO'S BLOG </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?48a4e3570fd283499da1fa0f4fb218ac";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">YOUBO'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.youbo.website/2017/10/29/Linux操作系统使用--6文件系统/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Bo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YOUBO'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Linux操作系统使用--6文件系统
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-29T09:21:15+08:00">
+                2017-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/嵌入式/" itemprop="url" rel="index">
+                    <span itemprop="name">嵌入式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            <!--noindex-->
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/10/29/Linux操作系统使用--6文件系统/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count hc-comment-count" data-xid="2017/10/29/Linux操作系统使用--6文件系统/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+              <!--/noindex-->
+            
+          
+
+          
+          
+             <span id="/2017/10/29/Linux操作系统使用--6文件系统/" class="leancloud_visitors" data-flag-title="Linux操作系统使用--6文件系统">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本篇文章主要围绕linux文件系统总结相关知识点，包括文件系统类型、分区与挂载等基本概念以及文件系统重要目录分析。最后简要叙述文件系统体系结构中起重要作用的虚拟文件系统概念，以作后期扩展学习。<a id="more"></a></p>
+</blockquote>
+<h1 id="文件系统简介"><a href="#文件系统简介" class="headerlink" title="文件系统简介"></a>文件系统简介</h1><h2 id="文件系统概念"><a href="#文件系统概念" class="headerlink" title="文件系统概念"></a>文件系统概念</h2><ul>
+<li>文件系统是一种管理和访问磁盘的软件机制。用于组织和管理计算机存储设备上的大量文件，并提供用户交互接口。</li>
+<li>文件系统是linux操作系统的重要组成部分。在linux操作系统中，“一切皆文件”。因此硬件设备也是一种特殊的文件，它挂载在某一目录下被使用。我们需掌握体会linux文件系统与windows文件系统的不同之处。</li>
+</ul>
+<h2 id="文件系统类型"><a href="#文件系统类型" class="headerlink" title="文件系统类型"></a>文件系统类型</h2><p>常见的linux文件系统有以下几种：</p>
+<ol>
+<li>磁盘文件类型<br>本地主机可以访问的文件系统，包括硬盘、CD-ROM、DVD、USB、磁盘阵列等。文件系统格式有：Ext3、Ext4、vfat、FAT32、FAT16、NTFS等。</li>
+<li>网络文件系统<br>远程可访问的文件系统，在服务器端仍然是本地的磁盘文件系统。文件格式有：NFS、Samba、AFP、WebDAV等。</li>
+<li>专有/虚拟文件系统<br>不驻留磁盘的文件系统，即为操作系统加载才产生。文件格式有：TMPFS（临时文件系统）、PROCFS（进程文件系统）、LOOPBACKFS（回送文件系统）。 </li>
+</ol>
+<p><em>注：</em><br><em>1. 使用du -aTh命令可以看到各文件系统的使用情况和类型。</em><br><em>2. 对比Windows系统，文件系统格式主要为NTFS、FAT16、FAT32。</em></p>
+<h2 id="分区与挂载"><a href="#分区与挂载" class="headerlink" title="分区与挂载"></a>分区与挂载</h2><p><strong>分区</strong></p>
+<ul>
+<li>硬盘分区是针对硬件进行操作，分为主分区、扩展分区、逻辑分区。</li>
+<li>交换分区：将内存中的内容写入磁盘或者从磁盘中读出，称为内存交换。交换分区的大小最小为计算机内存。需要把交换分区放在硬盘驱动器的起始位置。</li>
+</ul>
+<p><strong>挂载</strong></p>
+<ul>
+<li>挂载是指将分区和目录对应的过程。将一个文件系统和一个存储设备关联起来。挂载点是指文件树中的挂载目录。</li>
+</ul>
+<p><strong>linux下分区与目录的关系</strong></p>
+<ul>
+<li>Linux每一个分区都和某一个目录对应，对目录的操作就是对分区的操作，从而实现了硬件管理手段和软件目录管理手段的统一。</li>
+<li>在Linux下，查找某个文件，不需要知道其物理存储位置，只需要知道属于哪一个目录即可。</li>
+<li>在Windows下，目录属于分区，而在Linux下，分区属于目录。</li>
+<li>Linux文件系统和Windows文件系统区别如下图所示。</li>
+</ul>
+<p><img src="http://osjn6k0nm.bkt.clouddn.com/linux%E5%92%8Cwindows%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%AF%94%E8%BE%83.jpg" alt=" " title="Linux文件系统和Windows文件系统区别"></p>
+<p><em>注:</em><br><em>1. 分区的概念可以结合安装linux操作系统的操作进一步加深理解。</em><br><em>2. 参考文档：<a href="http://www.ryjiaoyu.com/book/details/4461" target="_blank" rel="external">《嵌入式操作系统(Linux篇)》1.5.1</a></em></p>
+<h1 id="根文件系统目录结构"><a href="#根文件系统目录结构" class="headerlink" title="根文件系统目录结构"></a>根文件系统目录结构</h1><h2 id="根文件系统"><a href="#根文件系统" class="headerlink" title="根文件系统"></a>根文件系统</h2><p>定义：存放运行、维护系统所必须的各种工具软件、库文件、脚本、配置文件和其他特殊文件的地方，也可以安装各种软件包，其实就是目录和文件。</p>
+<h2 id="文件类型"><a href="#文件类型" class="headerlink" title="文件类型"></a>文件类型</h2><p>linux系统下文件不是以后缀名不同来区分不同的文件。linux操作系统下有7种文件类型。</p>
+<ul>
+<li>b 块设备文件</li>
+<li>c 字符设备文件</li>
+<li>d 目录文件</li>
+<li>- 普通文件</li>
+<li>l 链接文件</li>
+<li>s 套结字文件</li>
+<li>p 管道文件</li>
+</ul>
+<p><strong>说明</strong></p>
+<ol>
+<li>用ls -l命令可以看到前10个字符表示文件类型和访问权限。访问权限包括读r、写w、执行x。访问权限又分为3个不同用户级别：文件所有者、文件从属组、其他用户。</li>
+<li>使用chmod可使用符号标记或者八进制数两种方式改变文件访问权限。如chmod u+r xxx或者chmod 777 xxx。使用符号标记方式改变，可指定多个用户级别，用逗号隔开。</li>
+</ol>
+<h2 id="目录分析"><a href="#目录分析" class="headerlink" title="目录分析"></a>目录分析</h2><p>Linux文件系统就是一个树形的分层组织结构，类似于一棵倒置的树。将根（/）作为文件系统的唯一起点，其他文件和外部设备都以文件的形式挂载在这个文件树上。每一个linux操作系统的文件系统不完全一样，这里以Ubuntu为例，只介绍重要的几个目录。</p>
+<ul>
+<li>/bin 普通用户可以使用的命令存放地，类似的有/usr/bin、/usr/local/bin。</li>
+<li>/sbin 超级用户可以使用的命令存放地，类似的有/usr/sbin、/usr/local/sbin。</li>
+<li>/dev 存放所有设备文件，包括硬盘、键盘、鼠标、网卡、终端等。</li>
+<li>/etc 存放系统配置文件。</li>
+<li>/home 普通用户家目录。</li>
+<li>/root 超级用户家目录。</li>
+<li>/lib 存放共享库文件，包括被/bin、/sbin程序使用的库文件，类似的有/usr/lib、/usr/local/lib。</li>
+<li>/media Ubuntu系统自动挂载CD-ROM、USB等，存放临时读入的文件。</li>
+<li>/mnt 作为临时被挂载文件系统的挂载点。</li>
+<li>/opt 作为可选文件和程序的存放目录，通常第三方软件和通过源码安装的软件，可安装于该目录。</li>
+<li>/proc 存放所有标志为文件的进程，每一个进程在proc下有一个名为其进程号的目录。</li>
+<li>/tmp 存放临时文件。</li>
+<li>/lost+found 恢复文件存放位置，系统崩溃时，可在该目录下找到恢复文件，通常为空。</li>
+<li>/usr/include c/c++等开发环境的标准include文件。</li>
+<li>/usr/local 安装本地程序的一般默认路径。</li>
+<li>/var/cache 应用程序缓存目录。</li>
+</ul>
+<p><strong>说明</strong></p>
+<ol>
+<li>使用tree命令可以查看系统的文件树形目录结构。</li>
+<li>用于intel NUC3815的开发IDE Intel® System Studio IoT Edition和openwrt的交叉编译环境都安装在opt下。</li>
+<li>/tmp文件夹是tmpfs类型的文件系统挂载于此，而tmpfs文件系统由内核支持，存在于<strong>内存</strong>中，由于内存的数据掉电丢失，因此系统重启后，该目录下的文件被清空。openwrt系统下安装软件，通常将软件包放于此目录。</li>
+<li>制作根文件系统的方法详见系统移植部分。</li>
+</ol>
+<p><em>参考文档：<a href="http://blog.csdn.net/guodongsoft/article/details/52523979" target="_blank" rel="external">Linux文件系统以及目录结构简介</a></em></p>
+<h1 id="文件系统体系结构"><a href="#文件系统体系结构" class="headerlink" title="文件系统体系结构"></a>文件系统体系结构</h1><p><a href="https://www.ibm.com/developerworks/cn/linux/l-linux-filesystem/" target="_blank" rel="external">linux文件系统组件的体系结构</a>如下图所示，该图显示了用户空间和内核空间中与文件系统相关的主要组件之间的关系。</p>
+<p><img src="https://www.ibm.com/developerworks/cn/linux/l-linux-filesystem/figure1.gif" alt=" " title="linux文件系统组件的体系结构"></p>
+<p>文件系统包括三个部分：虚拟文件系统、cache、真正的文件系统(vfat、Ext3等)。其中有重要作用的是<strong>虚拟文件系统(VFS)</strong>。它是一种转换机制，仅存在于内存中，不存在外存空间。它的作用如下：</p>
+<ol>
+<li>给用户空间的程序提供文件系统接口，通过一套统一的文件IO系统调用，对任意文件操作。</li>
+<li>提供抽象功能，通过一些数据结构及其方法向实际的文件系统提供接口，实现不同文件系统在Linux中共存。</li>
+</ol>
+<p><em>注：</em><br><em>1. 从调用open、read等函数到设备文件正确返回数据的过程加深理解文件系统体系结构。</em><br><em>2. 后期可深入内核中文件系统源代码加深理解文件系统的工作机制。</em><br><em>3. 参考文档：<a href="https://www.ibm.com/developerworks/cn/linux/l-linux-filesystem/" target="_blank" rel="external">Linux 文件系统剖析</a></em></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE.jpg" alt="You Bo WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%B6%E6%AC%BE.jpg" alt="You Bo Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/嵌入式/" rel="tag"># 嵌入式</a>
+          
+            <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
+          
+            <a href="/tags/文件系统/" rel="tag"># 文件系统</a>
+          
+            <a href="/tags/根文件系统/" rel="tag"># 根文件系统</a>
+          
+            <a href="/tags/虚拟文件系统/" rel="tag"># 虚拟文件系统</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/23/Linux操作系统使用--5shell脚本/" rel="next" title="Linux操作系统使用--5shell脚本">
+                <i class="fa fa-chevron-left"></i> Linux操作系统使用--5shell脚本
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/14/C语言高级编程--1基础零碎知识/" rel="prev" title="C语言高级编程--1基础零碎知识">
+                C语言高级编程--1基础零碎知识 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="hypercomments_widget"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F"
+               alt="You Bo" />
+          <p class="site-author-name" itemprop="name">You Bo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Done Is Better Than Perfect</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#文件系统简介"><span class="nav-number">1.</span> <span class="nav-text">文件系统简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文件系统概念"><span class="nav-number">1.1.</span> <span class="nav-text">文件系统概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件系统类型"><span class="nav-number">1.2.</span> <span class="nav-text">文件系统类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分区与挂载"><span class="nav-number">1.3.</span> <span class="nav-text">分区与挂载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#根文件系统目录结构"><span class="nav-number">2.</span> <span class="nav-text">根文件系统目录结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#根文件系统"><span class="nav-number">2.1.</span> <span class="nav-text">根文件系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件类型"><span class="nav-number">2.2.</span> <span class="nav-text">文件类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录分析"><span class="nav-number">2.3.</span> <span class="nav-text">目录分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件系统体系结构"><span class="nav-number">3.</span> <span class="nav-text">文件系统体系结构</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Bo</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+
+		_hcwp.push({widget:"Bloggerstream", widget_id: 93304, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+
+		
+		_hcwp.push({widget:"Stream", widget_id: 93304, xid: "2017/10/29/Linux操作系统使用--6文件系统/"});
+		
+
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/93304/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8QMQj1UnbwzGuBYQq2wN1HrR-gzGzoHsz", "am1SdGrz3btqx5wyV7DB0qUj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
