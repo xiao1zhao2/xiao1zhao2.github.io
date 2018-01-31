@@ -94,7 +94,12 @@
 <meta property="og:url" content="http://www.youbo.website/2017/12/25/C语言高级编程--7内存管理/index.html">
 <meta property="og:site_name" content="YOUBO&#39;S BLOG">
 <meta property="og:description" content="本篇围绕C语言内存管理，讨论了变量存储模型、程序内存分配以及动态内存分配的使用方法，以及其使用注意事项，这些内容需结合函数、指针等知识进行综合分析。">
+<<<<<<< HEAD
 <meta property="og:updated_time" content="2018-01-14T08:55:11.000Z">
+=======
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-31T10:21:32.329Z">
+>>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C语言高级编程--7内存管理">
 <meta name="twitter:description" content="本篇围绕C语言内存管理，讨论了变量存储模型、程序内存分配以及动态内存分配的使用方法，以及其使用注意事项，这些内容需结合函数、指针等知识进行综合分析。">
@@ -426,7 +431,11 @@
 </blockquote>
 <h1 id="存储模型"><a href="#存储模型" class="headerlink" title="存储模型"></a>存储模型</h1><ul>
 <li>变量是对程序中数据的存储空间的抽象。一个变量可以通过<strong>存储期、作用域、链接点</strong>来描述。</li>
+<<<<<<< HEAD
 <li>存储期（生命期）：表示变量在内存中保存的时间。分为静态变量和动态变量。静态变量是编译时分配存储空间，从程序开始到程序结束。文件作用域的变量具有静态存储期。动态存储变量在程序执行中使用它时才分配存储空间，使用完立即释放。代码块作用域具有动态存储期，例如函数的形参。函数定义时并不给形参分配存储空间，只有在函数被调用时，才予以分配。</li>
+=======
+<li>存储期（生命期）：表示变量在内存中保存的时间。分为静态变量和动态变量。静态变量是编译时分配存储空间，从程序开始到程序结束。文件作用域的变量具有静态存储期。动态存储变量在程序执行中使用它时才分配存储空间，使用完立即释放。代码块作用域的变量具有动态存储期，例如函数的形参。函数定义时并不给形参分配存储空间，只有在函数被调用时，才予以分配。</li>
+>>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
 <li>作用域：表示变量出现有效区域。分为三种，代码块内作用域（即局部变量的情况）、函数原型作用域（从变量定义处到原型声明末尾，编译器只关心参数类型，不关心名字）、文件作用域（函数之外定义的变量具有文件作用域，也称为全局变量）。</li>
 <li>链接点：用来说明程序哪些部分可以使用该变量。分为内部链接（一个文件内有效，使用static）、外部链接(一个或多个文件有效)、空链接（代码块作用域或者函数原型作用域）。</li>
 </ul>
@@ -477,18 +486,31 @@
 <h1 id="动态内存"><a href="#动态内存" class="headerlink" title="动态内存"></a>动态内存</h1><ul>
 <li>通常情况下，编译器根据变量的类型知道所需的内存空间，在合适的时间分配确定的存储空间。在栈上创建局部变量，函数执行完毕自动释放存储单元，效率高，但分配的内存空间有限。该方式的分配和释放都是自动进行。</li>
 <li>而有的情况只有在程序运行的时候才能确定内存分配大小，系统根据运行时的要求进行内存分配，称为动态存储分配。动态存储分配在堆上进行。使用malloc函数手动分配，使用free函数手动释放，因此其生存期由程序员决定。</li>
+<<<<<<< HEAD
 <li>对于动态分配的内存唯一的访问方式是通过指针间接访问。malloc函数在内存中动态的分配一个长度为size的连续空间，返回指向所分配连续空间起始地址的指针。内存空间有限，须在不用时，使用free函数显示释放空间。函数原型如下：</li>
+=======
+<li>对于动态分配的内存唯一的访问方式是通过指针间接访问。malloc函数在内存中动态的分配一个长度为size的连续空间，返回指向所分配连续空间起始地址的指针。内存空间有限，须在不用时，使用free函数显式释放空间。函数原型如下：</li>
+>>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
 </ul>
 <p>malloc函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void *malloc(size_t num);</div></pre></td></tr></table></figure></p>
 <p>free函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void free(void *p);</div></pre></td></tr></table></figure></p>
 <p>说明：</p>
 <ol>
+<<<<<<< HEAD
 <li>malloc函数本身并不识别要申请的内存是什么类型，只关心申请内存的大小。在实际调用中，需要显示的进行强制类型转换。如果申请失败，返回NULL，因此要做错误判断。</li>
 <li>堆区不会自动在分配时初始化，<strong>必须显示的进行初始化</strong>。例如：memset(p,0,n*sizeof(int));这一点在实践中应该注意。</li>
 <li>分配的内存如果操作越界，会造成不可估量的后果，比如给char类型指针动态分配空间，需要考虑’\0’的存储空间。</li>
 <li>使用堆上的空间，必须记得使用free释放，且只能释放一次。如果忘记释放，则会造成内存泄露。如果释放多次也会出错。</li>
 <li>free 不允许释放部分内存。即free(p+2)是错误的。必须提供释放内存的起始地址。</li>
 <li>free只是告诉系统这段空间不使用了，可以再次分配。但是其空间上的内容尚未改变，还可以访问，因此free后，通常置指针为NULL。释放的是堆空间，指针P在栈上，还指向原来的位置，因此可以访问，所有让其置NULL。</li>
+=======
+<li>malloc函数本身并不识别要申请的内存是什么类型，只关心申请内存的大小。在实际调用中，需要显式的进行强制类型转换。如果申请失败，返回NULL，因此要做错误判断。</li>
+<li>堆区不会自动在分配时初始化，<strong>必须显式的进行初始化</strong>。例如：memset(p,0,n*sizeof(int));这一点在实践中应该注意。</li>
+<li>分配的内存如果操作越界，会造成不可估量的后果，比如给char类型指针动态分配空间，需要考虑’\0’的存储空间。</li>
+<li>使用堆上的空间，必须记得使用free释放，且只能释放一次。如果忘记释放，则会造成内存泄露。如果释放多次也会出错。</li>
+<li>free 不允许释放部分内存。即free(p+2)是错误的。必须提供释放内存的起始地址。</li>
+<li>free只是告诉系统这段空间不使用了，可以再次分配。但是其空间上的内容尚未改变，还可以访问，因此free后，通常置指针为NULL。释放的是堆空间，指针P在栈上，还指向原来的位置，因此可以访问，所以让其置NULL。</li>
+>>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
 <li>free只能释放堆空间。代码区、全局变量、静态变量区、栈区上的指针变量都不能用free释放空间。</li>
 <li>malloc与free必须配对使用。不需要的内存空间都需要释放回收。</li>
 <li>在函数内建立的动态对象在函数外仍然可以使用，这就是为什么函数可以返回堆上的地址的原因。因此堆上的空间称为自由空间。在函数运行时才能确定大小的情况，通常会在函数内动态分配内存并返回指针。但是在函数内申请动态空间而在函数外释放是一件很容易失控的事情，往往会出错。此种情况，要保证指针起始位置的正确赋值，并在函数外不使用指针时及时释放。</li>
@@ -568,8 +590,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+<<<<<<< HEAD
               <a href="/2017/12/24/常用JVM分析命令/" rel="next" title="常用JVM分析命令">
                 <i class="fa fa-chevron-left"></i> 常用JVM分析命令
+=======
+              <a href="/2017/12/15/C语言高级编程--6用户自定义数据类型(结构体)/" rel="next" title="C语言高级编程--6用户自定义数据类型(结构体)">
+                <i class="fa fa-chevron-left"></i> C语言高级编程--6用户自定义数据类型(结构体)
+>>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
               </a>
             
           </div>
@@ -578,10 +605,13 @@
 
           <div class="post-nav-prev post-nav-item">
             
+<<<<<<< HEAD
               <a href="/2018/01/08/巧用环形队列处理定时任务/" rel="prev" title="巧用环形队列处理定时任务">
                 巧用环形队列处理定时任务 <i class="fa fa-chevron-right"></i>
               </a>
             
+=======
+>>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
           </div>
         </div>
       
@@ -677,7 +707,11 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
+<<<<<<< HEAD
                 <span class="site-state-item-count">20</span>
+=======
+                <span class="site-state-item-count">17</span>
+>>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -688,7 +722,11 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
+<<<<<<< HEAD
                 <span class="site-state-item-count">4</span>
+=======
+                <span class="site-state-item-count">3</span>
+>>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -699,7 +737,11 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
+<<<<<<< HEAD
                 <span class="site-state-item-count">43</span>
+=======
+                <span class="site-state-item-count">38</span>
+>>>>>>> 2ca043ca5880f2591215e7bb40f17bb04c4a95dd
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
