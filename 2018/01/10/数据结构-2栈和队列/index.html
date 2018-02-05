@@ -1,0 +1,1220 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="嵌入式,学习笔记,栈,队列," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本篇介绍了两种特殊的线性表：栈和队列。栈的特点是先进后出，队列的特点是先进先出。同样按照逻辑结构、存储结构、数据运算三个方面展开进行分析。最后还列举了一些栈和队列在实践中的应用。">
+<meta name="keywords" content="嵌入式,学习笔记,栈,队列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构--2栈和队列">
+<meta property="og:url" content="http://www.youbo.website/2018/01/10/数据结构-2栈和队列/index.html">
+<meta property="og:site_name" content="YOUBO&#39;S BLOG">
+<meta property="og:description" content="本篇介绍了两种特殊的线性表：栈和队列。栈的特点是先进后出，队列的特点是先进先出。同样按照逻辑结构、存储结构、数据运算三个方面展开进行分析。最后还列举了一些栈和队列在实践中的应用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/%E6%A0%88%E7%9A%84%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/%E9%98%9F%E5%88%97%E7%9A%84%E7%BB%93%E6%9E%84.png">
+<meta property="og:updated_time" content="2018-02-05T06:08:43.828Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据结构--2栈和队列">
+<meta name="twitter:description" content="本篇介绍了两种特殊的线性表：栈和队列。栈的特点是先进后出，队列的特点是先进先出。同样按照逻辑结构、存储结构、数据运算三个方面展开进行分析。最后还列举了一些栈和队列在实践中的应用。">
+<meta name="twitter:image" content="http://osjn6k0nm.bkt.clouddn.com/%E6%A0%88%E7%9A%84%E7%BB%93%E6%9E%84.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.youbo.website/2018/01/10/数据结构-2栈和队列/"/>
+
+
+
+
+
+  <title> 数据结构--2栈和队列 | YOUBO'S BLOG </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?48a4e3570fd283499da1fa0f4fb218ac";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">YOUBO'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.youbo.website/2018/01/10/数据结构-2栈和队列/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Bo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YOUBO'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                数据结构--2栈和队列
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-10T09:21:15+08:00">
+                2018-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/嵌入式/" itemprop="url" rel="index">
+                    <span itemprop="name">嵌入式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            <!--noindex-->
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/10/数据结构-2栈和队列/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count hc-comment-count" data-xid="2018/01/10/数据结构-2栈和队列/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+              <!--/noindex-->
+            
+          
+
+          
+          
+             <span id="/2018/01/10/数据结构-2栈和队列/" class="leancloud_visitors" data-flag-title="数据结构--2栈和队列">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本篇介绍了两种特殊的线性表：栈和队列。栈的特点是先进后出，队列的特点是先进先出。同样按照逻辑结构、存储结构、数据运算三个方面展开进行分析。最后还列举了一些栈和队列在实践中的应用。<a id="more"></a></p>
+</blockquote>
+<h1 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li>栈是限制在一端进行插入和删除操作的线性表，也称堆栈。允许操作的一端称为栈顶，固定的一端称为栈底。特点是<strong>先进后出</strong>。</li>
+<li>同样有两种存储方式，顺序存储和链式存储，其结构如图所示。</li>
+</ul>
+<p><img src="http://osjn6k0nm.bkt.clouddn.com/%E6%A0%88%E7%9A%84%E7%BB%93%E6%9E%84.png" alt=" " title="栈的结构"></p>
+<h2 id="顺序栈"><a href="#顺序栈" class="headerlink" title="顺序栈"></a>顺序栈</h2><p>它是顺序表的一种，具有顺序表同样的存储结构，由一维数组表示，配合数组下标表示栈顶位置top，完成各种操作。</p>
+<h3 id="结构体表示"><a href="#结构体表示" class="headerlink" title="结构体表示"></a>结构体表示</h3><p>顺序栈的实现结构体如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">方式一：</div><div class="line">#define N 100 //定义顺序栈的最大长度</div><div class="line">typedef int data_t; //定义存储数据的类型，可以替换为其他,如结构体</div><div class="line">typedef struct&#123;</div><div class="line">	data_t data[N]; //栈的存储空间</div><div class="line">	int top;//当前栈顶下标</div><div class="line">&#125;seqstack,*seqstack_t;//顺序栈类型</div><div class="line"></div><div class="line">方式二：</div><div class="line">typedef int data_t;//定义栈中数据元素的数据类型</div><div class="line">typedef struct&#123;</div><div class="line">	data_t *data;//用指针指向栈的存储空间</div><div class="line">	int maxlen;//栈的最大元素个数</div><div class="line">	int top;//栈顶位置</div><div class="line">&#125;seqstack,*seqstack_t;//顺序栈类型</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<ol>
+<li>顺序栈和线性表的顺序存储结构体一样，只是将last成员改为top成员。下标为0是栈底，下标为last是栈顶。</li>
+<li>方式二的写法，未预先指定数组大小，而是定义数据指针和栈的最大大小，在创建栈时指定栈的最大长度，然后malloc出最大长度个空间来存储。</li>
+</ol>
+<h3 id="数据运算"><a href="#数据运算" class="headerlink" title="数据运算"></a>数据运算</h3><p>顺序栈的基本数据运算和顺序表类似，有：</p>
+<ul>
+<li>创建空的顺序栈：s-&gt;top=-1</li>
+<li>清空顺序栈</li>
+<li>销毁顺序栈</li>
+<li>判断顺序栈是否为空</li>
+<li>判断顺序栈是否为满</li>
+<li>求顺序栈长</li>
+<li>入栈：相当于在last+1位置插入</li>
+<li>出栈：相当于删除last位置元素</li>
+<li>取栈顶元素：相当于查询last位置的元素</li>
+</ul>
+<h2 id="链式栈"><a href="#链式栈" class="headerlink" title="链式栈"></a>链式栈</h2><p>链式栈即为链式存储的栈。其中插入和删除操作都在链表头进行，链表尾就是栈底，栈顶指针就是头指针。</p>
+<h3 id="结构体表示-1"><a href="#结构体表示-1" class="headerlink" title="结构体表示"></a>结构体表示</h3><p>链式栈的实现结构体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">typedef int data_t;//定义栈中数据元素数据类型</div><div class="line">typedef struct node_t&#123;</div><div class="line">	data_t data;//数据域</div><div class="line">	struct node_t *next;//指针域</div><div class="line">&#125;linknode，*linknode_t;//链栈类型定义</div></pre></td></tr></table></figure></p>
+<p>说明：<br>链式栈的结构和单向不循环链表的结点结构一样，无需改动。</p>
+<h3 id="数据运算-1"><a href="#数据运算-1" class="headerlink" title="数据运算"></a>数据运算</h3><p>链式栈的基本数据运算和链表类似，有：</p>
+<ul>
+<li>创建空的链式栈</li>
+<li>清空链式栈</li>
+<li>销毁链式栈</li>
+<li>判断链式栈是否为空</li>
+<li>求链式栈长</li>
+<li>入栈：相当于头插法</li>
+<li>出栈：相当于头删法</li>
+<li>取栈顶元素：相当于查询第一个数据元素</li>
+</ul>
+<h1 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h1><h2 id="基本概念-1"><a href="#基本概念-1" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li>队列是限制在两端进行插入和删除操作的线性表，允许在队尾进行插入操作，允许在队头进行删除操作。特点是<strong>先进先出</strong>。</li>
+<li>同样有两种存储方式，顺序存储和链式存储，其结构如图所示。</li>
+</ul>
+<p><img src="http://osjn6k0nm.bkt.clouddn.com/%E9%98%9F%E5%88%97%E7%9A%84%E7%BB%93%E6%9E%84.png" alt=" " title="队列的结构"></p>
+<h2 id="顺序队列"><a href="#顺序队列" class="headerlink" title="顺序队列"></a>顺序队列</h2><p>它是顺序表的一种，具有顺序表同样的存储结构，由一维数组定义，配合数组下标表示队头位置和队尾位置完成各种操作。</p>
+<h3 id="结构体表示-2"><a href="#结构体表示-2" class="headerlink" title="结构体表示"></a>结构体表示</h3><p>顺序队列的实现结构体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">typedef int data_t;//定义队列数据元素的类型</div><div class="line">#define N 64//定义队列的容量</div><div class="line">typedef struct&#123;</div><div class="line">	data_t data[N];//用数组作为队列的存储空间</div><div class="line">	int front,rear;//队头和队尾位置</div><div class="line">&#125;sequeue，*sequeue_t; //顺序队列类型定义</div></pre></td></tr></table></figure></p>
+<p>说明：<br>顺序队列的结构和线性表顺序存储的结构类似，只是last位置变为front和rear位置。</p>
+<h3 id="循环队列"><a href="#循环队列" class="headerlink" title="循环队列"></a>循环队列</h3><ul>
+<li>顺序队列和线性表的顺序存储操作一样，只是在队尾插入（下标为last+1），在队头删除（下标为0）。</li>
+<li>和线性表一样，如果在队头删除时，后面的元素需要挨个向前移动，因此效率很低。</li>
+<li>为了解决这个问题，以调整下标位置代替元素移动，不限制队列的元素一定存储在数组的前n个单元。因此删除时，不将后面的元素向前移动，而是将队头向后移动。</li>
+<li>但是还存在一个问题，插入时在队尾插入，如果满了就不能插入了，但是前面位置还有空闲空间，称为假溢出。</li>
+<li>因此将队头和队尾相连，构成循环队列。</li>
+</ul>
+<p>定义：<br>队列头尾相接的<strong>顺序存储结构</strong>，称为循环队列。</p>
+<p>说明：</p>
+<ol>
+<li>如果将队头和队尾相连，那么队列满和队列空都是front==rear。为了区分队列满和队列空，因此满队元素个数比数组元素个数少一个。</li>
+<li>因此有两种方式：(a)front指向队头元素的前一个位置，rear指向队尾元素所在位置。(b)front指向队头元素的位置，rear指向队尾元素的下一个位置。</li>
+</ol>
+<h3 id="数据运算-2"><a href="#数据运算-2" class="headerlink" title="数据运算"></a>数据运算</h3><p>循环队列的基本数据运算和顺序表类似，有：</p>
+<ul>
+<li>创建空的循环队列：sq-&gt;front=sq-&gt;rear=0</li>
+<li>清空循环队列</li>
+<li>销毁循环队列</li>
+<li>判断循环队列是否空：sq-&gt;front==sq-&gt;rear</li>
+<li>判断循环队列是否满：(sq-&gt;rear+1)%N=sq-&gt;front</li>
+<li>求循环队列长度：(sq-&gt;rear-sq-&gt;front+N)%N</li>
+<li>入队：队尾下标移动，sq-&gt;rear=(sq-&gt;rear+1)%N</li>
+<li>出队：队头下标移动，sq-&gt;front=(sq-&gt;front+1)%N</li>
+</ul>
+<h2 id="链式队列"><a href="#链式队列" class="headerlink" title="链式队列"></a>链式队列</h2><p>链式队列即为链式存储的队列。队头指针指向头结点，队尾指针指向最后一个结点。</p>
+<h3 id="结构体表示-3"><a href="#结构体表示-3" class="headerlink" title="结构体表示"></a>结构体表示</h3><p>链式队列的实现结构体如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">typedef int data_t; //定义链队列中数据元素的数据类型</div><div class="line">typedef struct node&#123;</div><div class="line">	data_t data;//结点数据域</div><div class="line">	struct node *next;//结点指针域</div><div class="line">&#125;linknode,*linknode_t;//结点类型定义</div><div class="line"></div><div class="line">typedef struct&#123;</div><div class="line">	linknode_t front,rear;//链队列指针</div><div class="line">&#125;linkqueue,*linkqueue_t;//链队列类型定义</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<ol>
+<li>链式队列的结点结构和单向不循环链表的结点结构一样，无需改动。</li>
+<li>链式队列还需要用两个指针来定义。其中front指针相当于单向不循环链表的头指针，相比之下，多了一个队尾指针。</li>
+</ol>
+<h3 id="数据运算-3"><a href="#数据运算-3" class="headerlink" title="数据运算"></a>数据运算</h3><p>链式队列的基本数据运算和链表类似，有：</p>
+<ul>
+<li>创建空的链式队列：需要先申请结点空间，再申请队列指针的空间。</li>
+<li>清空链式队列：挨个数据出队。</li>
+<li>销毁链式队列：先清空队列，置front、rear指针为NULL，再释放队列指针。</li>
+<li>判断链式队列是否空</li>
+<li>求链式队列长度</li>
+<li>入队：在队尾插入，使用rear指针操作。</li>
+<li>出队：在队头删除，使用front指针操作。</li>
+</ul>
+<p>说明：<br>出队有两种方式：(a)删除头结点空间;(b)删除出队元素的空间，如果这种方式，在删除最后一个元素时，需要将rear指针赋值为front指针，否则rear成为野指针。</p>
+<h1 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h1><p>栈和队列两种数据结构在实际项目中使用较多，这里简单举几个例子。</p>
+<ol>
+<li>四则运算表达式求值<ul>
+<li>需要使用栈完成，涉及两个栈，一个用来存放运算符，一个用来存放操作数。</li>
+<li>具体的算法涉及如何将中缀表达式转化为后缀表达式，以及如何用后缀表达式求值，详情参见<a href="http://blog.csdn.net/lub0807/article/details/37884417" target="_blank" rel="external">栈的应用：四则运算表达式求值</a>。</li>
+</ul>
+</li>
+<li>判断进栈顺序或者出栈顺序的合理性。<ul>
+<li>一般为面试选择题。通常是已知入栈顺序，求可能的出栈顺序。</li>
+<li>思路是按照出栈顺序，判断目前栈顶的元素是否与之相等，如果相等则出栈，如果不相等，则继续入栈。详情参见<a href="https://www.cnblogs.com/MrListening/p/5775909.html" target="_blank" rel="external">面试题之判断栈的入栈和出栈序列的合法性</a>。</li>
+<li>扩展问题是已知某种入栈顺序，求所有可能的出栈顺序。详情参见<a href="https://www.cnblogs.com/fxplove/articles/2500898.html" target="_blank" rel="external">所有可能的出栈序列问题及卡塔兰数的应用</a>。</li>
+</ul>
+</li>
+<li>两个堆栈实现一个队列<ul>
+<li>入队，直接压栈到stack1。</li>
+<li>出队，判断stack2是否为空，若为空则将stack1中所有元素全部出栈压入stack2,如果不为空直接弹出stack2中数据。（除了连续进栈出栈操作，也适合不连续入栈出栈的情况）。详情参见<a href="https://www.cnblogs.com/tracyhan/p/5490775.html" target="_blank" rel="external">两个栈实现一个队列</a>。</li>
+</ul>
+</li>
+<li>两个队列实现一个堆栈<ul>
+<li>入栈，直接入队queue1。</li>
+<li>出栈，将queue1中除最后一个元素外的所有元素出队，再入队queue2，queue1中最后一个元素出队即可。下一个元素出栈，以此类推，再将queue2中元素除最后一个出队并入队到queue1。详情参见<a href="https://wenku.baidu.com/view/3eff617480eb6294dc886c91.html" target="_blank" rel="external">栈和队列高频面试题精讲_七月算法出品</a>。</li>
+</ul>
+</li>
+<li>两栈共享存储空间<ul>
+<li>两栈共享存储空间适合于两个栈的数据具有相同数据类型，且空间需求为相反关系的情况，使用顺序栈实现。</li>
+<li>入栈就是向中间靠拢，出栈就是向两边移动。具体入栈和出栈的操作参见<a href="https://www.cnblogs.com/muzijie/p/5655305.html" target="_blank" rel="external">两栈共享空间</a>。</li>
+</ul>
+</li>
+<li>球钟问题<ul>
+<li>利用球的移动来记录时间的简单装置，包含一个球队列和三个指示器(分钟/五分钟/小时)。分钟指示器最多装4个球，第五个向前进一位即进入五分钟指示器，同时前4个球按照进入指示器相反的顺序加入球队列的队尾。同理，五分钟指示器最多容纳11个球，小时指示器可容纳11个球。</li>
+<li>假设初始有27个球，问经过多久球队列回复到原来的顺序。</li>
+<li>该问题涉及到队列和栈的使用，具体代码参见<a href="http://www.embedu.org/Column/Column414.htm" target="_blank" rel="external">球钟问题</a>或<a href="http://blog.csdn.net/createchance/article/details/17466053" target="_blank" rel="external">球钟问题的解决–栈和队列 </a>。</li>
+</ul>
+</li>
+<li>队列在实际项目中的应用多为通信发送消息和接收消息的处理或者多任务分时服务系统。可能与之相关还有一些知识点，例如消息队列等，后续结合多线程、进程间通信等内容再做深入讨论。</li>
+</ol>
+<h1 id="个人观点"><a href="#个人观点" class="headerlink" title="个人观点"></a>个人观点</h1><ol>
+<li>只需要理解线性表的存储模型，再结合栈和队列的特点，做相应的改动即可。另外数据存储模型中即结构体，只是规定了必须的成员，其他的成员可以根据实际情况进行增加。</li>
+<li>实例分析中主要掌握利用某种数据结构的算法思路，这里未给出具体代码实现，后续有需求再做深入探究。</li>
+<li>到此，学习了线性表的顺序存储和链式存储，以及两种特殊的线性表：栈和队列。各种数据结构都有各自的特点，选择时应结合实际需求进行合理的选择。参见<a href="https://www.cnblogs.com/lz3018/p/5932198.html" target="_blank" rel="external">常见数据结构应用场景</a>。</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE.jpg" alt="You Bo WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%B6%E6%AC%BE.jpg" alt="You Bo Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/嵌入式/" rel="tag"># 嵌入式</a>
+          
+            <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
+          
+            <a href="/tags/栈/" rel="tag"># 栈</a>
+          
+            <a href="/tags/队列/" rel="tag"># 队列</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/08/巧用环形队列处理定时任务/" rel="next" title="巧用环形队列处理定时任务">
+                <i class="fa fa-chevron-left"></i> 巧用环形队列处理定时任务
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/16/数据结构-3树和图/" rel="prev" title="数据结构--3树和图">
+                数据结构--3树和图 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="hypercomments_widget"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F"
+               alt="You Bo" />
+          <p class="site-author-name" itemprop="name">You Bo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Done Is Better Than Perfect</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#栈"><span class="nav-number">1.</span> <span class="nav-text">栈</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#顺序栈"><span class="nav-number">1.2.</span> <span class="nav-text">顺序栈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#结构体表示"><span class="nav-number">1.2.1.</span> <span class="nav-text">结构体表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据运算"><span class="nav-number">1.2.2.</span> <span class="nav-text">数据运算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链式栈"><span class="nav-number">1.3.</span> <span class="nav-text">链式栈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#结构体表示-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">结构体表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据运算-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">数据运算</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#队列"><span class="nav-number">2.</span> <span class="nav-text">队列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念-1"><span class="nav-number">2.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#顺序队列"><span class="nav-number">2.2.</span> <span class="nav-text">顺序队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#结构体表示-2"><span class="nav-number">2.2.1.</span> <span class="nav-text">结构体表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环队列"><span class="nav-number">2.2.2.</span> <span class="nav-text">循环队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据运算-2"><span class="nav-number">2.2.3.</span> <span class="nav-text">数据运算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链式队列"><span class="nav-number">2.3.</span> <span class="nav-text">链式队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#结构体表示-3"><span class="nav-number">2.3.1.</span> <span class="nav-text">结构体表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据运算-3"><span class="nav-number">2.3.2.</span> <span class="nav-text">数据运算</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实例分析"><span class="nav-number">3.</span> <span class="nav-text">实例分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#个人观点"><span class="nav-number">4.</span> <span class="nav-text">个人观点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Bo</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+
+		_hcwp.push({widget:"Bloggerstream", widget_id: 93304, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+
+		
+		_hcwp.push({widget:"Stream", widget_id: 93304, xid: "2018/01/10/数据结构-2栈和队列/"});
+		
+
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/93304/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8QMQj1UnbwzGuBYQq2wN1HrR-gzGzoHsz", "am1SdGrz3btqx5wyV7DB0qUj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

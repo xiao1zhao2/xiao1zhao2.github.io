@@ -94,7 +94,8 @@
 <meta property="og:url" content="http://www.youbo.website/2017/12/11/C语言高级编程--5函数/index.html">
 <meta property="og:site_name" content="YOUBO&#39;S BLOG">
 <meta property="og:description" content="本篇文章以函数为核心，重点讲解函数指针和指针函数，以及与之密切相关的函数传参和函数返回值。在实践中应该结合这几个知识点综合考虑其使用。最后简单提及递归函数。">
-<meta property="og:updated_time" content="2018-01-14T08:55:11.000Z">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-31T09:22:10.592Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C语言高级编程--5函数">
 <meta name="twitter:description" content="本篇文章以函数为核心，重点讲解函数指针和指针函数，以及与之密切相关的函数传参和函数返回值。在实践中应该结合这几个知识点综合考虑其使用。最后简单提及递归函数。">
@@ -434,7 +435,7 @@
 <li>这里的数据类型是指函数返回的数据类型。</li>
 <li>return 表达式的类型要和函数返回类型一致，如果返回值为void,可以省略return不写。</li>
 <li>如果不写数据类型，则默认为返回int型，而不是void型。</li>
-<li>形参出现在被调函数当中，在整个函数体内都可以使用。形参在定义时编译系统并不分配存储空间，只有在调用该函数时才分配内存单元。调用结束内存单元被释放，故形参只有在函数调用时有效，调用结束时不能再使用。可结合《C语言高级编程–7内存管理》中的内容理解。</li>
+<li>形参出现在被调函数当中，在整个函数体内都可以使用。形参在定义时编译系统并不分配存储空间，只有在调用该函数时才分配内存单元。调用结束内存单元被释放，故形参只有在函数调用时有效，调用结束时不能再使用。可结合<a href="http://www.youbo.website/2017/12/25/C%E8%AF%AD%E8%A8%80%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B--7%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/#more">《C语言高级编程–7内存管理》</a>中的内容理解。</li>
 <li>函数前可以使用static修饰，表示该函数只能在本文件内使用。默认函数是外部函数，用extern修饰，可以省略不写。</li>
 </ol>
 <h2 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;数据类型&gt;　&lt;函数名&gt;(形参说明);</div></pre></td></tr></table></figure>
@@ -521,7 +522,7 @@
 </ul>
 <h1 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h1><h2 id="函数传参-1"><a href="#函数传参-1" class="headerlink" title="函数传参"></a>函数传参</h2><ol>
 <li>实践中函数形参为指针时，通常会在函数内部通过地址解引用改变指针指向对象的内容，比如字符指针，在函数内赋值字符串。实参应该传递字符数组，而不要传递字符指针。</li>
-<li>函数参数为指针，实参传递指针时，如果在函数内部通过地址解引用改变指针指向对象的内容，实参会有相应改变。如果在函数内部改变形参的地址，相当于普通变量值传递，实参不会有相应变化。</li>
+<li>函数形参为指针，实参传递指针时，如果在函数内部通过地址解引用改变指针指向对象的内容，实参会有相应改变。如果在函数内部改变形参的地址，相当于普通变量值传递，实参不会有相应变化。</li>
 <li>实践中函数定义使用形参和函数调用使用实参，其形参和实参对应关系有:<br>形参为一级指针，实参为一维数组名。<br>形参为行指针，实参为二维数组名。<br>形参为二级指针，实参为一维指针数组名。<br>形参为结构体指针，实参为结构体地址。<br>形参为字符指针，实参为字符数组名。</li>
 </ol>
 <p>使用实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div></pre></td><td class="code"><pre><div class="line">传递数组名和传递指针的不同，传递指针出现段错误。</div><div class="line">int get_cameraIP(uint8_t *str,uint8_t *cameraIP)</div><div class="line">&#123;</div><div class="line">	uint8_t *p = str;</div><div class="line">	uint8_t *begin = NULL;</div><div class="line">	uint8_t *end = NULL;</div><div class="line">	const char *d =&quot;.&quot;;</div><div class="line">	int dot_flag = 0;</div><div class="line">	int first_num_flag = 0;</div><div class="line">	int last_num_flag = 0;</div><div class="line">	int i = 0;</div><div class="line"> 	int j = 0;</div><div class="line">	</div><div class="line">	while(*p != &apos;\0&apos;)</div><div class="line">	&#123;</div><div class="line">		if(isdigit(*p)&amp;&amp;first_num_flag == 0)//找到第一个数字</div><div class="line">		&#123;</div><div class="line">			begin = p;</div><div class="line">			first_num_flag = 1;		</div><div class="line">		&#125;</div><div class="line">		if((dot_flag == 3) &amp;&amp; (!(isdigit(*p)) &amp;&amp; (last_num_flag == 0)))//找到最后一个IP数字</div><div class="line">		&#123;</div><div class="line">			end = p;</div><div class="line">			last_num_flag = 1;	</div><div class="line">		&#125;</div><div class="line">		if(*p == &apos;.&apos;)</div><div class="line">		&#123;</div><div class="line">			dot_flag++;</div><div class="line">		&#125;</div><div class="line">			p++;		</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	for(i = 0 ;i &lt; (end-begin);i++)</div><div class="line">	&#123;</div><div class="line">		cameraIP[i] = str[begin-str+i];//提取IP字符串</div><div class="line">	&#125;</div><div class="line">	return 0;</div><div class="line">&#125;</div><div class="line"></div><div class="line">int ONVIF_ClientDiscovery(void)</div><div class="line">&#123;</div><div class="line">	……</div><div class="line">	struct __wsdd__ProbeMatches resp;</div><div class="line">	retval = soap_recv___wsdd__ProbeMatches(soap, &amp;resp);</div><div class="line">				</div><div class="line">	if (resp.wsdd__ProbeMatches-&gt;ProbeMatch != NULL &amp;&amp; resp.wsdd__ProbeMatches-&gt;ProbeMatch-&gt;XAddrs != NULL)</div><div class="line">	&#123;</div><div class="line">		for(i = 0; i &lt; resp.wsdd__ProbeMatches-&gt;__sizeProbeMatch; i++)  				</div><div class="line">		&#123;  </div><div class="line">						</div><div class="line">			//printf(&quot;%s\n&quot;, resp.wsdd__ProbeMatches-&gt;ProbeMatch-&gt;XAddrs);</div><div class="line">					</div><div class="line">			memset(CameraInfo[FoundDevNo].cameraIP,0,16);//全局变量使用前先清零</div><div class="line">					</div><div class="line">			//将摄像头IP存入摄像头完整信息全局数组						</div><div class="line">			//get_cameraIP(resp.wsdd__ProbeMatches-&gt;ProbeMatch-&gt;XAddrs,&amp;CameraInfo[FoundDevNo].cameraIP[0]);</div><div class="line">						</div><div class="line">			//解决段错误，传递数组名，而不是指针				</div><div class="line">			uint8_t tmpip[256]=&#123;&#125;;						</div><div class="line">			sprintf(tmpip,&quot;%s&quot;,resp.wsdd__ProbeMatches-&gt;ProbeMatch-&gt;XAddrs);						</div><div class="line">			printf(&quot;%s\n&quot;,tmpip);</div><div class="line">			get_cameraIP(tmpip,&amp;CameraInfo[FoundDevNo].cameraIP[0]);</div><div class="line">			……</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
@@ -728,7 +729,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -750,7 +751,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-count">50</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

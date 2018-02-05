@@ -1,0 +1,1290 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="嵌入式,学习笔记,线性表," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="从本篇开始，分四篇总结数据结构和算法的相关内容。数据结构方面，主要总结线性表的顺序存储和链式存储，应重点掌握。栈和队列是两种特殊的线性表，理解其特殊性。树和图目前只做简单了解，后续有需求再做深入研究。存储方式中的索引存储和散列存储仅作了解。算法方面，这里并不展开分析，只总结面试中常出现的查找算法和排序算法。">
+<meta name="keywords" content="嵌入式,学习笔记,线性表">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构--1线性表">
+<meta property="og:url" content="http://www.youbo.website/2018/01/04/数据结构-1线性表/index.html">
+<meta property="og:site_name" content="YOUBO&#39;S BLOG">
+<meta property="og:description" content="从本篇开始，分四篇总结数据结构和算法的相关内容。数据结构方面，主要总结线性表的顺序存储和链式存储，应重点掌握。栈和队列是两种特殊的线性表，理解其特殊性。树和图目前只做简单了解，后续有需求再做深入研究。存储方式中的索引存储和散列存储仅作了解。算法方面，这里并不展开分析，只总结面试中常出现的查找算法和排序算法。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/%E7%BA%BF%E6%80%A7%E8%A1%A8%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/%E7%BA%BF%E6%80%A7%E8%A1%A8%E7%9A%84%E9%A1%BA%E5%BA%8F%E5%AD%98%E5%82%A8.png">
+<meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/%E5%8D%95%E5%90%91%E4%B8%8D%E5%BE%AA%E7%8E%AF%E9%93%BE%E8%A1%A8.png">
+<meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/%E5%8D%95%E5%90%91%E5%BE%AA%E7%8E%AF%E9%93%BE%E8%A1%A8.jpg">
+<meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/%E5%8F%8C%E5%90%91%E4%B8%8D%E5%BE%AA%E7%8E%AF%E9%93%BE%E8%A1%A8.png">
+<meta property="og:image" content="http://osjn6k0nm.bkt.clouddn.com/%E5%90%84%E7%A7%8D%E9%93%BE%E8%A1%A8%E7%9A%84%E6%AF%94%E8%BE%83.jpg">
+<meta property="og:updated_time" content="2018-02-05T02:40:00.355Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据结构--1线性表">
+<meta name="twitter:description" content="从本篇开始，分四篇总结数据结构和算法的相关内容。数据结构方面，主要总结线性表的顺序存储和链式存储，应重点掌握。栈和队列是两种特殊的线性表，理解其特殊性。树和图目前只做简单了解，后续有需求再做深入研究。存储方式中的索引存储和散列存储仅作了解。算法方面，这里并不展开分析，只总结面试中常出现的查找算法和排序算法。">
+<meta name="twitter:image" content="http://osjn6k0nm.bkt.clouddn.com/%E7%BA%BF%E6%80%A7%E8%A1%A8%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.youbo.website/2018/01/04/数据结构-1线性表/"/>
+
+
+
+
+
+  <title> 数据结构--1线性表 | YOUBO'S BLOG </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?48a4e3570fd283499da1fa0f4fb218ac";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">YOUBO'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.youbo.website/2018/01/04/数据结构-1线性表/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Bo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YOUBO'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                数据结构--1线性表
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-04T09:21:15+08:00">
+                2018-01-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/嵌入式/" itemprop="url" rel="index">
+                    <span itemprop="name">嵌入式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            <!--noindex-->
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/04/数据结构-1线性表/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count hc-comment-count" data-xid="2018/01/04/数据结构-1线性表/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+              <!--/noindex-->
+            
+          
+
+          
+          
+             <span id="/2018/01/04/数据结构-1线性表/" class="leancloud_visitors" data-flag-title="数据结构--1线性表">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>从本篇开始，分四篇总结数据结构和算法的相关内容。数据结构方面，主要总结线性表的顺序存储和链式存储，应重点掌握。栈和队列是两种特殊的线性表，理解其特殊性。树和图目前只做简单了解，后续有需求再做深入研究。存储方式中的索引存储和散列存储仅作了解。算法方面，这里并不展开分析，只总结面试中常出现的查找算法和排序算法。<a id="more"></a></p>
+</blockquote>
+<h1 id="数据结构的基本概念"><a href="#数据结构的基本概念" class="headerlink" title="数据结构的基本概念"></a>数据结构的基本概念</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><ul>
+<li>数据结构是研究非数值性程序设计中计算机操作的对象（数据）及其相互关系和运算的学科。</li>
+<li>更详细的解释为：按照某种逻辑关系组织起来的一批数据，应用计算机语言，按照一定的存取方式将其存储到存储器中，并为这些数据定义运算集合。</li>
+</ul>
+<h2 id="数据结构的三个方面"><a href="#数据结构的三个方面" class="headerlink" title="数据结构的三个方面"></a>数据结构的三个方面</h2><p>当谈到数据结构时，我们主要关心它的三个方面：逻辑结构、存储结构和运算。后面具体分析的某种数据结构也按照该思路展开。</p>
+<p><strong>逻辑结构</strong></p>
+<ul>
+<li>数据之间的相互关系。</li>
+<li>按照每个元素可能具有的直接前驱数和直接后继数分类，可以分为<strong>线性结构和非线性结构</strong>。</li>
+<li>线性结构又包括线性表、栈、队列等。非线性结构包括树、图等。</li>
+<li>线性结构中的元素是一对一的关系，树形结构中的元素是一对多的关系，图状结构中的元素是多对多的关系。</li>
+</ul>
+<p><strong>存储结构</strong></p>
+<ul>
+<li>逻辑结构在计算机中具体的实现方法。</li>
+<li>分为<strong>顺序存储、链式存储</strong>、索引存储、散列存储等。</li>
+<li>顺序存储：把数据存放在地址连续的存储单元里，数据间的逻辑关系和存储关系是一致的。</li>
+<li>链式存储：借助元素在存储器中的指针表示元素间的逻辑关系，可以存放于连续的空间，也可以存放于不连续的空间。</li>
+<li>索引存储：在存储数据的同时还存储一张索引表，通过索引表中的索引项定位结点，可以提高查询速度。</li>
+<li>散列存储：根据元素的特殊字段（关键字key）计算数据元素的存放地址，数据元素按地址存放，可以提高查询效率。</li>
+</ul>
+<p><em>参考文档：<a href="http://student.zjzk.cn/course_ware/data_structure/web/gailun/gailun1.1.2.htm" target="_blank" rel="external">数据的四种基本存储方法</a></em></p>
+<p><strong>数据运算</strong></p>
+<ul>
+<li>对数据的操作。</li>
+<li>包括增、删、改、查、排序、合并等。</li>
+</ul>
+<h2 id="顺序存储和链式存储的对比"><a href="#顺序存储和链式存储的对比" class="headerlink" title="顺序存储和链式存储的对比"></a>顺序存储和链式存储的对比</h2><ul>
+<li>顺序存储<ul>
+<li>优点：存储密度高；按元素序号随机存取。</li>
+<li>缺点：插入、删除的时间复杂度差；需要预先分配存储空间。</li>
+</ul>
+</li>
+<li>链式存储<ul>
+<li>优点：插入、删除方便；动态申请空间。</li>
+<li>缺点：存储密度低，需要额外为指针分配空间；只能顺序存取。</li>
+</ul>
+</li>
+<li>选择时的考虑<ul>
+<li>算法设计的要求通常是时间效率高、存储量低。</li>
+<li>是否能预先确定存储空间的大小，能则使用顺序存储，否则使用链式存储。</li>
+<li>频繁进行何种运算，多查询则使用顺序存储，多插入删除则使用链式存储。</li>
+</ul>
+</li>
+</ul>
+<p><em>注：因为顺序存储是用数组实现，因此也有数组和链表对比的提法，内容见上。另外，数组是在栈上，而链表是在堆上，因此其区别也涉及内存中堆和栈的区别。</em></p>
+<p><em>参考文档：<a href="https://www.cnblogs.com/super-d2/archive/2012/08/10/2632064.html" target="_blank" rel="external">顺序存储结构与链式存储结构的比较</a></em></p>
+<h1 id="线性表"><a href="#线性表" class="headerlink" title="线性表"></a>线性表</h1><p>线性表是包含若干数据元素的线性序列。</p>
+<p><strong>特征</strong></p>
+<ul>
+<li>对于表头，无前驱。</li>
+<li>对于表尾，无后继。</li>
+<li>其他每个元素有且仅有一个直接前驱和一个直接后继。</li>
+</ul>
+<h2 id="逻辑结构"><a href="#逻辑结构" class="headerlink" title="逻辑结构"></a>逻辑结构</h2><p>见图，是一种线性结构。<br><img src="http://osjn6k0nm.bkt.clouddn.com/%E7%BA%BF%E6%80%A7%E8%A1%A8%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84.png" alt=" " title="线性表的逻辑结构"></p>
+<h2 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h2><h3 id="顺序存储"><a href="#顺序存储" class="headerlink" title="顺序存储"></a>顺序存储</h3><p>线性表的顺序存储结构，用一维数组表示。如图所示。</p>
+<p><img src="http://osjn6k0nm.bkt.clouddn.com/%E7%BA%BF%E6%80%A7%E8%A1%A8%E7%9A%84%E9%A1%BA%E5%BA%8F%E5%AD%98%E5%82%A8.png" alt=" " title="顺序表"></p>
+<h4 id="结构体表示"><a href="#结构体表示" class="headerlink" title="结构体表示"></a>结构体表示</h4><p>顺序存储的实现结构体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#define N 100 //定义顺序表的最大长度</div><div class="line">typedef int data_t; //定义存储数据的类型，可以替换为其他,如结构体</div><div class="line">typedef struct&#123;</div><div class="line">	data_t data[N]; //顺序表的存储空间</div><div class="line">	int last;//当前表尾下标</div><div class="line">&#125;seqlist,*seqlist_t;//顺序表类型</div></pre></td></tr></table></figure></p>
+<h4 id="数据运算"><a href="#数据运算" class="headerlink" title="数据运算"></a>数据运算</h4><p>顺序存储结构的线性表的基本数据运算有：</p>
+<ul>
+<li>建立空的顺序表</li>
+<li>清空顺序表</li>
+<li>销毁顺序表</li>
+<li>判断顺序表是否空</li>
+<li>判断顺序表是否满</li>
+<li>求顺序表长度</li>
+<li>将数据插入顺序表某一位置</li>
+<li>删除顺序表某一位置的数据</li>
+<li>查询顺序表中某一位置上的数据</li>
+<li>查询顺序表中某一数据的位置</li>
+<li>修改顺序表中某一位置上的数据</li>
+<li>修改顺序表中某一数据</li>
+<li>顺序表的遍历</li>
+</ul>
+<p>说明：</p>
+<ol>
+<li>表尾下标从-1开始，当有元素插入时，下标加1，正好和数据下标对应。</li>
+<li>销毁顺序表时，在函数内置指针为NULL，并不能影响函数外的实参，指针还可以访问堆上的内容，因此需要在函数外置NULL。</li>
+<li>顺序表的插入和删除操作，需要大片移动数据。</li>
+<li>顺序表的查找是按下标随机查找。</li>
+<li>函数传参为指针，函数内改变指针的值，函数外并不会有改变，属于按值传参。比如在函数内头指针位置的改变不会影响主函数中头指针的值。</li>
+<li>其余操作均是在此基础上变化，比如合并、拆分、复制、排序等。</li>
+</ol>
+<h3 id="链式存储"><a href="#链式存储" class="headerlink" title="链式存储"></a>链式存储</h3><p>线性表的链式存储，即通常说的链表。链表的结构是动态的，通过结点的指针域确定结点间的关系。结点和链表结构如图所示。其中结点包括data域，存放数据元素,还包括next域，它是一个指针，指向该元素的直接后继所在的结点位置。</p>
+<p><img src="http://osjn6k0nm.bkt.clouddn.com/%E5%8D%95%E5%90%91%E4%B8%8D%E5%BE%AA%E7%8E%AF%E9%93%BE%E8%A1%A8.png" alt=" " title="链表"></p>
+<h4 id="结构体表示-1"><a href="#结构体表示-1" class="headerlink" title="结构体表示"></a>结构体表示</h4><p>链式存储的实现结构体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">typedef int data_t;</div><div class="line">typedef struct node&#123;</div><div class="line">	data_t data;//结点的数据域</div><div class="line">	struct node *next;//结点的后继指针域</div><div class="line">&#125;linknode,*linknode_t;</div></pre></td></tr></table></figure></p>
+<h4 id="数据运算-1"><a href="#数据运算-1" class="headerlink" title="数据运算"></a>数据运算</h4><p>链式存储结构的线性表的基本数据运算有：</p>
+<ul>
+<li>创建空的链表</li>
+<li>清空链表</li>
+<li>销毁链表</li>
+<li>判断链表是否空</li>
+<li>求链表长度</li>
+<li>头插</li>
+<li>头删</li>
+<li>查询链表中某个元素</li>
+<li>修改链表中某个元素</li>
+<li>链表的遍历</li>
+<li>将数据插入链表某一位置</li>
+<li>删除链表中的某个元素</li>
+<li>链表倒置</li>
+</ul>
+<p>说明：</p>
+<ol>
+<li>链表的结构是动态生成的，不需要判断是否满。</li>
+<li>清空链表和清空顺序表不一样，不能使用h-&gt;next=NULL,因为链表中的结点均为动态申请，因此需要挨个释放空间，即删除。</li>
+<li>销毁链表则需先清空链表，再释放头结点。</li>
+<li>链表的头结点比较好操作，因此常使用头插法和头删法。</li>
+<li>链表中结点有一个指针域，因此操作中涉及指针的连接、断开等问题，可使用画图辅助理解。</li>
+<li>链表倒置最好的思路：挨个指向数据，使用头插法的思路调整指针指向即可。无需malloc和free函数。</li>
+</ol>
+<h4 id="单向循环链表"><a href="#单向循环链表" class="headerlink" title="单向循环链表"></a>单向循环链表</h4><p>以上所述链表为单向不循环链表，简称为单链表。将单链表首尾相连，就构成了单向循环链表，如图所示。单向循环链表可以使得从链表当中一个结点出发，访问到链表的全部结点。</p>
+<p><img src="http://osjn6k0nm.bkt.clouddn.com/%E5%8D%95%E5%90%91%E5%BE%AA%E7%8E%AF%E9%93%BE%E8%A1%A8.jpg" alt=" " title="单向循环链表"></p>
+<p>单向循环链表的运算和单链表比较：</p>
+<ol>
+<li>创建空链表时，填充头结点的指针域为h-&gt;next=h。</li>
+<li>判断链表是否为空：h-&gt;next==h。</li>
+<li>插入与删除和单链表操作一样。</li>
+<li>判断指针是否到达表尾：p-&gt;next==h。</li>
+<li>对于在表尾频繁操作时，可以求得表尾指针，再进行操作，而不必使用头指针遍历到表尾。例如用尾指针实现两个单向循环链表的连接。</li>
+</ol>
+<h4 id="双向不循环链表"><a href="#双向不循环链表" class="headerlink" title="双向不循环链表"></a>双向不循环链表</h4><p>单链表存在两个问题：</p>
+<ol>
+<li>在查找直接前驱时时间复杂度依赖于链表的长度，耗时较多。</li>
+<li>如果其中有一个指针被破坏，则整个链表脱节。</li>
+</ol>
+<p>因此引入双向不循环链表，其结构如图所示。双向是指增加一个指针指向直接前驱。双向链表是以空间换时间的思想，解决单链表存在的问题。</p>
+<p><img src="http://osjn6k0nm.bkt.clouddn.com/%E5%8F%8C%E5%90%91%E4%B8%8D%E5%BE%AA%E7%8E%AF%E9%93%BE%E8%A1%A8.png" alt=" " title="双向不循环链表"></p>
+<p>其实现的结构体为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">typedef int data_t;</div><div class="line">typedef struct dnode&#123;</div><div class="line">	data_t data;</div><div class="line">	struct dnode *prior,*next;</div><div class="line">&#125;dlinknode,*dlinknode_t;</div><div class="line"></div><div class="line">对称性：</div><div class="line">(p-&gt;prior)-&gt;next=p=(p-&gt;next)-&gt;prior</div></pre></td></tr></table></figure></p>
+<p>双向不循环链表的运算和单链表比较：</p>
+<ol>
+<li>创建空链表时，多一个指针。</li>
+<li>求链表长度、查找元素、获取元素位置等和单链表一样。</li>
+<li>查找或者访问链表元素，可以正向也可以反向。</li>
+<li>将数据插入链表某一位置时，需要处理四个指针。</li>
+<li>删除链表中的某个元素时，需要处理两个指针。</li>
+</ol>
+<p>说明：</p>
+<ol>
+<li>改变指针关系时，要注意先后顺序，如果写反了，可能就不能操作了，比如丢失了某个指针。解决思路：先连上新增的，这样原来的指针可以使用。然后再断开需要断开的指针。如果先删除需要删除的指针，那么可能需要新连接的指针就不知道连到哪里。</li>
+<li>以上介绍了单向循环链表和双向不循环链表。其中循环是指链表首尾相连，双向是指一个指针指向后继，一个指针指向前驱。因此，根据这两个特征，可以组合为四种形式的链表。使用场合应根据各自的特点来区分。其异同点如图所示。</li>
+<li>例如Linux内核中的链表。头文件为include/linux/list.h。其中有一个list_head结构体。list_head有两个指针，一个是next,一个是prev，通常组织为双向循环链表。注意：在linux内核链表中，<strong>不会在链表结构中包含数据，而是在数据结构中包含链表</strong>。因为链表数据类型差别很大，如果在每一个链表结构中定义数据类型，则不利于抽象为公共模板。<br><img src="http://osjn6k0nm.bkt.clouddn.com/%E5%90%84%E7%A7%8D%E9%93%BE%E8%A1%A8%E7%9A%84%E6%AF%94%E8%BE%83.jpg" alt=" " title="各种链表的比较"></li>
+</ol>
+<h2 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h2><h3 id="员工信息系统的增删改查"><a href="#员工信息系统的增删改查" class="headerlink" title="员工信息系统的增删改查"></a>员工信息系统的增删改查</h3><ul>
+<li>员工信息系统涉及每个员工的许多信息，因此通常用结构体表示，即数据是构造数据类型。</li>
+<li>考虑到总体员工数量不确定，可以采用链式存储结构，而非顺序存储结构。</li>
+<li>员工信息的结构体可以表示为方式一，包含指向下一个结点的指针。那么增删改查函数需要根据实际需求编写。</li>
+<li>也可以采用方式二，员工信息的结构体单独定义，链表结构体单独定义，那么增删改查可以使用模板函数，获得结构体或者结构体指针后，再进一步访问结构体成员。</li>
+</ul>
+<p>结构体表示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">方式一：</div><div class="line">struct node&#123;</div><div class="line">	int id;</div><div class="line">	char name[10];</div><div class="line">	int age;</div><div class="line">	bool sex;</div><div class="line">	float salary;</div><div class="line">	struct node *next;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">方式二：</div><div class="line">typedef struct staff&#123;</div><div class="line">	int id;</div><div class="line">	char name[10];</div><div class="line">	int age;</div><div class="line">	bool sex;</div><div class="line">	float salary;</div><div class="line">&#125;staff,*staff_t;</div><div class="line"></div><div class="line">typedef staff_t datatype;</div><div class="line">//或者typedef staff datatype;</div><div class="line"></div><div class="line">struct node&#123;</div><div class="line">	datatype data;</div><div class="line">	struct node *next;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p><em>参考文档：<a href="https://zhidao.baidu.com/question/277301839.html" target="_blank" rel="external">C语言中怎样用链表保存结构体数据（动态数据结构）</a></em></p>
+<h3 id="视频诊断项目中顺序表的使用"><a href="#视频诊断项目中顺序表的使用" class="headerlink" title="视频诊断项目中顺序表的使用"></a>视频诊断项目中顺序表的使用</h3><ul>
+<li>视频诊断项目其中一个需求是诊断摄像头的网络通断情况。采用的思路是：保存一份网络内正常情况下所有摄像头IP的顺序表La，实时的按一定频率扫描网络，得到实时扫描到的IP顺序表Lb,对La、Lb两个顺序表进行对比合并等操作，判定摄像头网络故障。</li>
+<li>主要涉及创建顺序表、插入数据、查找数据、顺序表遍历、两顺序表合并等操作。</li>
+<li>注意这里入表的数据类型为char *型，因此查找操作不能使用“=”运算符判断是否找到，而需使用strcmp函数。</li>
+<li>由于项目中使用顺序表是为了比较多个IP字符串，因此需要按照功能封装函数，函数内可能包含了顺序表的操作。此时需要注意，如果形参为顺序表指针，那么在函数内使用顺序表指针进行操作后，并不会影响函数外的顺序表指针。解决方案是：<strong>要么函数返回值返回顺序表指针，要么形参传递顺序表指针的地址</strong>。</li>
+<li>如下的代码，运行时将在main.c出现段错误，原因即是在函数内的La的值并不会影响main.c中La的值，所以再通过La访问数据时，由于La=NULL，所以出现段错误。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">info_management.c</div><div class="line">int cameraIP_enter_sqlist(sqlist * La,uint8_t (*IPlist)[16],int count)</div><div class="line">&#123;</div><div class="line">	int i;</div><div class="line">	</div><div class="line">	if((La = list_create()) == NULL)</div><div class="line">	&#123;</div><div class="line">		printf(&quot;fail to create list La\n&quot;);</div><div class="line">		return -1;</div><div class="line">	&#125;</div><div class="line">    		</div><div class="line">	for(i=0;i&lt;count;i++)</div><div class="line">	&#123;</div><div class="line">		list_insert(La,IPlist[i]);</div><div class="line">		</div><div class="line">	&#125;</div><div class="line">    	</div><div class="line">	list_show(La);</div><div class="line">	return 0;</div><div class="line">	</div><div class="line">&#125;</div><div class="line"></div><div class="line">main.c</div><div class="line">int main(int argc,char *argv[])</div><div class="line">&#123;</div><div class="line">	……</div><div class="line">	cameraIP_enter_sqlist(La,IPlist,camera_num);</div><div class="line"></div><div class="line">	for(i=0;i&lt;=La-&gt;last;i++)	</div><div class="line">	&#123;</div><div class="line">		if(strcmp(La-&gt;data[i],localIP)!=0)</div><div class="line">		&#123;</div><div class="line">			strcat(scan_target,La-&gt;data[i]);</div><div class="line">			strcat(scan_target,&quot; &quot;);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="仓储物联项目中链表的使用"><a href="#仓储物联项目中链表的使用" class="headerlink" title="仓储物联项目中链表的使用"></a>仓储物联项目中链表的使用</h3><ul>
+<li>该项目是由FS4412、M0(NXP LPC11C14)、PC等组成的系统，各自的作用是PC为核心服务器端，FS4412为前端数据中心，M0为远程监控终端。</li>
+<li>主要是实现M0采集环境参数，物品参数，通过zigbee网络将信息发送给FS4412，同时在FS4412上构建嵌入式web服务器，使用户在PC机上对环境信息货物信息进行监控。</li>
+<li>这是一个多线程的项目，涉及数据库线程、接收M0数据线程、M0数据分析线程、M0控制命令发送线程、短信模块控制线程、蜂鸣器控制线程、摄像头控制线程、处理消息队列请求线程、更新共享内存实时数据线程等。具体在多线程一节和项目实践分析中详细叙述。</li>
+<li>其中很多地方使用了数据结构。比如：数据库线程中，创建一个用于存储对数据库操作（增删改查）的链表。在while(1)循环中判断链表是否为空，如果空则跳出，如果不为空，则取出链表头的内容进行解析，完成相应的数据库操作并释放结点，如此循环。接收M0数据线程中，从ttyUSB0设备结点中读取数据，判断包头是否正确，判断是货物还是环境信息，并插入数据缓存链表中。M0数据分析线程中，从数据缓存链表中取表头数据，如果是环境信息，将数据加入到数据库链表中，并激活更新共享内存实时数据线程。如果是货物信息，也将其加入到数据库链表中。</li>
+<li>相关源代码详见<a href="https://gist.github.com/youxiaobo/fa52068bf23c0a2def41e508d2a4ab22" target="_blank" rel="external">gist</a>。</li>
+</ul>
+<h3 id="开源项目中的数据结构使用"><a href="#开源项目中的数据结构使用" class="headerlink" title="开源项目中的数据结构使用"></a>开源项目中的数据结构使用</h3><p><strong>mosquitto源码</strong><br>对某一个topic的所有订阅者被组织成一个双向链表。每一个结点保存一个订阅者。实现结构体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">struct _mosquitto_subleaf &#123;</div><div class="line">	struct _mosquitto_subleaf *prev;</div><div class="line">	struct _mosquitto_subleaf *next;</div><div class="line">	struct mosquitto *context;</div><div class="line">	int qos;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>用于保存订阅树的结点，包括叶子结点和中间结点。采用孩子-兄弟链表法进行存储。实现结构体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">struct _mosquitto_subhier &#123;</div><div class="line">	struct _mosquitto_subhier *parent;</div><div class="line">	struct _mosquitto_subhier *children;</div><div class="line">	struct _mosquitto_subhier *next;</div><div class="line">	struct _mosquitto_subleaf *subs;</div><div class="line">	char *topic;</div><div class="line">	struct mosquitto_msg_store *retained;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p><em>参考文档：</em><br><em><a href="http://www.360doc.com/content/14/1009/17/12928831_415569940.shtml" target="_blank" rel="external">mosquitto 源码分析 （二）订阅树的搭建</a></em><br><em><a href="http://blog.csdn.net/sinat_31500569/article/details/64200902" target="_blank" rel="external">mosquitto 源码分析 （一）核心数据结构</a></em></p>
+<p><strong>cJSON源码</strong><br>cJSON结构体是一个双向链表。对节点的操作包括增删改查等。实现结构体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">/* The cJSON structure: */</div><div class="line">typedef struct cJSON</div><div class="line">&#123;</div><div class="line">    /* next/prev allow you to walk array/object chains. Alternatively, use GetArraySize/GetArrayItem/GetObjectItem */</div><div class="line">    struct cJSON *next;</div><div class="line">    struct cJSON *prev;</div><div class="line">    /* An array or object item will have a child pointer pointing to a chain of the items in the array/object. */</div><div class="line">    struct cJSON *child;</div><div class="line"></div><div class="line">    /* The type of the item, as above. */</div><div class="line">    int type;</div><div class="line"></div><div class="line">    /* The item&apos;s string, if type==cJSON_String  and type == cJSON_Raw */</div><div class="line">    char *valuestring;</div><div class="line">    /* writing to valueint is DEPRECATED, use cJSON_SetNumberValue instead */</div><div class="line">    int valueint;</div><div class="line">    /* The item&apos;s number, if type==cJSON_Number */</div><div class="line">    double valuedouble;</div><div class="line"></div><div class="line">    /* The item&apos;s name string, if this item is the child of, or is in the list of subitems of an object. */</div><div class="line">    char *string;</div><div class="line">&#125; cJSON;</div></pre></td></tr></table></figure></p>
+<p><em>参考文档：</em><br><em><a href="https://www.jianshu.com/p/7bdb79bdb8aa" target="_blank" rel="external">cJSON源码分析</a></em><br><em><a href="http://www.codexiu.cn/javascript/blog/21746/" target="_blank" rel="external">cJSON源码分析</a></em></p>
+<p>注：关于开源项目源码阅读另作专题讨论。一般的开源项目中都有一些数据结构的使用，比如另外在paho.mqtt.c源码中有链表、树、堆等数据结构的使用，有需要时可以做深入分析。</p>
+<h3 id="面试相关问题"><a href="#面试相关问题" class="headerlink" title="面试相关问题"></a>面试相关问题</h3><ol>
+<li>链表的倒序打印<ul>
+<li>除了上面提到的方法，还可以使用递归逆序打印，或者每个元素依次入栈再依次出栈。</li>
+<li>递归的方法可以很好的保留现场，本质是一个栈，利用这个特征可以解决一些问题。例如在图的深度优先搜索算法也是用了递归，在回溯过程能够方便的获取某个结点的其他邻接点。</li>
+</ul>
+</li>
+<li>查找单向链表中倒数第k个结点<ul>
+<li>首先想到的思路是遍历第一遍，确定链表长度N。遍历第二遍，指针移动到N-k+1的位置取得数据。</li>
+<li>改进的思路是只遍历一遍完成，先使用一个指针移动到K-1位置，然后再使用另一指针指向头结点，此时两个指针同时向后移动，当第一个指针到达尾部，第二个指针恰好到达N-K+1位置，即倒数第K个。</li>
+</ul>
+</li>
+<li>确定单向链表是否有环<ul>
+<li>首先想到的思路是取每一个结点，再取其他所有结点的next指针与之对比是否相等，如果没有则跳到下一个结点，再和所有其他结点对比，以此类推，时间复杂度高。</li>
+<li>改进的思路是设计两个指针，快指针每次移动两个位置，慢指针每次移动一个位置，如果有环，则某时刻两个指针相等，如果没有环，则快指针先到达表尾。</li>
+</ul>
+</li>
+<li>约瑟夫环问题<ul>
+<li>问题描述为一个圆环，包括n个数，每次第m个数出列，之后的数重新从1开始计数，问最后一个出列的数是什么。</li>
+<li>使用循环链表实现，指针移动到第m个数时，删除该节点，再重新开始计数，依次删除，直到只剩下最后一个数据，打印该数据。</li>
+</ul>
+</li>
+</ol>
+<p><em>参考文档：</em><br><em><a href="http://blog.csdn.net/lcl_data/article/details/5513517" target="_blank" rel="external">关于数据结构的10个面试题(c语言实现)</a></em><br><em><a href="https://www.cnblogs.com/wenjiang/p/3310233.html" target="_blank" rel="external">面试常备题—链表总结篇</a></em><br><em><a href="http://blog.csdn.net/thefutureisour/article/details/8174313" target="_blank" rel="external">如何判断链表中是否有环</a></em></p>
+<h1 id="个人观点"><a href="#个人观点" class="headerlink" title="个人观点"></a>个人观点</h1><ul>
+<li>数据结构在嵌入式系统开发中，应该<strong>作为一种工具使用</strong>，而无需花过多精力探讨其内部实现。因此需熟练掌握其实现原理，主要理解其存储方式即结构体表达，和基本的运算即增删改查等。在此基础上，可以形成各种数据结构基本运算的代码模板，在实际项目中直接使用即可。此外，链表、栈、队列等在实际项目和面试中经常出现，其使用方法应熟练掌握。</li>
+<li>数据结构的编程是C语言高级编程的综合应用，包括：指针的操作、结构体的操作、动态内存分配的操作等，相当于是前面知识的实践应用，所以可以综合前面知识总结的内容进行分析。</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE.jpg" alt="You Bo WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%B6%E6%AC%BE.jpg" alt="You Bo Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/嵌入式/" rel="tag"># 嵌入式</a>
+          
+            <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
+          
+            <a href="/tags/线性表/" rel="tag"># 线性表</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/25/C语言高级编程--7内存管理/" rel="next" title="C语言高级编程--7内存管理">
+                <i class="fa fa-chevron-left"></i> C语言高级编程--7内存管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/08/巧用环形队列处理定时任务/" rel="prev" title="巧用环形队列处理定时任务">
+                巧用环形队列处理定时任务 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="hypercomments_widget"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F"
+               alt="You Bo" />
+          <p class="site-author-name" itemprop="name">You Bo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Done Is Better Than Perfect</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据结构的基本概念"><span class="nav-number">1.</span> <span class="nav-text">数据结构的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据结构的三个方面"><span class="nav-number">1.2.</span> <span class="nav-text">数据结构的三个方面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#顺序存储和链式存储的对比"><span class="nav-number">1.3.</span> <span class="nav-text">顺序存储和链式存储的对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线性表"><span class="nav-number">2.</span> <span class="nav-text">线性表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑结构"><span class="nav-number">2.1.</span> <span class="nav-text">逻辑结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储结构"><span class="nav-number">2.2.</span> <span class="nav-text">存储结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#顺序存储"><span class="nav-number">2.2.1.</span> <span class="nav-text">顺序存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#结构体表示"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">结构体表示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据运算"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">数据运算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链式存储"><span class="nav-number">2.2.2.</span> <span class="nav-text">链式存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#结构体表示-1"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">结构体表示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据运算-1"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">数据运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单向循环链表"><span class="nav-number">2.2.2.3.</span> <span class="nav-text">单向循环链表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#双向不循环链表"><span class="nav-number">2.2.2.4.</span> <span class="nav-text">双向不循环链表</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例分析"><span class="nav-number">2.3.</span> <span class="nav-text">实例分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#员工信息系统的增删改查"><span class="nav-number">2.3.1.</span> <span class="nav-text">员工信息系统的增删改查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#视频诊断项目中顺序表的使用"><span class="nav-number">2.3.2.</span> <span class="nav-text">视频诊断项目中顺序表的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仓储物联项目中链表的使用"><span class="nav-number">2.3.3.</span> <span class="nav-text">仓储物联项目中链表的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开源项目中的数据结构使用"><span class="nav-number">2.3.4.</span> <span class="nav-text">开源项目中的数据结构使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#面试相关问题"><span class="nav-number">2.3.5.</span> <span class="nav-text">面试相关问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#个人观点"><span class="nav-number">3.</span> <span class="nav-text">个人观点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Bo</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+
+		_hcwp.push({widget:"Bloggerstream", widget_id: 93304, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+
+		
+		_hcwp.push({widget:"Stream", widget_id: 93304, xid: "2018/01/04/数据结构-1线性表/"});
+		
+
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/93304/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8QMQj1UnbwzGuBYQq2wN1HrR-gzGzoHsz", "am1SdGrz3btqx5wyV7DB0qUj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
