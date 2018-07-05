@@ -1,0 +1,1317 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="嵌入式,学习笔记,进程基本概念,进程系统调用,守护进程," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="并发程序设计，是应用开发中非常重要的一部分内容。如何实现程序的并发是重点，也是难点。并发是多进程多线程编程产生的原因。 并发是进程产生的直接原因。在设备驱动设计和linux内核中提及并发和竞态概念，详见后续总结。此外在网络编程中也涉及并发服务器的设计。 并发可以采用多进程、多线程、IO复用等多种方式实现。">
+<meta name="keywords" content="嵌入式,学习笔记,进程基本概念,进程系统调用,守护进程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进程和线程--1进程控制开发">
+<meta property="og:url" content="http://www.youbo.website/2018/03/07/进程和线程-1进程控制开发/index.html">
+<meta property="og:site_name" content="YOUBO&#39;S BLOG">
+<meta property="og:description" content="并发程序设计，是应用开发中非常重要的一部分内容。如何实现程序的并发是重点，也是难点。并发是多进程多线程编程产生的原因。 并发是进程产生的直接原因。在设备驱动设计和linux内核中提及并发和竞态概念，详见后续总结。此外在网络编程中也涉及并发服务器的设计。 并发可以采用多进程、多线程、IO复用等多种方式实现。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-07-05T20:13:53.433Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="进程和线程--1进程控制开发">
+<meta name="twitter:description" content="并发程序设计，是应用开发中非常重要的一部分内容。如何实现程序的并发是重点，也是难点。并发是多进程多线程编程产生的原因。 并发是进程产生的直接原因。在设备驱动设计和linux内核中提及并发和竞态概念，详见后续总结。此外在网络编程中也涉及并发服务器的设计。 并发可以采用多进程、多线程、IO复用等多种方式实现。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.youbo.website/2018/03/07/进程和线程-1进程控制开发/"/>
+
+
+
+
+
+  <title> 进程和线程--1进程控制开发 | YOUBO'S BLOG </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?48a4e3570fd283499da1fa0f4fb218ac";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">YOUBO'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.youbo.website/2018/03/07/进程和线程-1进程控制开发/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Bo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YOUBO'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                进程和线程--1进程控制开发
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-07T09:21:15+08:00">
+                2018-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/嵌入式/" itemprop="url" rel="index">
+                    <span itemprop="name">嵌入式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            <!--noindex-->
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/07/进程和线程-1进程控制开发/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count hc-comment-count" data-xid="2018/03/07/进程和线程-1进程控制开发/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+              <!--/noindex-->
+            
+          
+
+          
+          
+             <span id="/2018/03/07/进程和线程-1进程控制开发/" class="leancloud_visitors" data-flag-title="进程和线程--1进程控制开发">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<ul>
+<li>并发程序设计，是应用开发中非常重要的一部分内容。如何实现程序的并发是重点，也是难点。并发是多进程多线程编程产生的原因。</li>
+<li>并发是进程产生的直接原因。在设备驱动设计和linux内核中提及并发和竞态概念，详见后续总结。此外在网络编程中也涉及并发服务器的设计。</li>
+<li>并发可以采用多进程、多线程、IO复用等多种方式实现。<a id="more"></a></li>
+</ul>
+</blockquote>
+<h1 id="进程基础"><a href="#进程基础" class="headerlink" title="进程基础"></a>进程基础</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="进程的定义"><a href="#进程的定义" class="headerlink" title="进程的定义"></a>进程的定义</h3><ul>
+<li>进程是一个程序的一次执行过程。</li>
+<li>当用户在系统中键入命令执行程序时，将启动一个进程。</li>
+<li>进程有两种运行模式，用户模式和内核模式，当用户程序执行过程中出现系统调用或者发生中断，则会进入内核模式。参见<a href="http://www.youbo.website/2018/02/28/%E6%A0%87%E5%87%86IO%E4%B8%8E%E6%96%87%E4%BB%B6IO/#more">《标准IO与文件IO》</a>。</li>
+</ul>
+<p>扩展：关于进程的定义，有各种各样的，其中著名的几种如下所示。</p>
+<ul>
+<li>进程是一个独立可调度的任务。</li>
+<li>进程是一个抽象实体，当系统在执行某个程序时，会分配和释放各种资源。</li>
+<li>进程是可以并行执行的计算部分。</li>
+</ul>
+<p>说明：还有一些进程相关的概念，可做了解。例如单核采用时间片轮询调度机制，实现<strong>进程的宏观并行，微观串行</strong>。例如linux进程虚拟地址空间管理，32位模式下每个进程各自有4G的虚拟地址空间，其中0-3G为用户态。3G-4G为内核态，为每个进程所共享。</p>
+<p>参考文档：<br><a href="http://blog.csdn.net/wsyw126/article/details/50804939" target="_blank" rel="external">Linux的内核中断和时间片轮询</a><br><a href="https://blog.csdn.net/czg13548930186/article/details/52629628" target="_blank" rel="external">一个程序在计算机中到底是如何运行的</a><br><a href="https://www.cnblogs.com/smartjourneys/p/7196868.html" target="_blank" rel="external">Linux内存管理4–虚拟地址空间管理</a><br><a href="https://www.cnblogs.com/fellow1988/p/6220710.html" target="_blank" rel="external">Linux进程虚拟地址空间</a></p>
+<h3 id="进程的标识"><a href="#进程的标识" class="headerlink" title="进程的标识"></a>进程的标识</h3><ul>
+<li>进程的标识有PID进程号和PPID父进程号，通过ps命令可以查看。PID唯一的标识一个进程。它们都是非零的正整数。</li>
+<li>使用getpid()和getppid()函数可以获得这两个值。</li>
+<li>PID为0的进程称为交换进程，它是内核的一部分，并不执行任何磁盘上的程序，也被称为系统进程。</li>
+<li>PID为1的进程称为init进程，它永远不会终止，其作用在系统启动过程再讨论。它是一个普通的用户进程，但是以超级用户特权运行。它是所有进程的父进程，它是启动linux系统后第一个运行的程序。</li>
+</ul>
+<h3 id="进程控制块"><a href="#进程控制块" class="headerlink" title="进程控制块"></a>进程控制块</h3><p>进程是linux系统的基本调度单位，用进程控制块（process control block）来描述它的变化。进程控制块包含了进程的描述信息、控制信息以及资源信息，它是进程的一个静态描述。进程控制块中的每一项都是一个task_struct结构，在Ubuntu12.04环境中，/usr/src/linux-headers-3.2.0-29-generic-pae/include/linux/sched.h中定义该结构体。</p>
+<p>参考文档：<br><a href="http://blog.csdn.net/cooling88/article/details/53074038" target="_blank" rel="external">进程控制块、进程上下文</a><br><a href="http://blog.csdn.net/shuizhilan/article/details/6642040" target="_blank" rel="external">进程控制块PCB详解</a></p>
+<h3 id="进程与程序的区别"><a href="#进程与程序的区别" class="headerlink" title="进程与程序的区别"></a>进程与程序的区别</h3><ul>
+<li>程序是静态的，它是保存在磁盘上的指令的有序集合，没有任何执行的概念。</li>
+<li>进程是动态的，它是程序的执行过程，包括创建、调度、消亡。进程是程序执行和资源管理的最小单位。</li>
+<li>进程不仅包括程序的指令和数据，还包括程序计数器值，CPU所有寄存器值以及存储临时数据的进程堆栈。</li>
+<li>一个进程可以执行一个或多个程序，一个程序也可以被多个进程执行。</li>
+<li>进程具有动态性、并发性、独立性、异步性等特点。</li>
+</ul>
+<p>参考文档：<br><a href="https://www.cnblogs.com/kooyun/p/5484607.html" target="_blank" rel="external">程序、进程和线程的区别</a><br><a href="http://blog.csdn.net/qq_32744005/article/details/51817637" target="_blank" rel="external">进程、程序、作业的区别</a></p>
+<h2 id="Linux进程结构"><a href="#Linux进程结构" class="headerlink" title="Linux进程结构"></a>Linux进程结构</h2><p>linux系统是一个多进程系统，进程之间具有并行性、互不干扰。它们是分离的任务，拥有各自的权利和责任。每一个进程都运行在各自独立的虚拟地址空间。即使一个进程发生异常，并不会影响其他进程。Linux中的进程包括3个段。这里各个段是在虚拟地址空间中。</p>
+<ul>
+<li>数据段：存放全局变量、常数、动态分配的数据空间等。相当于是数据段+BSS段+堆。</li>
+<li>代码段：存放程序的代码。</li>
+<li>堆栈段：存放子程序的返回地址、子程序的参数以及程序的局部变量。</li>
+</ul>
+<p>说明：进程是程序的动态执行，因此进程的内存结构就是程序<strong>运行时</strong>的结构，详见<a href="http://www.youbo.website/2017/12/25/C%E8%AF%AD%E8%A8%80%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B--7%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">C语言高级编程–7内存管理</a>。</p>
+<p>参考文档：<br><a href="http://blog.csdn.net/zhudaozhuan/article/details/51866725" target="_blank" rel="external">Linux程序存储结构与进程结构 堆和栈的区别</a></p>
+<h2 id="进程的类型"><a href="#进程的类型" class="headerlink" title="进程的类型"></a>进程的类型</h2><ul>
+<li>交互进程：这类进程由shell终端控制和运行，既可以在前台运行，也可以后台运行。</li>
+<li>批处理进程：该类进程不属于某个终端，它被提交到一个队列以便顺序执行。</li>
+<li>守护进程：该类进程在后台运行。一般是linux系统启动时开始执行，系统关闭时结束。</li>
+</ul>
+<p>说明：</p>
+<ul>
+<li>后台进程相比于前台，不能有输入。前台进程既可以有输入，又可以有输出。运行前台进程./a.out，运行后台进程./a.out&amp;。运行后台进程的终端允许用户继续运行其他命令。</li>
+<li>守护进程一定是后台进程，但是后台进程不一定是守护进程，因为执行命令./a.out&amp;即可使相应进程在后台运行，并且关闭终端后后台进程会结束，而守护进程与终端无关。另外，使用ps aux查看进程时，tty一列如果显示问号，则该进程为守护进程。一般守护进程的名字最后一个字母为d。</li>
+<li>上述三种进程均为用户进程，还有系统进程完成操作系统功能的进程。比如0号进程。</li>
+</ul>
+<p>参考文档：<br><a href="https://blog.csdn.net/hust_sheng/article/details/50766752" target="_blank" rel="external">linux中的前台任务、后台任务和守护进程</a></p>
+<h2 id="进程运行状态"><a href="#进程运行状态" class="headerlink" title="进程运行状态"></a>进程运行状态</h2><ul>
+<li>运行态：进程正在运行或者准备运行。</li>
+<li>等待态：或者说睡眠态，等待一个事件发生或者某种系统资源。分为可中断和不可中断两种。</li>
+<li>停止态：进程被中止。可以恢复运行，但是恢复后为后台进程。使用kill -SIGCONT XXX恢复。</li>
+<li>僵尸态：已经停止的进程，但是在进程表中还有其条目。</li>
+</ul>
+<p>说明：</p>
+<ul>
+<li>关于进程状态的详细情形参考man ps，查看进程状态用什么字母表示，比如运行态用R，睡眠态用S，僵尸态用Z，停止态用T等。</li>
+<li>通过ps aux命令可以查看到各个进程的状态。</li>
+<li>进程状态之间的是可以互相转换的，参见<a href="https://www.cnblogs.com/caidi/p/6692231.html" target="_blank" rel="external">进程的状态与转换</a>、<a href="https://www.cnblogs.com/KevinGeorge/p/7866778.html" target="_blank" rel="external">进程状态转换图</a>。</li>
+</ul>
+<h2 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h2><p>进程管理包括启动进程和调度进程。</p>
+<h3 id="启动进程"><a href="#启动进程" class="headerlink" title="启动进程"></a>启动进程</h3><p>启动进程有两种方式：手工启动或者调度启动。</p>
+<ul>
+<li>手动启动是指由用户输入命令直接启动进程，可以分为前台启动或者后台启动。</li>
+<li>调度启动是指系统根据用户的设置自行启动进程。比如一些系统维护工作，常用指令有at,cron等，参见<a href="https://www.ibm.com/developerworks/cn/linux/l-job-scheduling.html" target="_blank" rel="external">用 cron 和 at 调度作业</a>。</li>
+</ul>
+<h3 id="调度进程"><a href="#调度进程" class="headerlink" title="调度进程"></a>调度进程</h3><p>调度进程包括对进程的中断操作，改变优先级，查看进程状态等，可以使用<strong>命令</strong>完成。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ps 查看系统进程，常用ps -elf或者ps aux。</div><div class="line">top 动态显示系统中的进程。</div><div class="line">nice 按用户指定的优先级运行进程，nice -n -20 ./a.out。</div><div class="line">renice 改变正在运行进程的优先级，renice -n -19 pid。</div><div class="line">kill -9 pid 结束进程，包括后台进程。 </div><div class="line">bg 将挂起的进程在后台执行,先Ctrl+z使进程挂起，再运行bg 1。</div><div class="line">fg 将后台进程放到前台运行,直接运行fg 1。</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li>man手册说明了各个命令的使用参数等详情，详见man手册。</li>
+<li>理解使用ps命令看到多个进程R，多个进程S或者运行的程序状态显示为S的原因。因为按照时间片轮转调度算法，单核时间片很短，一个时间片应该只有一个进程R，其余进程都在S。但是ps命令相当于是对进程的快照snapshot of current processes，快照的时间相对较长，所以看到各进程状态与想象中不一致。</li>
+<li>nice和renice设置后，可以通过top指令看到NI和PR的变化，设置的值为NI。NI和PR的关系表现为PR=NI+20。</li>
+<li>kill -l可以查看所有的信号。关于信号的内容详见后续内容。</li>
+<li>kill掉指定名字的进程使用命令pgrep xxx | xargs kill -s 9。例如pgrep mosquitto_sub | xargs kill -s 9杀死mosquitto_sub进程。</li>
+<li>bg和fg后跟的数字为作业号，即Ctrl+z后显示在方括号内的数字。</li>
+</ul>
+<h1 id="进程系统调用"><a href="#进程系统调用" class="headerlink" title="进程系统调用"></a>进程系统调用</h1><p>进程控制方面的系统调用函数主要分析fork、exit、_exit、exec函数族、wait、waitpid等几个函数。</p>
+<h2 id="fork函数"><a href="#fork函数" class="headerlink" title="fork函数"></a>fork函数</h2><ul>
+<li>作用：<strong>创建一个进程的唯一方法是使用fork函数</strong>。</li>
+<li>fork执行一次返回两个值。它从已经存在的进程中创建一个新进程，新进程为子进程，原进程为父进程。父进程的返回值是子进程的进程号，子进程返回值是0。根据返回值的不同来判断是父进程还是子进程。</li>
+<li>子进程精确的复制父进程的内容。子进程获得父进程的数据空间、堆和栈的副本。这是子进程拥有的副本，父子进程并<strong>不共享这些存储空间部分</strong>。因此，子进程对变量的改变不会影响父进程中该变量的值。</li>
+<li>子进程复制父进程的数据空间，也包括<strong>缓冲区</strong>数据。因此要注意代码运行现象是否与这一点有关。</li>
+<li>因为fork完整的拷贝了父进程的整个地址空间，因此执行速度比较慢。为了加快fork的执行速度，出现了vfork。vfork并不产生父进程的副本，只是允许父子进程访问同样的物理内存，从而伪装对进程地址空间的拷贝。只有当子进程需要改变内存中数据时，才拷贝父进程，称为写时拷贝。</li>
+<li>除了上面所述，子进程还从父进程处继承了许多属性，包括进程上下文、进程堆栈、内存信息、<strong>打开的文件描述符</strong>、信号控制设定、进程优先级、进程组号、当前工作目录、根目录、资源限制、控制终端、<strong>文件屏蔽字、共享内存</strong>等。子进程不继承的属性详见man手册和《Unix环境高级编程》8.3 节。</li>
+<li>子进程和父进程<strong>共享正文段</strong>。子进程从fork后，赋值pid前开始执行。子进程和父进程都继续执行fork调用之后的指令。fork后，子进程和父进程之外的代码都会被执行。</li>
+<li>fork之后父进程先执行还是子进程先执行是不确定的，取决于内核的调度算法。有时为了某个进程先执行，可以使用sleep，但是秒数不一定足够。</li>
+</ul>
+<p>注：以上关于fork的使用，详见示例代码<a href="https://gist.github.com/youxiaobo/d50c03f4308d8171076b5d1c6358cfeb" target="_blank" rel="external">gist</a>。</p>
+<p><strong>fork的两种用法</strong></p>
+<ul>
+<li>父进程希望复制自己，使父进程和子进程同时执行不同的代码段。比如网络服务进程，父进程等待客户端的服务请求，当请求到达时，父进程调用fork使子进程处理，而父进程继续等待下一个请求。</li>
+<li>一个进程要执行一个不同的程序。比如shell命令，子进程从fork返回后立即调用exec，shell命令的执行过程详见<a href="https://gist.github.com/youxiaobo/cebec07f1dd5de4d01a7e6754441fc5b" target="_blank" rel="external">gist</a>。</li>
+</ul>
+<p><strong>fork对文件描述符的影响</strong></p>
+<p>因为父进程的所有打开文件描述符都被复制到子进程中了，就像执行了dup函数，那么父子进程会共享一个文件表项，即文件偏移量、文件状态标志等都是共享的。如果父子进程没有同步，又同时写同一文件描述符，那么可能会造成混乱。为了避免这种错误，有两种解决方式：</p>
+<ul>
+<li>父进程等待子进程完成。</li>
+<li>父进程和子进程各自执行不同的程序段。在fork之后，父子进程各自关闭不需要使用的文件描述符，就不会对对方产生干扰。比如网络通信服务程序，详见网络编程并发服务器。</li>
+</ul>
+<p><strong>补充：竞争条件</strong></p>
+<ul>
+<li>当多个进程企图对共享数据进行某种处理，而最后的结果又取决于进程运行的顺序时，就发生了竞争条件race condition。</li>
+<li>如果fork之后，某种逻辑依赖于某个进程先运行，那么就很可能产生竞争条件。因为哪一个进程先运行取决于系统负载和内核调度算法。</li>
+<li>因此可能涉及要求父子进程互相同步，那么要求某种形式的进程间通信。</li>
+<li>可用的方法，比如人为的睡眠几秒，让某一个进程先运行，但这并不一定可行。</li>
+<li><p>可用的方法，比如等待某个进程结束。等待子进程可以使用wait函数。等待父进程可以使用循环判断，即轮询的方法，比较浪费CPU时间，需要不停的测试如果父进程PID为1，则说明子进程成为孤儿进程，父进程已经结束。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">while(getppid()!= 1)</div><div class="line">sleep(1);</div></pre></td></tr></table></figure>
+</li>
+<li><p>为了避免竞争条件和轮询，可以使用信号机制，或者其他的进程间通信解决这个问题。</p>
+</li>
+</ul>
+<p>参考文档：<br><a href="https://www.ibm.com/developerworks/cn/linux/l-linux-process-management/" target="_blank" rel="external">Linux 进程管理剖析</a></p>
+<h2 id="exit函数和-exit函数"><a href="#exit函数和-exit函数" class="headerlink" title="exit函数和_exit函数"></a>exit函数和_exit函数</h2><ul>
+<li>作用：exit和_exit用来终止进程。</li>
+<li>当程序执行到exit或者_exit时，进程会无条件停止剩下所有的操作，清除包括PCB在内的各种数据结构，并终止本进程的运行。</li>
+<li>_exit直接终止进程，清除其使用的内存空间，销毁内核中的数据结构。</li>
+<li>exit在退出前加了若干道工序。在_exit的基础上<strong>清理IO缓存</strong>。即检查文件的打开情况，把文件缓冲区中的内容写回文件，防止缓冲区数据丢失。</li>
+<li>通常我们希望获得进程是如何终止的，即获得终止状态，正常终止时，终止状态就是exit或者_exit的参数status，异常终止时内核产生终止状态。而不管哪种情况，都可以由该终止进程的父进程使用wait函数获取终止状态。</li>
+<li>注意什么时候用exit,什么时候用_exit。因为exit会冲洗缓存。而fork创建父子进程，缓冲区也会被复制到子进程，如果不想在子进程中被冲洗，那么应该使用_exit。</li>
+<li>在main函数中返回一个整型值与该值调用exit等价。即exit(0)等价于return 0。</li>
+</ul>
+<p><strong>补充：孤儿进程与僵尸进程</strong></p>
+<ul>
+<li>孤儿进程：父进程在子进程之前终止，子进程成为孤儿进程，父进程变为init进程。</li>
+<li>僵尸进程：子进程结束，但是父进程没有进行善后处理（获取终止子进程的有关信息，释放它仍占用的资源），就会成为僵尸进程。</li>
+</ul>
+<p>说明：在进程调用了exit函数后，进程并不是马上完全消失，而是留下一个僵尸进程。僵尸进程几乎放弃了所有的内存空间，没有任何可执行代码，也不能被调度，仅在进程列表中保存一个位置，记载该进程退出状态等信息供其他进程收集。当终止进程的父进程调用wait或waitpid时，可以得到这些信息。这些信息包括进程ID、该进程的终止状态以及该进程使用CPU的时间总量。内核可以释放终止进程所使用的所有存储区，关闭打开的文件。僵尸进程不再占有任何内存空间。在实际编程中要避免产生僵尸进程。</p>
+<p><strong>补充：进程终止的8种方式</strong></p>
+<ul>
+<li>正常终止：<ul>
+<li>从main函数执行return语句；</li>
+<li>调用exit；</li>
+<li>调用_exit；</li>
+<li>进程的最后一个线程在其启动例程中执行return返回；</li>
+<li>进程的最后一个线程调用pthread_exit函数。</li>
+</ul>
+</li>
+<li>异常终止：<ul>
+<li>调用abort函数，将产生SIGABRT信号，它是下一种异常终止的特例；</li>
+<li>接到某些信号；</li>
+<li>最后一个线程对“取消”请求做出响应。</li>
+</ul>
+</li>
+</ul>
+<p>注：详情参考《unix环境高级编程》8.5节。</p>
+<h2 id="wait函数和waitpid函数"><a href="#wait函数和waitpid函数" class="headerlink" title="wait函数和waitpid函数"></a>wait函数和waitpid函数</h2><ul>
+<li>作用：wait、waitpid用来等待子进程的状态改变。</li>
+<li>状态改变包括子进程终止，子进程被信号中止，子进程被信号恢复。详见man手册。</li>
+<li>对于子进程终止的情况，使用wait函数的目的就是<strong>防止僵尸进程的产生</strong>。</li>
+<li>调用wait、waitpid可能会发生：如果所有子进程都在运行，则阻塞；如果一个子进程已经终止，正等待父进程获取其终止状态，则取得该子进程的终止状态后立即返回；如果没有任何子进程，则立即出错返回。</li>
+<li>如果一个父进程有多个子进程，其任一个子进程终止，wait就会立即返回。因为其返回值为子进程的PID，因此可以获知是哪一个子进程终止了。</li>
+<li>wait、waitpid函数中参数status是一个整型指针，用来获取子进程的终止状态。如果不关心终止状态，可以写status为NULL，如果关心，则可以通过定义在&lt;sys/wait.h&gt;中的各个宏来查看，这些宏会返回进程终止的原因，详见man手册。而如果是接收exit中的退出状态参数，则wait的终止状态总是<strong>退出状态参数乘以256</strong>。</li>
+<li>一个由init进程收养的进程终止时不会变成僵尸进程。因为init被编写成无论何时只要有一个子进程终止，init就会调用wait函数取得其终止状态。这里说的子进程包括由init直接产生的，也包括收养的。</li>
+<li>wait函数可以回收任意儿子进程的资源，但不会回收孙子进程资源。如果孙子进程终止，而儿子进程尚未终止，则孙子进程成为僵尸进程。</li>
+<li>《Unix环境高级编程》图8.8提供了一种通过两次fork避免产生僵尸进程的方法，详见<a href="https://gist.github.com/youxiaobo/1bdf3d001e568f27fcb7d2453563c7af" target="_blank" rel="external">gist</a>。</li>
+</ul>
+<p><strong>wait和waitpid的区别</strong><br>waitpid更多的是等待一个特定进程的函数，即可以指定PID。wait(&amp;status)等价于waitpid(-1,&amp;status,0)。waitpid相比于wait，有三个不同的功能：</p>
+<ul>
+<li>可以等待一个特定的进程。</li>
+<li>提供了一个wait的非阻塞版本。</li>
+<li>通过第三个参数WUNTRACED、WCONTIUED可以支持作业控制。</li>
+</ul>
+<h2 id="exec函数族"><a href="#exec函数族" class="headerlink" title="exec函数族"></a>exec函数族</h2><ul>
+<li>作用：exec提供了一种在<strong>进程中启动另一个程序执行</strong>的方法。</li>
+<li>fork函数创建新的子进程后，子进程往往要调用一种exec函数以执行另一个程序。该进程执行的程序完全替换为新程序，而新程序则从main函数开始执行。</li>
+<li>从exec函数的原型来看，新程序就是第一个参数，即某个路径下的可执行文件。</li>
+<li>exec函数的原理是根据指定文件名或者目录名找到可执行文件，用它来取代原调用进程的数据段、代码段、堆栈段。在执行完之后，<strong>除了原来调用进程的进程号外，其他都被替换了</strong>。这个可执行文件是指二进制文件或者linux下任何可执行的脚本文件。</li>
+<li>execlp、execvp找到路径前缀中的可执行文件，如果该文件不是连接编辑器产生的机器可执行文件，就会认为是shell脚本，调用/bin/sh，并以文件名作为shell的输入。此外exec族函数也可以执行解释器文件。所谓解释器文件是指以#！开头的文件，就是用除了/bin/sh以外的其他shell来编写shell脚本。</li>
+<li>在终端执行可执行文件的过程会用到exec（比如运行程序./a.out），可通过strace命令查看。</li>
+<li>函数族包括六个函数execl/execv/execle/execve/execlp/execvp。其使用方法详见man手册。只需理解几个字母的含义。<ul>
+<li>p是参数只给定了文件名，从环境变量$PATH所指向的路径查找。</li>
+<li>l是逐个列举的方式传递参数表。</li>
+<li>v是以数组形式传递参数表。</li>
+<li>e是使用指定的环境变量，通常使用默认的环境变量。</li>
+</ul>
+</li>
+<li>这6个函数中真正的系统调用只有execve，其他的5个都是库函数，它们最终都会调用execve函数。</li>
+<li>注意使用时通常要加上错误判断语句。注意数组argv、envp参数通常以NULL结束。</li>
+</ul>
+<p><strong>使用exec函数族的两种情况</strong></p>
+<ul>
+<li>当进程认为自己不能再为系统和用户做出任何贡献时，就调用exec函数，执行新的程序。</li>
+<li>如果某个进程想同时执行另一个程序，就可以先调用fork函数创建一个子进程，在子进程中调用任意一个exec函数。这样就像通过应用程序产生了一个新进程。</li>
+</ul>
+<p><strong>补充：system函数</strong></p>
+<ul>
+<li>Unix系统进程控制原语包括fork、exec、exit、wait等。由这些控制原语可以构成如<strong>popen和system</strong>之类的函数。</li>
+<li>system函数作用是在程序中执行一个命令字符串。</li>
+<li>在system函数的实现中使用了fork，exec和waitpid函数。其返回值详见man手册。</li>
+<li>如果其中waitpid函数被一个捕捉到的信号中断，返回EINTR错误，将被忽略。</li>
+<li>如果system成功执行命令，则返回shell的终止状态，其格式在waitpid中讨论过。</li>
+<li>使用system的好处是，比直接使用fork，exec来说，system进行了所需要的错误处理和各种信号处理。</li>
+<li>system的实现参见《Unix环境高级编程》10.18节。</li>
+</ul>
+<h1 id="linux守护进程"><a href="#linux守护进程" class="headerlink" title="linux守护进程"></a>linux守护进程</h1><ul>
+<li>守护进程，即daemon进程，是后台服务程序，其生存期较长，通常<strong>独立于控制终端</strong>并且周期性执行某个任务或等待某些发生的事件。</li>
+<li>守护进程在系统启动时开始运行，系统关闭时终止。</li>
+<li>许多系统服务都是守护进程实现。关于linux系统服务的内容参见<a href="https://www.linuxidc.com/Linux/2011-06/37168.htm" target="_blank" rel="external">《嵌入式linux应用程序开发详解》2.3节</a>，包括独立运行的系统服务和由xinet启动服务的管理服务器。启动有两种方式，/etc/init.d/xxx start，或者service xxx start。</li>
+</ul>
+<h2 id="创建守护进程的步骤"><a href="#创建守护进程的步骤" class="headerlink" title="创建守护进程的步骤"></a>创建守护进程的步骤</h2><ol>
+<li>创建子进程，父进程退出。（产生孤儿进程，为了使得与控制终端脱离。）</li>
+<li>在子进程中创建新会话，使用setsid创建新会话并担任会话组组长。</li>
+<li>改变当前目录为根目录，使用chdir。</li>
+<li>重设文件权限掩码，使用umask。</li>
+<li>关闭文件描述符，使用close(fd)。</li>
+</ol>
+<p>说明：</p>
+<ul>
+<li>前两步就已经变成了守护进程。</li>
+<li>后面这几步都是因为第一步使用了fork，但是又使父进程退出，因此有一些相关的操作必须处理。</li>
+<li>进程组：进程组由多个进程组成，由进程组ID唯一标识。</li>
+<li>会话期：会话期是有多个进程组组成。</li>
+<li>创建的守护进程程序中子进程内应有一个死循环，才能保证是在系统结束时关闭。</li>
+</ul>
+<p><strong>扩展</strong></p>
+<ol>
+<li>守护进程的出错处理：由于守护进程脱离了控制终端，因此不能像其他程序一样通过输出错误信息到控制终端。对于守护进程的调试，可以使用syslog服务，将程序出错信息输出到/var/log/messages系统日志文件。syslog是linux中的系统日志管理服务，通过守护进程syslogd维护。该守护进程在启动时会读一个配置文件“/etc/syslog.conf”。常用的函数有openlog、syslog、closelog。详情参考《Unix环境高级编程》13.4节。</li>
+<li>守护进程的好处或者说用途通常是作为服务器进程。即服务器程序无限循环等待事件发生，事件发生后调用另一个进程完成相应工作，而自己继续等待事件发生。</li>
+<li>守护进程可以用命令行启动，即写入/etc/rc*或者/etc/init.d/*文件中。这就涉及到开机自启动应用程序、将应用程序做成服务、制作根文件系统等相关话题，实践中十分有用，可做了解。</li>
+</ol>
+<p>参考文档：<br><a href="https://www.cnblogs.com/Alight/p/5313306.html" target="_blank" rel="external">nohup与&amp;，守护进程</a><br><a href="https://blog.csdn.net/lanyang123456/article/details/71023363" target="_blank" rel="external">如何使守护进程开机启动</a></p>
+<h1 id="个人观点"><a href="#个人观点" class="headerlink" title="个人观点"></a>个人观点</h1><ol>
+<li>进程相关的基本概念必须掌握。</li>
+<li>进程的相关shell命令要会使用。</li>
+<li>fork函数原理要理解,要会使用。exec函数族理解即刻，平时不会使用。wait、waitpid、exit、_exit函数要会使用。</li>
+<li>linux应用层开发主要是学习函数的使用，因此应主要关心函数的作用、返回值、参数这三个方面，即从这几个维度了解其使用方法。</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE.jpg" alt="You Bo WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://osjn6k0nm.bkt.clouddn.com/%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%B6%E6%AC%BE.jpg" alt="You Bo Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/嵌入式/" rel="tag"># 嵌入式</a>
+          
+            <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
+          
+            <a href="/tags/进程基本概念/" rel="tag"># 进程基本概念</a>
+          
+            <a href="/tags/进程系统调用/" rel="tag"># 进程系统调用</a>
+          
+            <a href="/tags/守护进程/" rel="tag"># 守护进程</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/28/标准IO与文件IO/" rel="next" title="标准IO与文件IO">
+                <i class="fa fa-chevron-left"></i> 标准IO与文件IO
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="hypercomments_widget"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://osjn6k0nm.bkt.clouddn.com/%E7%B2%89%E7%8C%AA%E5%A4%B4%E5%83%8F"
+               alt="You Bo" />
+          <p class="site-author-name" itemprop="name">You Bo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Done Is Better Than Perfect</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">56</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#进程基础"><span class="nav-number">1.</span> <span class="nav-text">进程基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的定义"><span class="nav-number">1.1.1.</span> <span class="nav-text">进程的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的标识"><span class="nav-number">1.1.2.</span> <span class="nav-text">进程的标识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程控制块"><span class="nav-number">1.1.3.</span> <span class="nav-text">进程控制块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程与程序的区别"><span class="nav-number">1.1.4.</span> <span class="nav-text">进程与程序的区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux进程结构"><span class="nav-number">1.2.</span> <span class="nav-text">Linux进程结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的类型"><span class="nav-number">1.3.</span> <span class="nav-text">进程的类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程运行状态"><span class="nav-number">1.4.</span> <span class="nav-text">进程运行状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程管理"><span class="nav-number">1.5.</span> <span class="nav-text">进程管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#启动进程"><span class="nav-number">1.5.1.</span> <span class="nav-text">启动进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调度进程"><span class="nav-number">1.5.2.</span> <span class="nav-text">调度进程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#进程系统调用"><span class="nav-number">2.</span> <span class="nav-text">进程系统调用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#fork函数"><span class="nav-number">2.1.</span> <span class="nav-text">fork函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exit函数和-exit函数"><span class="nav-number">2.2.</span> <span class="nav-text">exit函数和_exit函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wait函数和waitpid函数"><span class="nav-number">2.3.</span> <span class="nav-text">wait函数和waitpid函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exec函数族"><span class="nav-number">2.4.</span> <span class="nav-text">exec函数族</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#linux守护进程"><span class="nav-number">3.</span> <span class="nav-text">linux守护进程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建守护进程的步骤"><span class="nav-number">3.1.</span> <span class="nav-text">创建守护进程的步骤</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#个人观点"><span class="nav-number">4.</span> <span class="nav-text">个人观点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Bo</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+
+		_hcwp.push({widget:"Bloggerstream", widget_id: 93304, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+
+		
+		_hcwp.push({widget:"Stream", widget_id: 93304, xid: "2018/03/07/进程和线程-1进程控制开发/"});
+		
+
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/93304/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8QMQj1UnbwzGuBYQq2wN1HrR-gzGzoHsz", "am1SdGrz3btqx5wyV7DB0qUj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
