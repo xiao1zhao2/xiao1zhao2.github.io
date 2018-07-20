@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="嵌入式,学习笔记,进程基本概念,进程系统调用,守护进程," />
+  <meta name="keywords" content="嵌入式,学习笔记,守护进程,进程,系统调用," />
 
 
 
@@ -87,18 +87,18 @@
 
 
 
-<meta name="description" content="并发程序设计，是应用开发中非常重要的一部分内容。如何实现程序的并发是重点，也是难点。并发是多进程多线程编程产生的原因。 并发是进程产生的直接原因。在设备驱动设计和linux内核中提及并发和竞态概念，详见后续总结。此外在网络编程中也涉及并发服务器的设计。 并发可以采用多进程、多线程、IO复用等多种方式实现。">
-<meta name="keywords" content="嵌入式,学习笔记,进程基本概念,进程系统调用,守护进程">
+<meta name="description" content="并发程序设计，是应用开发中非常重要的一部分内容。如何实现程序的并发是重点，也是难点。并发是多进程多线程编程产生的原因。 并发是进程产生的直接原因。在设备驱动设计和linux内核中提及并发和竞态概念，详见后续总结。此外在网络编程中也涉及并发服务器的设计。 并发可以采用多进程、多线程、IO复用等多种方式实现。 本篇文章介绍了进程相关的基本概念，重点论述进程系统调用的几个函数：fork、exec函数">
+<meta name="keywords" content="嵌入式,学习笔记,守护进程,进程,系统调用">
 <meta property="og:type" content="article">
 <meta property="og:title" content="进程和线程--1进程控制开发">
 <meta property="og:url" content="http://www.youbo.website/2018/03/07/进程和线程-1进程控制开发/index.html">
 <meta property="og:site_name" content="YOUBO&#39;S BLOG">
-<meta property="og:description" content="并发程序设计，是应用开发中非常重要的一部分内容。如何实现程序的并发是重点，也是难点。并发是多进程多线程编程产生的原因。 并发是进程产生的直接原因。在设备驱动设计和linux内核中提及并发和竞态概念，详见后续总结。此外在网络编程中也涉及并发服务器的设计。 并发可以采用多进程、多线程、IO复用等多种方式实现。">
+<meta property="og:description" content="并发程序设计，是应用开发中非常重要的一部分内容。如何实现程序的并发是重点，也是难点。并发是多进程多线程编程产生的原因。 并发是进程产生的直接原因。在设备驱动设计和linux内核中提及并发和竞态概念，详见后续总结。此外在网络编程中也涉及并发服务器的设计。 并发可以采用多进程、多线程、IO复用等多种方式实现。 本篇文章介绍了进程相关的基本概念，重点论述进程系统调用的几个函数：fork、exec函数">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-07-05T20:13:53.433Z">
+<meta property="og:updated_time" content="2018-07-20T16:37:09.274Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="进程和线程--1进程控制开发">
-<meta name="twitter:description" content="并发程序设计，是应用开发中非常重要的一部分内容。如何实现程序的并发是重点，也是难点。并发是多进程多线程编程产生的原因。 并发是进程产生的直接原因。在设备驱动设计和linux内核中提及并发和竞态概念，详见后续总结。此外在网络编程中也涉及并发服务器的设计。 并发可以采用多进程、多线程、IO复用等多种方式实现。">
+<meta name="twitter:description" content="并发程序设计，是应用开发中非常重要的一部分内容。如何实现程序的并发是重点，也是难点。并发是多进程多线程编程产生的原因。 并发是进程产生的直接原因。在设备驱动设计和linux内核中提及并发和竞态概念，详见后续总结。此外在网络编程中也涉及并发服务器的设计。 并发可以采用多进程、多线程、IO复用等多种方式实现。 本篇文章介绍了进程相关的基本概念，重点论述进程系统调用的几个函数：fork、exec函数">
 
 
 
@@ -426,7 +426,9 @@
 <ul>
 <li>并发程序设计，是应用开发中非常重要的一部分内容。如何实现程序的并发是重点，也是难点。并发是多进程多线程编程产生的原因。</li>
 <li>并发是进程产生的直接原因。在设备驱动设计和linux内核中提及并发和竞态概念，详见后续总结。此外在网络编程中也涉及并发服务器的设计。</li>
-<li>并发可以采用多进程、多线程、IO复用等多种方式实现。<a id="more"></a></li>
+<li>并发可以采用多进程、多线程、IO复用等多种方式实现。</li>
+<li>本篇文章介绍了进程相关的基本概念，重点论述进程系统调用的几个函数：fork、exec函数族、wait、waitpid、exit、_exit。最后简单说明了守护进程的概念和创建方法。<a id="more"></a>
+</li>
 </ul>
 </blockquote>
 <h1 id="进程基础"><a href="#进程基础" class="headerlink" title="进程基础"></a>进程基础</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="进程的定义"><a href="#进程的定义" class="headerlink" title="进程的定义"></a>进程的定义</h3><ul>
@@ -441,7 +443,7 @@
 <li>进程是可以并行执行的计算部分。</li>
 </ul>
 <p>说明：还有一些进程相关的概念，可做了解。例如单核采用时间片轮询调度机制，实现<strong>进程的宏观并行，微观串行</strong>。例如linux进程虚拟地址空间管理，32位模式下每个进程各自有4G的虚拟地址空间，其中0-3G为用户态。3G-4G为内核态，为每个进程所共享。</p>
-<p>参考文档：<br><a href="http://blog.csdn.net/wsyw126/article/details/50804939" target="_blank" rel="external">Linux的内核中断和时间片轮询</a><br><a href="https://blog.csdn.net/czg13548930186/article/details/52629628" target="_blank" rel="external">一个程序在计算机中到底是如何运行的</a><br><a href="https://www.cnblogs.com/smartjourneys/p/7196868.html" target="_blank" rel="external">Linux内存管理4–虚拟地址空间管理</a><br><a href="https://www.cnblogs.com/fellow1988/p/6220710.html" target="_blank" rel="external">Linux进程虚拟地址空间</a></p>
+<p><em>参考文档：</em><br><em><a href="http://blog.csdn.net/wsyw126/article/details/50804939" target="_blank" rel="external">Linux的内核中断和时间片轮询</a></em><br><em><a href="https://blog.csdn.net/czg13548930186/article/details/52629628" target="_blank" rel="external">一个程序在计算机中到底是如何运行的</a></em><br><em><a href="https://www.cnblogs.com/smartjourneys/p/7196868.html" target="_blank" rel="external">Linux内存管理4–虚拟地址空间管理</a></em><br><em><a href="https://www.cnblogs.com/fellow1988/p/6220710.html" target="_blank" rel="external">Linux进程虚拟地址空间</a></em></p>
 <h3 id="进程的标识"><a href="#进程的标识" class="headerlink" title="进程的标识"></a>进程的标识</h3><ul>
 <li>进程的标识有PID进程号和PPID父进程号，通过ps命令可以查看。PID唯一的标识一个进程。它们都是非零的正整数。</li>
 <li>使用getpid()和getppid()函数可以获得这两个值。</li>
@@ -449,7 +451,7 @@
 <li>PID为1的进程称为init进程，它永远不会终止，其作用在系统启动过程再讨论。它是一个普通的用户进程，但是以超级用户特权运行。它是所有进程的父进程，它是启动linux系统后第一个运行的程序。</li>
 </ul>
 <h3 id="进程控制块"><a href="#进程控制块" class="headerlink" title="进程控制块"></a>进程控制块</h3><p>进程是linux系统的基本调度单位，用进程控制块（process control block）来描述它的变化。进程控制块包含了进程的描述信息、控制信息以及资源信息，它是进程的一个静态描述。进程控制块中的每一项都是一个task_struct结构，在Ubuntu12.04环境中，/usr/src/linux-headers-3.2.0-29-generic-pae/include/linux/sched.h中定义该结构体。</p>
-<p>参考文档：<br><a href="http://blog.csdn.net/cooling88/article/details/53074038" target="_blank" rel="external">进程控制块、进程上下文</a><br><a href="http://blog.csdn.net/shuizhilan/article/details/6642040" target="_blank" rel="external">进程控制块PCB详解</a></p>
+<p><em>参考文档：</em><br><em><a href="http://blog.csdn.net/cooling88/article/details/53074038" target="_blank" rel="external">进程控制块、进程上下文</a></em><br><em><a href="http://blog.csdn.net/shuizhilan/article/details/6642040" target="_blank" rel="external">进程控制块PCB详解</a></em></p>
 <h3 id="进程与程序的区别"><a href="#进程与程序的区别" class="headerlink" title="进程与程序的区别"></a>进程与程序的区别</h3><ul>
 <li>程序是静态的，它是保存在磁盘上的指令的有序集合，没有任何执行的概念。</li>
 <li>进程是动态的，它是程序的执行过程，包括创建、调度、消亡。进程是程序执行和资源管理的最小单位。</li>
@@ -457,15 +459,15 @@
 <li>一个进程可以执行一个或多个程序，一个程序也可以被多个进程执行。</li>
 <li>进程具有动态性、并发性、独立性、异步性等特点。</li>
 </ul>
-<p>参考文档：<br><a href="https://www.cnblogs.com/kooyun/p/5484607.html" target="_blank" rel="external">程序、进程和线程的区别</a><br><a href="http://blog.csdn.net/qq_32744005/article/details/51817637" target="_blank" rel="external">进程、程序、作业的区别</a></p>
+<p><em>参考文档：</em><br><em><a href="https://www.cnblogs.com/kooyun/p/5484607.html" target="_blank" rel="external">程序、进程和线程的区别</a></em><br><em><a href="http://blog.csdn.net/qq_32744005/article/details/51817637" target="_blank" rel="external">进程、程序、作业的区别</a></em></p>
 <h2 id="Linux进程结构"><a href="#Linux进程结构" class="headerlink" title="Linux进程结构"></a>Linux进程结构</h2><p>linux系统是一个多进程系统，进程之间具有并行性、互不干扰。它们是分离的任务，拥有各自的权利和责任。每一个进程都运行在各自独立的虚拟地址空间。即使一个进程发生异常，并不会影响其他进程。Linux中的进程包括3个段。这里各个段是在虚拟地址空间中。</p>
 <ul>
 <li>数据段：存放全局变量、常数、动态分配的数据空间等。相当于是数据段+BSS段+堆。</li>
 <li>代码段：存放程序的代码。</li>
 <li>堆栈段：存放子程序的返回地址、子程序的参数以及程序的局部变量。</li>
 </ul>
-<p>说明：进程是程序的动态执行，因此进程的内存结构就是程序<strong>运行时</strong>的结构，详见<a href="http://www.youbo.website/2017/12/25/C%E8%AF%AD%E8%A8%80%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B--7%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">C语言高级编程–7内存管理</a>。</p>
-<p>参考文档：<br><a href="http://blog.csdn.net/zhudaozhuan/article/details/51866725" target="_blank" rel="external">Linux程序存储结构与进程结构 堆和栈的区别</a></p>
+<p><em>说明：进程是程序的动态执行，因此进程的内存结构就是程序<strong>运行时</strong>的结构，详见<a href="http://www.youbo.website/2017/12/25/C%E8%AF%AD%E8%A8%80%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B--7%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">C语言高级编程–7内存管理</a>。</em></p>
+<p><em>参考文档：</em><br><em><a href="http://blog.csdn.net/zhudaozhuan/article/details/51866725" target="_blank" rel="external">Linux程序存储结构与进程结构 堆和栈的区别</a></em></p>
 <h2 id="进程的类型"><a href="#进程的类型" class="headerlink" title="进程的类型"></a>进程的类型</h2><ul>
 <li>交互进程：这类进程由shell终端控制和运行，既可以在前台运行，也可以后台运行。</li>
 <li>批处理进程：该类进程不属于某个终端，它被提交到一个队列以便顺序执行。</li>
@@ -477,7 +479,7 @@
 <li>守护进程一定是后台进程，但是后台进程不一定是守护进程，因为执行命令./a.out&amp;即可使相应进程在后台运行，并且关闭终端后后台进程会结束，而守护进程与终端无关。另外，使用ps aux查看进程时，tty一列如果显示问号，则该进程为守护进程。一般守护进程的名字最后一个字母为d。</li>
 <li>上述三种进程均为用户进程，还有系统进程完成操作系统功能的进程。比如0号进程。</li>
 </ul>
-<p>参考文档：<br><a href="https://blog.csdn.net/hust_sheng/article/details/50766752" target="_blank" rel="external">linux中的前台任务、后台任务和守护进程</a></p>
+<p><em>参考文档：</em><br><em><a href="https://blog.csdn.net/hust_sheng/article/details/50766752" target="_blank" rel="external">linux中的前台任务、后台任务和守护进程</a></em></p>
 <h2 id="进程运行状态"><a href="#进程运行状态" class="headerlink" title="进程运行状态"></a>进程运行状态</h2><ul>
 <li>运行态：进程正在运行或者准备运行。</li>
 <li>等待态：或者说睡眠态，等待一个事件发生或者某种系统资源。分为可中断和不可中断两种。</li>
@@ -518,7 +520,7 @@
 <li>子进程和父进程<strong>共享正文段</strong>。子进程从fork后，赋值pid前开始执行。子进程和父进程都继续执行fork调用之后的指令。fork后，子进程和父进程之外的代码都会被执行。</li>
 <li>fork之后父进程先执行还是子进程先执行是不确定的，取决于内核的调度算法。有时为了某个进程先执行，可以使用sleep，但是秒数不一定足够。</li>
 </ul>
-<p>注：以上关于fork的使用，详见示例代码<a href="https://gist.github.com/youxiaobo/d50c03f4308d8171076b5d1c6358cfeb" target="_blank" rel="external">gist</a>。</p>
+<p><em>注：以上关于fork的使用，详见示例代码<a href="https://gist.github.com/youxiaobo/d50c03f4308d8171076b5d1c6358cfeb" target="_blank" rel="external">gist</a>。</em></p>
 <p><strong>fork的两种用法</strong></p>
 <ul>
 <li>父进程希望复制自己，使父进程和子进程同时执行不同的代码段。比如网络服务进程，父进程等待客户端的服务请求，当请求到达时，父进程调用fork使子进程处理，而父进程继续等待下一个请求。</li>
@@ -542,7 +544,7 @@
 <li><p>为了避免竞争条件和轮询，可以使用信号机制，或者其他的进程间通信解决这个问题。</p>
 </li>
 </ul>
-<p>参考文档：<br><a href="https://www.ibm.com/developerworks/cn/linux/l-linux-process-management/" target="_blank" rel="external">Linux 进程管理剖析</a></p>
+<p><em>参考文档：</em><br><em><a href="https://www.ibm.com/developerworks/cn/linux/l-linux-process-management/" target="_blank" rel="external">Linux 进程管理剖析</a></em></p>
 <h2 id="exit函数和-exit函数"><a href="#exit函数和-exit函数" class="headerlink" title="exit函数和_exit函数"></a>exit函数和_exit函数</h2><ul>
 <li>作用：exit和_exit用来终止进程。</li>
 <li>当程序执行到exit或者_exit时，进程会无条件停止剩下所有的操作，清除包括PCB在内的各种数据结构，并终止本进程的运行。</li>
@@ -575,7 +577,7 @@
 </ul>
 </li>
 </ul>
-<p>注：详情参考《unix环境高级编程》8.5节。</p>
+<p><em>注：详情参考《unix环境高级编程》8.5节。</em></p>
 <h2 id="wait函数和waitpid函数"><a href="#wait函数和waitpid函数" class="headerlink" title="wait函数和waitpid函数"></a>wait函数和waitpid函数</h2><ul>
 <li>作用：wait、waitpid用来等待子进程的状态改变。</li>
 <li>状态改变包括子进程终止，子进程被信号中止，子进程被信号恢复。详见man手册。</li>
@@ -651,11 +653,11 @@
 <li>守护进程的好处或者说用途通常是作为服务器进程。即服务器程序无限循环等待事件发生，事件发生后调用另一个进程完成相应工作，而自己继续等待事件发生。</li>
 <li>守护进程可以用命令行启动，即写入/etc/rc*或者/etc/init.d/*文件中。这就涉及到开机自启动应用程序、将应用程序做成服务、制作根文件系统等相关话题，实践中十分有用，可做了解。</li>
 </ol>
-<p>参考文档：<br><a href="https://www.cnblogs.com/Alight/p/5313306.html" target="_blank" rel="external">nohup与&amp;，守护进程</a><br><a href="https://blog.csdn.net/lanyang123456/article/details/71023363" target="_blank" rel="external">如何使守护进程开机启动</a></p>
+<p><em>参考文档：</em><br><em><a href="https://www.cnblogs.com/Alight/p/5313306.html" target="_blank" rel="external">nohup与&amp;，守护进程</a></em><br><em><a href="https://blog.csdn.net/lanyang123456/article/details/71023363" target="_blank" rel="external">如何使守护进程开机启动</a></em></p>
 <h1 id="个人观点"><a href="#个人观点" class="headerlink" title="个人观点"></a>个人观点</h1><ol>
 <li>进程相关的基本概念必须掌握。</li>
 <li>进程的相关shell命令要会使用。</li>
-<li>fork函数原理要理解,要会使用。exec函数族理解即刻，平时不会使用。wait、waitpid、exit、_exit函数要会使用。</li>
+<li>fork函数原理要理解,要会使用。exec函数族理解即可，平时不会使用。wait、waitpid、exit、_exit函数要会使用。</li>
 <li>linux应用层开发主要是学习函数的使用，因此应主要关心函数的作用、返回值、参数这三个方面，即从这几个维度了解其使用方法。</li>
 </ol>
 
@@ -712,11 +714,11 @@
           
             <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
           
-            <a href="/tags/进程基本概念/" rel="tag"># 进程基本概念</a>
-          
-            <a href="/tags/进程系统调用/" rel="tag"># 进程系统调用</a>
-          
             <a href="/tags/守护进程/" rel="tag"># 守护进程</a>
+          
+            <a href="/tags/进程/" rel="tag"># 进程</a>
+          
+            <a href="/tags/系统调用/" rel="tag"># 系统调用</a>
           
         </div>
       
@@ -738,6 +740,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/12/进程和线程-2多线程编程/" rel="prev" title="进程和线程--2多线程编程">
+                进程和线程--2多线程编程 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -834,7 +840,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -856,7 +862,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">56</span>
+                <span class="site-state-item-count">59</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
